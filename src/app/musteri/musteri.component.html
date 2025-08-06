@@ -1,0 +1,131 @@
+<p-toolbar class="mt-0">
+  <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
+    @if (!selectedMusteriObject()) {
+      <p-button
+        class="buttonRefresh"
+        icon="pi pi-refresh"
+        (click)="refresh()"
+        [style]="{'background-color': '#4087be'}">
+      </p-button>
+      <p-button
+        class="buttonAdd"
+        icon="pi pi-plus"
+        (click)="showSaveForm()"
+        [style]="{'background-color': '#28a745', 'margin': '2px'}">
+      </p-button>
+    }
+    @if (selectedMusteriObject()) {
+      <p-button
+        class="buttonEdit"
+        icon="pi pi-pen-to-square"
+        (click)="showUpdateForm()"
+        [style]="{'background-color': '#ff9800'}">
+      </p-button>
+      <p-button
+        class="buttonDelete"
+        icon="pi pi-trash"
+        (click)="deleteMusteriConfirm($event)"
+        [style]="{'background-color': '#dc3545', 'margin': '2px'}">
+      </p-button>
+    }
+  </div>
+</p-toolbar>
+
+<p-table
+  [value]="musteriDatas()"
+  [(selection)]="selectedMusteriObject"
+  styleClass="p-datatable-striped">
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th>#</th>
+      <th>Ad</th>
+      <th>Soyad</th>
+      <th>Telefon</th>
+      <th>Email</th>
+      <th>Adres</th>
+      <th>Oluşturma Tarihi</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-musteri let-i="rowIndex">
+    <tr>
+      <td><p-tableRadioButton [value]="musteri"></p-tableRadioButton></td>
+      <td>{{ i + 1 }}</td>
+      <td>{{ musteri.ad }}</td>
+      <td>{{ musteri.soyad }}</td>
+      <td>{{ musteri.telefon }}</td>
+      <td>{{ musteri.email || '-' }}</td>
+      <td>{{ musteri.adres || '-' }}</td>
+      <!--<td>{{ musteri.olusturmaTarih | date:'dd/MM/yyyy' }}</td>-->
+    </tr>
+  </ng-template>
+</p-table>
+
+<form [formGroup]="musteriSaveForm">
+  <p-dialog header="Müşteri Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="ad" style="font-weight: bold">Ad</label>
+        <input id="ad" placeholder="Ad giriniz" pInputText class="w-full" formControlName="ad">
+      </div>
+      <div class="field col-12">
+        <label for="soyad" style="font-weight: bold">Soyad</label>
+        <input id="soyad" placeholder="Soyad giriniz" pInputText class="w-full" formControlName="soyad">
+      </div>
+      <div class="field col-12">
+        <label for="telefon" style="font-weight: bold">Telefon</label>
+        <input id="telefon" placeholder="Telefon giriniz (10 hane)" pInputText class="w-full" formControlName="telefon">
+      </div>
+      <div class="field col-12">
+        <label for="email" style="font-weight: bold">Email</label>
+        <input id="email" placeholder="Email giriniz" pInputText class="w-full" formControlName="email">
+      </div>
+      <div class="field col-12">
+        <label for="adres" style="font-weight: bold">Adres</label>
+        <input id="adres" placeholder="Adres giriniz" pInputText class="w-full" formControlName="adres">
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSaveForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="saveMusteri()" [disabled]="!musteriSaveForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<form [formGroup]="musteriUpdateForm">
+  <p-dialog header="Müşteri Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="idUp">Müşteri ID</label>
+        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
+      </div>
+      <div class="field col-12">
+        <label for="adUp">Ad</label>
+        <input id="adUp" pInputText class="w-full" formControlName="ad">
+      </div>
+      <div class="field col-12">
+        <label for="soyadUp">Soyad</label>
+        <input id="soyadUp" pInputText class="w-full" formControlName="soyad">
+      </div>
+      <div class="field col-12">
+        <label for="telefonUp">Telefon</label>
+        <input id="telefonUp" pInputText class="w-full" formControlName="telefon">
+      </div>
+      <div class="field col-12">
+        <label for="emailUp">Email</label>
+        <input id="emailUp" pInputText class="w-full" formControlName="email">
+      </div>
+      <div class="field col-12">
+        <label for="adresUp">Adres</label>
+        <input id="adresUp" pInputText class="w-full" formControlName="adres">
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateMusteri()" [disabled]="!musteriUpdateForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

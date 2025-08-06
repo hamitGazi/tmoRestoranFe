@@ -1,0 +1,152 @@
+<p-toolbar class="mt-0">
+  <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
+    @if (!selectedKullaniciObject()) {
+      <p-button
+        class="buttonRefresh"
+        icon="pi pi-refresh"
+        (click)="refresh()"
+        [style]="{'background-color': '#4087be'}">
+      </p-button>
+      <p-button
+        class="buttonAdd"
+        icon="pi pi-plus"
+        (click)="showSaveForm()"
+        [style]="{'background-color': '#28a745', 'margin': '2px'}">
+      </p-button>
+    }
+    @if (selectedKullaniciObject()) {
+      <p-button
+        class="buttonEdit"
+        icon="pi pi-pen-to-square"
+        (click)="showUpdateForm()"
+        [style]="{'background-color': '#ff9800'}">
+      </p-button>
+      <p-button
+        class="buttonChangePassword"
+        icon="pi pi-key"
+        (click)="showSifreDegistirForm()"
+        [style]="{'background-color': '#4087be', 'margin': '2px'}">
+      </p-button>
+      <p-button
+        class="buttonDelete"
+        icon="pi pi-trash"
+        (click)="deleteKullaniciConfirm($event)"
+        [style]="{'background-color': '#dc3545', 'margin': '2px'}">
+      </p-button>
+    }
+  </div>
+</p-toolbar>
+
+<p-table
+  [value]="kullaniciDatas()"
+  [(selection)]="selectedKullaniciObject"
+  styleClass="p-datatable-striped">
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th>#</th>
+      <th>Kullanıcı Adı</th>
+      <th>E-posta</th>
+      <th>Rol</th>
+      <th>Oluşturma Tarihi</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-kullanici let-i="rowIndex">
+    <tr>
+      <td><p-tableRadioButton [value]="kullanici"></p-tableRadioButton></td>
+      <td>{{ i + 1 }}</td>
+      <td>{{ kullanici.kullaniciAdi }}</td>
+      <td>{{ kullanici.email }}</td>
+      <!--<td>{{ rolOptions().find(rol => rol.name === kullanici.rol)?.label || kullanici.rol }}</td>
+      <td>{{ kullanici.olusturmaTarih | date:'dd/MM/yyyy' }}</td>-->
+    </tr>
+  </ng-template>
+</p-table>
+
+<form [formGroup]="kullaniciSaveForm">
+  <p-dialog header="Kullanıcı Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="kullaniciAdi" style="font-weight: bold">Kullanıcı Adı</label>
+        <input id="kullaniciAdi" placeholder="Kullanıcı adı giriniz" pInputText class="w-full" formControlName="kullaniciAdi">
+      </div>
+      <div class="field col-12">
+        <label for="email" style="font-weight: bold">E-posta</label>
+        <input id="email" placeholder="E-posta giriniz" pInputText class="w-full" formControlName="email">
+      </div>
+      <div class="field col-12">
+        <label for="sifre" style="font-weight: bold">Şifre</label>
+        <p-password id="sifre" placeholder="Şifre giriniz" formControlName="sifre" class="w-full"></p-password>
+      </div>
+      <div class="field col-12">
+        <label style="font-weight: bold">Rol</label>
+        <p-select
+          id="rol"
+          [options]="rolOptions()"
+          optionLabel="label"
+          optionValue="name"
+          formControlName="rol"
+          class="w-full"
+          placeholder="Rol seçiniz">
+        </p-select>
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSaveForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="saveKullanici()" [disabled]="!kullaniciSaveForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<form [formGroup]="kullaniciUpdateForm">
+  <p-dialog header="Kullanıcı Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="idUp">Kullanıcı ID</label>
+        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
+      </div>
+      <div class="field col-12">
+        <label for="kullaniciAdiUp">Kullanıcı Adı</label>
+        <input id="kullaniciAdiUp" pInputText class="w-full" formControlName="kullaniciAdi">
+      </div>
+      <div class="field col-12">
+        <label for="emailUp">E-posta</label>
+        <input id="emailUp" pInputText class="w-full" formControlName="email">
+      </div>
+      <div class="field col-12">
+        <label >Rol</label>
+        <p-select
+          id="rolUp"
+          [options]="rolOptions()"
+          optionLabel="label"
+          optionValue="name"
+          formControlName="rol"
+          class="w-full"
+          placeholder="Rol seçiniz">
+        </p-select>
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateKullanici()" [disabled]="!kullaniciUpdateForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<form [formGroup]="sifreDegistirForm">
+  <p-dialog header="Şifre Değiştir" [(visible)]="displaySifreDegistirForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="yeniSifre">Yeni Şifre</label>
+        <p-password id="yeniSifre" placeholder="Yeni şifre giriniz" formControlName="yeniSifre" class="w-full"></p-password>
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSifreDegistirForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Değiştir" (click)="degistirSifre()" [disabled]="!sifreDegistirForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

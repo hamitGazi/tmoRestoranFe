@@ -1,0 +1,51 @@
+
+<form [formGroup]="menuItemUpdateForm">
+  <p-dialog header="Menü Ürünü Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="idUp">Ürün ID</label>
+        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
+      </div>
+      <div class="field col-12">
+        <label for="adUp">Ürün Adı</label>
+        <input id="adUp" pInputText class="w-full" formControlName="ad">
+      </div>
+      <div class="field col-12">
+        <label for="aciklamaUp">Açıklama</label>
+        <input id="aciklamaUp" pInputText class="w-full" formControlName="aciklama">
+      </div>
+      <div class="field col-12">
+        <label for="kategoriIdUp">Kategori</label>
+        <p-select
+          id="kategoriIdUp"
+          [options]="menuCategoryOptions()"
+          optionLabel="ad"
+          optionValue="id"
+          formControlName="kategoriId"
+          class="w-full"
+          placeholder="Kategori seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="aktifUp">Aktif</label>
+        <p-checkbox id="aktifUp" [binary]="true" formControlName="aktif"></p-checkbox>
+      </div>
+      <div class="field col-12">
+        <label for="resimYoluUp">Resim Yolu</label>
+        <input id="resimYoluUp" pInputText class="w-full" formControlName="resimYolu">
+      </div>
+      <div class="field col-12">
+        <label for="ekOzelliklerUp">Ek Özellikler</label>
+        <input id="ekOzelliklerUp" pInputText class="w-full" formControlName="ekOzellikler">
+      </div>
+    </div>
+
+<!--    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateMenuItem()" [disabled]="!menuItemUpdateForm.valid"></button>
+    </p-footer>-->
+  </p-dialog>
+</form>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

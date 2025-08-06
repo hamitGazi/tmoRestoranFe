@@ -1,0 +1,119 @@
+<p-toolbar class="mt-0">
+  <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
+    @if (!selectedMenuCategoryObject()) {
+      <p-button
+        class="buttonRefresh"
+        icon="pi pi-refresh"
+        (click)="refresh()"
+        [style]="{'background-color': '#4087be'}">
+      </p-button>
+      <p-button
+        class="buttonAdd"
+        icon="pi pi-plus"
+        (click)="showSaveForm()"
+        [style]="{'background-color': '#28a745', 'margin': '2px'}">
+      </p-button>
+    }
+    @if (selectedMenuCategoryObject()) {
+      <p-button
+        class="buttonEdit"
+        icon="pi pi-pen-to-square"
+        (click)="showUpdateForm()"
+        [style]="{'background-color': '#ff9800'}">
+      </p-button>
+      <p-button
+        class="buttonDelete"
+        icon="pi pi-trash"
+        (click)="deleteMenuCategoryConfirm($event)"
+        [style]="{'background-color': '#dc3545', 'margin': '2px'}">
+      </p-button>
+    }
+  </div>
+</p-toolbar>
+
+<p-table
+  [value]="menuCategoryDatas()"
+  [(selection)]="selectedMenuCategoryObject"
+  styleClass="p-datatable-striped">
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th>#</th>
+      <th>Ad</th>
+      <th>Açıklama</th>
+      <th>Sıra</th>
+      <th>Aktif</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-category let-i="rowIndex">
+    <tr>
+      <td><p-tableRadioButton [value]="category"></p-tableRadioButton></td>
+      <td>{{ i + 1 }}</td>
+      <td>{{ category.ad }}</td>
+      <td>{{ category.aciklama }}</td>
+      <td>{{ category.menuSira }}</td>
+      <td>{{ category.aktif ? 'Evet' : 'Hayır' }}</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<form [formGroup]="menuCategorySaveForm">
+  <p-dialog header="Menü Kategorisi Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="ad" style="font-weight: bold">Kategori Adı</label>
+        <input id="ad" placeholder="Kategori adı giriniz" pInputText class="w-full" formControlName="ad">
+      </div>
+      <div class="field col-12">
+        <label for="aciklama" style="font-weight: bold">Açıklama</label>
+        <input id="aciklama" placeholder="Açıklama giriniz" pInputText class="w-full" formControlName="aciklama">
+      </div>
+      <div class="field col-12">
+        <label for="menuSira" style="font-weight: bold">Sıra</label>
+        <input id="menuSira" type="number" placeholder="Sıra numarası giriniz" pInputText class="w-full" formControlName="menuSira">
+      </div>
+      <div class="field col-12">
+        <label for="aktif" style="font-weight: bold">Aktif</label>
+        <p-checkbox id="aktif" [binary]="true" formControlName="aktif"></p-checkbox>
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSaveForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="saveMenuCategory()" [disabled]="!menuCategorySaveForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<form [formGroup]="menuCategoryUpdateForm">
+  <p-dialog header="Menü Kategorisi Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="idUp">Kategori ID</label>
+        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
+      </div>
+      <div class="field col-12">
+        <label for="adUp">Kategori Adı</label>
+        <input id="adUp" pInputText class="w-full" formControlName="ad">
+      </div>
+      <div class="field col-12">
+        <label for="aciklamaUp">Açıklama</label>
+        <input id="aciklamaUp" pInputText class="w-full" formControlName="aciklama">
+      </div>
+      <div class="field col-12">
+        <label for="menuSiraUp">Sıra</label>
+        <input id="menuSiraUp" type="number" pInputText class="w-full" formControlName="menuSira">
+      </div>
+      <div class="field col-12">
+        <label for="aktifUp">Aktif</label>
+        <p-checkbox id="aktifUp" [binary]="true" formControlName="aktif"></p-checkbox>
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateMenuCategory()" [disabled]="!menuCategoryUpdateForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

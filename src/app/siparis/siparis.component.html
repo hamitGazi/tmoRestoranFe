@@ -1,0 +1,155 @@
+<p-toolbar class="mt-0">
+  <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
+    @if (!selectedSiparisObject()) {
+      <p-button
+        class="buttonRefresh"
+        icon="pi pi-refresh"
+        (click)="refresh()"
+        [style]="{'background-color': '#4087be'}">
+      </p-button>
+      <p-button
+        class="buttonAdd"
+        icon="pi pi-plus"
+        (click)="showSaveForm()"
+        [style]="{'background-color': '#28a745', 'margin': '2px'}">
+      </p-button>
+    }
+    @if (selectedSiparisObject()) {
+      <p-button
+        class="buttonEdit"
+        icon="pi pi-pen-to-square"
+        (click)="showUpdateForm()"
+        [style]="{'background-color': '#ff9800'}">
+      </p-button>
+      <p-button
+        class="buttonDelete"
+        icon="pi pi-trash"
+        (click)="deleteSiparisConfirm($event)"
+        [style]="{'background-color': '#dc3545', 'margin': '2px'}">
+      </p-button>
+    }
+  </div>
+</p-toolbar>
+
+<p-table
+  [value]="siparisDatas()"
+  [(selection)]="selectedSiparisObject"
+  styleClass="p-datatable-striped">
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th>#</th>
+      <th>Masa</th>
+      <th>Müşteri Adı</th>
+      <th>Toplam Tutar</th>
+      <th>Personel</th>
+      <th>Durum</th>
+      <th>Oluşturma Zamanı</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-siparis let-i="rowIndex">
+    <tr>
+      <td><p-tableRadioButton [value]="siparis"></p-tableRadioButton></td>
+      <td>{{ i + 1 }}</td>
+    <!--  <td>{{ masaOptions().find(masa => masa.id === siparis.masaId)?.qrKodUrl || 'Bilinmeyen Masa' }}</td>
+      <td>{{ siparis.musteriAd }}</td>
+      <td>{{ siparis.toplamTutar }}</td>
+      <td>{{ personelOptions().find(personel => personel.id === siparis.personelId)?.ad || 'Bilinmeyen Personel' }}</td>
+      <td>{{ siparisDurumOptions().find(durum => durum.name === siparis.siparisDurumu)?.label || siparis.siparisDurumu }}</td>
+      <td>{{ siparis.olusturmaZamani | date:'dd/MM/yyyy HH:mm' }}</td>-->
+    </tr>
+  </ng-template>
+</p-table>
+
+<form [formGroup]="siparisSaveForm">
+  <p-dialog header="Sipariş Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="masaId" style="font-weight: bold">Masa</label>
+        <p-select
+          id="masaId"
+          [options]="masaOptions()"
+          optionLabel="qrKodUrl"
+          optionValue="id"
+          formControlName="masaId"
+          class="w-full"
+          placeholder="Masa seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="musteriAd" style="font-weight: bold">Müşteri Adı</label>
+        <input id="musteriAd" placeholder="Müşteri adı giriniz" pInputText class="w-full" formControlName="musteriAd">
+      </div>
+      <div class="field col-12">
+        <label for="personelId" style="font-weight: bold">Personel</label>
+        <p-select
+          id="personelId"
+          [options]="personelOptions()"
+          optionLabel="ad"
+          optionValue="id"
+          formControlName="personelId"
+          class="w-full"
+          placeholder="Personel seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="not" style="font-weight: bold">Not</label>
+        <input id="not" placeholder="Not giriniz" pInputText class="w-full" formControlName="not">
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSaveForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="saveSiparis()" [disabled]="!siparisSaveForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<form [formGroup]="siparisUpdateForm">
+  <p-dialog header="Sipariş Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="idUp">Sipariş ID</label>
+        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
+      </div>
+      <div class="field col-12">
+        <label for="musteriAdUp">Müşteri Adı</label>
+        <input id="musteriAdUp" pInputText class="w-full" formControlName="musteriAd">
+      </div>
+      <div class="field col-12">
+        <label for="personelIdUp">Personel</label>
+        <p-select
+          id="personelIdUp"
+          [options]="personelOptions()"
+          optionLabel="ad"
+          optionValue="id"
+          formControlName="personelId"
+          class="w-full"
+          placeholder="Personel seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="siparisDurumuUp">Sipariş Durumu</label>
+        <p-select
+          id="siparisDurumuUp"
+          [options]="siparisDurumOptions()"
+          optionLabel="label"
+          optionValue="name"
+          formControlName="siparisDurumu"
+          class="w-full"
+          placeholder="Durum seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="notUp">Not</label>
+        <input id="notUp" pInputText class="w-full" formControlName="not">
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateSiparis()" [disabled]="!siparisUpdateForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

@@ -1,0 +1,155 @@
+<p-toolbar class="mt-0">
+  <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
+    @if (!selectedStokObject()) {
+      <p-button
+        class="buttonRefresh"
+        icon="pi pi-refresh"
+        (click)="refresh()"
+        [style]="{'background-color': '#4087be'}">
+      </p-button>
+      <p-button
+        class="buttonAdd"
+        icon="pi pi-plus"
+        (click)="showSaveForm()"
+        [style]="{'background-color': '#28a745', 'margin': '2px'}">
+      </p-button>
+    }
+    @if (selectedStokObject()) {
+      <p-button
+        class="buttonEdit"
+        icon="pi pi-pen-to-square"
+        (click)="showUpdateForm()"
+        [style]="{'background-color': '#ff9800'}">
+      </p-button>
+      <p-button
+        class="buttonDelete"
+        icon="pi pi-trash"
+        (click)="deleteStokConfirm($event)"
+        [style]="{'background-color': '#dc3545', 'margin': '2px'}">
+      </p-button>
+    }
+  </div>
+</p-toolbar>
+
+<p-table
+  [value]="stokDatas()"
+  [(selection)]="selectedStokObject"
+  styleClass="p-datatable-striped">
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th>#</th>
+      <th>Malzeme Adı</th>
+      <th>Miktar</th>
+      <th>Birim</th>
+      <th>Menü Öğesi</th>
+      <th>Oluşturma Tarihi</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-stok let-i="rowIndex">
+    <tr>
+      <td><p-tableRadioButton [value]="stok"></p-tableRadioButton></td>
+      <td>{{ i + 1 }}</td>
+      <td>{{ stok.malzemeAdi }}</td>
+      <td>{{ stok.miktar }}</td>
+     <!-- <td>{{ birimOptions().find(birim => birim.name === stok.birim)?.label || stok.birim }}</td>
+      <td>{{ menuItemOptions().find(item => item.id === stok.menuItemId)?.ad || 'Bağımsız' }}</td>
+      <td>{{ stok.olusturmaTarih | date:'dd/MM/yyyy' }}</td>-->
+    </tr>
+  </ng-template>
+</p-table>
+
+<form [formGroup]="stokSaveForm">
+  <p-dialog header="Stok Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="malzemeAdi" style="font-weight: bold">Malzeme Adı</label>
+        <input id="malzemeAdi" placeholder="Malzeme adı giriniz" pInputText class="w-full" formControlName="malzemeAdi">
+      </div>
+      <div class="field col-12">
+        <label for="miktar" style="font-weight: bold">Miktar</label>
+        <input id="miktar" type="number" placeholder="Miktar giriniz" pInputText class="w-full" formControlName="miktar">
+      </div>
+      <div class="field col-12">
+        <label for="birim" style="font-weight: bold">Birim</label>
+        <p-select
+          id="birim"
+          [options]="birimOptions()"
+          optionLabel="label"
+          optionValue="name"
+          formControlName="birim"
+          class="w-full"
+          placeholder="Birim seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="menuItemId" style="font-weight: bold">Menü Öğesi (Opsiyonel)</label>
+        <p-select
+          id="menuItemId"
+          [options]="menuItemOptions()"
+          optionLabel="ad"
+          optionValue="id"
+          formControlName="menuItemId"
+          class="w-full"
+          placeholder="Menü öğesi seçiniz"
+          [showClear]="true">
+        </p-select>
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSaveForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="saveStok()" [disabled]="!stokSaveForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<form [formGroup]="stokUpdateForm">
+  <p-dialog header="Stok Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="idUp">Stok ID</label>
+        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
+      </div>
+      <div class="field col-12">
+        <label for="malzemeAdiUp">Malzeme Adı</label>
+        <input id="malzemeAdiUp" pInputText class="w-full" formControlName="malzemeAdi">
+      </div>
+      <div class="field col-12">
+        <label for="miktarUp">Miktar</label>
+        <input id="miktarUp" type="number" pInputText class="w-full" formControlName="miktar">
+      </div>
+      <div class="field col-12">
+        <label for="birimUp">Birim</label>
+        <p-select
+          id="birimUp"
+          [options]="birimOptions()"
+          optionLabel="label"
+          optionValue="name"
+          formControlName="birim"
+          class="w-full"
+          placeholder="Birim seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="menuItemIdUp">Menü Öğesi (Opsiyonel)</label>
+        <p-select
+          id="menuItemIdUp"
+          [options]="menuItemOptions()"
+          optionLabel="ad"
+          optionValue="id"
+          formControlName="menuItemId"
+          class="w-full"
+          placeholder="Menü öğesi seçiniz"
+          [showClear]="true">
+        </p-select>
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateStok()" [disabled]="!stokUpdateForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

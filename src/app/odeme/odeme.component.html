@@ -1,0 +1,163 @@
+<p-toolbar class="mt-0">
+  <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
+    @if (!selectedOdemeObject()) {
+      <p-button
+        class="buttonRefresh"
+        icon="pi pi-refresh"
+        (click)="refresh()"
+        [style]="{'background-color': '#4087be'}">
+      </p-button>
+      <p-button
+        class="buttonAdd"
+        icon="pi pi-plus"
+        (click)="showSaveForm()"
+        [style]="{'background-color': '#28a745', 'margin': '2px'}">
+      </p-button>
+    }
+    @if (selectedOdemeObject()) {
+      <p-button
+        class="buttonEdit"
+        icon="pi pi-pen-to-square"
+        (click)="showUpdateForm()"
+        [style]="{'background-color': '#ff9800'}">
+      </p-button>
+      <p-button
+        class="buttonDelete"
+        icon="pi pi-trash"
+        (click)="deleteOdemeConfirm($event)"
+        [style]="{'background-color': '#dc3545', 'margin': '2px'}">
+      </p-button>
+    }
+  </div>
+</p-toolbar>
+
+<p-table
+  [value]="odemeDatas()"
+  [(selection)]="selectedOdemeObject"
+  styleClass="p-datatable-striped">
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th>#</th>
+      <th>Sipariş</th>
+      <th>Ödeme Türü</th>
+      <th>Tutar</th>
+      <th>Ödeme Zamanı</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-odeme let-i="rowIndex">
+    <tr>
+      <td><p-tableRadioButton [value]="odeme"></p-tableRadioButton></td>
+      <td>{{ i + 1 }}</td>
+      <!--<td>{{ siparisOptions().find(siparis => siparis.id === odeme.siparisId)?.musteriAd || 'Bilinmeyen Sipariş' }}</td>
+      <td>{{ odemeTurOptions().find(tur => tur.name === odeme.odemeTuru)?.label || odeme.odemeTuru }}</td>
+      <td>{{ odeme.tutar }}</td>
+      <td>{{ odeme.odemeZamani | date:'dd/MM/yyyy HH:mm' }}</td>-->
+    </tr>
+  </ng-template>
+</p-table>
+
+<form [formGroup]="odemeSaveForm">
+  <p-dialog header="Ödeme Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="siparisId" style="font-weight: bold">Sipariş</label>
+        <p-select
+          id="siparisId"
+          [options]="siparisOptions()"
+          optionLabel="musteriAd"
+          optionValue="id"
+          formControlName="siparisId"
+          class="w-full"
+          placeholder="Sipariş seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="odemeTuru" style="font-weight: bold">Ödeme Türü</label>
+        <p-select
+          id="odemeTuru"
+          [options]="odemeTurOptions()"
+          optionLabel="label"
+          optionValue="name"
+          formControlName="odemeTuru"
+          class="w-full"
+          placeholder="Ödeme türü seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="tutar" style="font-weight: bold">Tutar</label>
+        <input id="tutar" type="number" placeholder="Tutar giriniz" pInputText class="w-full" formControlName="tutar">
+      </div>
+      <div class="field col-12">
+        <label  style="font-weight: bold">Ödeme Zamanı</label>
+        <p-calendar
+          id="odemeZamani"
+          formControlName="odemeZamani"
+          dateFormat="dd/mm/yy"
+
+          class="w-full">
+        </p-calendar>
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSaveForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="saveOdeme()" [disabled]="!odemeSaveForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<form [formGroup]="odemeUpdateForm">
+  <p-dialog header="Ödeme Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="idUp">Ödeme ID</label>
+        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
+      </div>
+      <div class="field col-12">
+        <label for="siparisIdUp">Sipariş</label>
+        <p-select
+          id="siparisIdUp"
+          [options]="siparisOptions()"
+          optionLabel="musteriAd"
+          optionValue="id"
+          formControlName="siparisId"
+          class="w-full"
+          placeholder="Sipariş seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="odemeTuruUp">Ödeme Türü</label>
+        <p-select
+          id="odemeTuruUp"
+          [options]="odemeTurOptions()"
+          optionLabel="label"
+          optionValue="name"
+          formControlName="odemeTuru"
+          class="w-full"
+          placeholder="Ödeme türü seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="tutarUp">Tutar</label>
+        <input id="tutarUp" type="number" pInputText class="w-full" formControlName="tutar">
+      </div>
+      <div class="field col-12">
+        <label>Ödeme Zamanı</label>
+        <p-calendar
+          id="odemeZamaniUp"
+          formControlName="odemeZamani"
+          dateFormat="dd/mm/yy"
+
+          class="w-full">
+        </p-calendar>
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateOdeme()" [disabled]="!odemeUpdateForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

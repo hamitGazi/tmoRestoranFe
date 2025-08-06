@@ -1,0 +1,28 @@
+<p-panel header="Yönetim Paneli" styleClass="mb-3">
+  <div class="grid">
+<!--    <div *ngFor="let stat of stats$ " class="col-12 md:col-3">
+      <p-card>
+        <div class="flex align-items-center gap-3">
+          <i class="pi {{ stat.icon }}" [style.color]="stat.color" style="font-size: 2rem;"></i>
+          <div>
+            <div class="text-xl font-bold">{{ stat.value }}</div>
+            <div class="text-sm text-muted">{{ stat.label }}</div>
+          </div>
+        </div>
+      </p-card>
+    </div>-->
+  </div>
+</p-panel>
+
+<div class="grid">
+  <div class="col-12 md:col-6">
+    <p-panel header="Ödeme Yöntemleri">
+      <p-chart type="pie" [data]="odemeChartData()" [responsive]="true"></p-chart>
+    </p-panel>
+  </div>
+  <div class="col-12 md:col-6">
+    <p-panel header="Sipariş Durumları">
+      <p-chart type="doughnut" [data]="siparisChartData()" [responsive]="true"></p-chart>
+    </p-panel>
+  </div>
+</div>

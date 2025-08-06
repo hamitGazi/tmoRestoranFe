@@ -1,0 +1,166 @@
+<p-toolbar class="mt-0">
+  <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
+    @if (!selectedMenuFiyatObject()) {
+      <p-button
+        class="buttonRefresh"
+        icon="pi pi-refresh"
+        (click)="refresh()"
+        [style]="{'background-color': '#4087be'}">
+      </p-button>
+      <p-button
+        class="buttonAdd"
+        icon="pi pi-plus"
+        (click)="showSaveForm()"
+        [style]="{'background-color': '#28a745', 'margin': '2px'}">
+      </p-button>
+    }
+    @if (selectedMenuFiyatObject()) {
+      <p-button
+        class="buttonEdit"
+        icon="pi pi-pen-to-square"
+        (click)="showUpdateForm()"
+        [style]="{'background-color': '#ff9800'}">
+      </p-button>
+      <p-button
+        class="buttonDelete"
+        icon="pi pi-trash"
+        (click)="deleteMenuFiyatConfirm($event)"
+        [style]="{'background-color': '#dc3545', 'margin': '2px'}">
+      </p-button>
+    }
+  </div>
+</p-toolbar>
+
+<p-table
+  [value]="menuFiyatDatas()"
+  [(selection)]="selectedMenuFiyatObject"
+  styleClass="p-datatable-striped">
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th>#</th>
+      <th>Menü Ürünü</th>
+      <th>Fiyat</th>
+      <th>İndirimli Fiyat</th>
+      <th>Geçerlilik Başlangıç</th>
+      <th>Geçerlilik Bitiş</th>
+      <th>Aktif</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-fiyat let-i="rowIndex">
+    <tr>
+      <td><p-tableRadioButton [value]="fiyat"></p-tableRadioButton></td>
+      <td>{{ i + 1 }}</td>
+      <<!--td>{{ menuItemOptions().find(item => item.id === fiyat.menuItemId)?.ad || 'Bilinmeyen Ürün' }}</td>
+      <td>{{ fiyat.fiyat }}</td>
+      <td>{{ fiyat.indirimFiyati || '-' }}</td>
+      <td>{{ fiyat.gecerlilikBaslangic | date:'dd/MM/yyyy' }}</td>
+      <td>{{ fiyat.gecerlilikBitis ? (fiyat.gecerlilikBitis | date:'dd/MM/yyyy') : '-' }}</td>
+      <td>{{ fiyat.aktif ? 'Evet' : 'Hayır' }}</td>-->
+    </tr>
+  </ng-template>
+</p-table>
+
+<form [formGroup]="menuFiyatSaveForm">
+  <p-dialog header="Fiyat Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="menuItemId" style="font-weight: bold">Menü Ürünü</label>
+        <p-select
+          id="menuItemId"
+          [options]="menuItemOptions()"
+          optionLabel="ad"
+          optionValue="id"
+          formControlName="menuItemId"
+          class="w-full"
+          placeholder="Ürün seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="fiyat" style="font-weight: bold">Fiyat</label>
+        <input id="fiyat" type="number" placeholder="Fiyat giriniz" pInputText class="w-full" formControlName="fiyat">
+      </div>
+      <div class="field col-12">
+        <label for="indirimFiyati" style="font-weight: bold">İndirimli Fiyat</label>
+        <input id="indirimFiyati" type="number" placeholder="İndirimli fiyat giriniz" pInputText class="w-full" formControlName="indirimFiyati">
+      </div>
+      <div class="field col-12">
+        <label style="font-weight: bold">Geçerlilik Başlangıç</label>
+        <p-calendar
+          id="gecerlilikBaslangic"
+          formControlName="gecerlilikBaslangic"
+          dateFormat="dd/mm/yy"
+          class="w-full">
+        </p-calendar>
+      </div>
+      <div class="field col-12">
+        <label  style="font-weight: bold">Geçerlilik Bitiş</label>
+        <p-calendar
+          id="gecerlilikBitis"
+          formControlName="gecerlilikBitis"
+          dateFormat="dd/mm/yy"
+
+          class="w-full">
+        </p-calendar>
+      </div>
+      <div class="field col-12">
+        <label for="aktif" style="font-weight: bold">Aktif</label>
+        <p-checkbox id="aktif" [binary]="true" formControlName="aktif"></p-checkbox>
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSaveForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="saveMenuFiyat()" [disabled]="!menuFiyatSaveForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<form [formGroup]="menuFiyatUpdateForm">
+  <p-dialog header="Fiyat Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="idUp">Fiyat ID</label>
+        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
+      </div>
+      <div class="field col-12">
+        <label for="fiyatUp">Fiyat</label>
+        <input id="fiyatUp" type="number" pInputText class="w-full" formControlName="fiyat">
+      </div>
+      <div class="field col-12">
+        <label for="indirimFiyatiUp">İndirimli Fiyat</label>
+        <input id="indirimFiyatiUp" type="number" pInputText class="w-full" formControlName="indirimFiyati">
+      </div>
+      <div class="field col-12">
+        <label >Geçerlilik Başlangıç</label>
+        <p-calendar
+          id="gecerlilikBaslangicUp"
+          formControlName="gecerlilikBaslangic"
+          dateFormat="dd/mm/yy"
+
+          class="w-full">
+        </p-calendar>
+      </div>
+      <div class="field col-12">
+        <label>Geçerlilik Bitiş</label>
+        <p-calendar
+          id="gecerlilikBitisUp"
+          formControlName="gecerlilikBitis"
+          dateFormat="dd/mm/yy"
+
+          class="w-full">
+        </p-calendar>
+      </div>
+      <div class="field col-12">
+        <label for="aktifUp">Aktif</label>
+        <p-checkbox id="aktifUp" [binary]="true" formControlName="aktif"></p-checkbox>
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateMenuFiyat()" [disabled]="!menuFiyatUpdateForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

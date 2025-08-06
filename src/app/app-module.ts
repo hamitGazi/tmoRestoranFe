@@ -7,25 +7,33 @@ import {MenubarComponent} from "./menubar/menubar.component";
 import {provideAnimationsAsync} from "@angular/platform-browser/animations/async";
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
+import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {ConfirmationService, MessageService} from 'primeng/api';
 
 @NgModule({
   declarations: [
-    App
+    App,
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        MenubarComponent
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    NoopAnimationsModule,
+    MenubarComponent,
+  ],
   providers: [
+    provideHttpClient(withInterceptorsFromDi())
+    ,ConfirmationService,
+    MessageService,
     provideBrowserGlobalErrorListeners(), provideAnimationsAsync(),
     providePrimeNG({
       theme: {
         preset: Aura
       }
     })
-
   ],
+
   bootstrap: [App]
 })
 export class AppModule { }

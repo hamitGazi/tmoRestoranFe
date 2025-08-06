@@ -1,0 +1,163 @@
+<p-toolbar class="mt-0">
+  <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
+     @if (!selectedMusteriBildirimObject()) {
+    <p-button
+      class="buttonRefresh"
+      icon="pi pi-refresh"
+      (click)="refresh()"
+      [style]="{'background-color': '#4087be'}">
+    </p-button>
+    <p-button
+      class="buttonAdd"
+      icon="pi pi-plus"
+      (click)="showSaveForm()"
+      [style]="{'background-color': '#28a745', 'margin': '2px'}">
+    </p-button>
+  }
+    @if (selectedMusteriBildirimObject()) {
+      <p-button
+        class="buttonEdit"
+        icon="pi pi-pen-to-square"
+        (click)="showUpdateForm()"
+        [style]="{'background-color': '#ff9800'}">
+      </p-button>
+      <p-button
+        class="buttonDelete"
+        icon="pi pi-trash"
+        (click)="deleteMusteriBildirimConfirm($event)"
+        [style]="{'background-color': '#dc3545', 'margin': '2px'}">
+      </p-button>
+    }
+  </div>
+</p-toolbar>
+
+<p-table
+  [value]="musteriBildirimDatas()"
+  [(selection)]="selectedMusteriBildirimObject"
+  styleClass="p-datatable-striped">
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th>#</th>
+      <th>Müşteri</th>
+      <th>Bildirim Türü</th>
+      <th>Mesaj</th>
+      <th>Bildirim Zamanı</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-bildirim let-i="rowIndex">
+    <tr>
+      <td><p-tableRadioButton [value]="bildirim"></p-tableRadioButton></td>
+      <td>{{ i + 1 }}</td>
+      <<!--td>{{ musteriOptions().find(musteri => musteri.id === bildirim.musteriId)?.ad || 'Bilinmeyen Müşteri' }}</td>
+      <td>{{ bildirimTurOptions().find(tur => tur.name === bildirim.bildirimTuru)?.label || bildirim.bildirimTuru }}</td>
+      <td>{{ bildirim.mesaj }}</td>
+      <td>{{ bildirim.bildirimZamani | date:'dd/MM/yyyy HH:mm' }}</td>-->
+    </tr>
+  </ng-template>
+</p-table>
+
+<form [formGroup]="musteriBildirimSaveForm">
+  <p-dialog header="Bildirim Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="musteriId" style="font-weight: bold">Müşteri</label>
+        <p-select
+          id="musteriId"
+          [options]="musteriOptions()"
+          optionLabel="ad"
+          optionValue="id"
+          formControlName="musteriId"
+          class="w-full"
+          placeholder="Müşteri seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="bildirimTuru" style="font-weight: bold">Bildirim Türü</label>
+        <p-select
+          id="bildirimTuru"
+          [options]="bildirimTurOptions()"
+          optionLabel="label"
+          optionValue="name"
+          formControlName="bildirimTuru"
+          class="w-full"
+          placeholder="Bildirim türü seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="mesaj" style="font-weight: bold">Mesaj</label>
+        <input id="mesaj" placeholder="Mesaj giriniz" pInputText class="w-full" formControlName="mesaj">
+      </div>
+      <div class="field col-12">
+        <label style="font-weight: bold">Bildirim Zamanı</label>
+        <p-calendar
+          id="bildirimZamani"
+          formControlName="bildirimZamani"
+          dateFormat="dd/mm/yy"
+
+          class="w-full">
+        </p-calendar>
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSaveForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="saveMusteriBildirim()" [disabled]="!musteriBildirimSaveForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<form [formGroup]="musteriBildirimUpdateForm">
+  <p-dialog header="Bildirim Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="idUp">Bildirim ID</label>
+        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
+      </div>
+      <div class="field col-12">
+        <label for="musteriIdUp">Müşteri</label>
+        <p-select
+          id="musteriIdUp"
+          [options]="musteriOptions()"
+          optionLabel="ad"
+          optionValue="id"
+          formControlName="musteriId"
+          class="w-full"
+          placeholder="Müşteri seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="bildirimTuruUp">Bildirim Türü</label>
+        <p-select
+          id="bildirimTuruUp"
+          [options]="bildirimTurOptions()"
+          optionLabel="label"
+          optionValue="name"
+          formControlName="bildirimTuru"
+          class="w-full"
+          placeholder="Bildirim türü seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="mesajUp">Mesaj</label>
+        <input id="mesajUp" pInputText class="w-full" formControlName="mesaj">
+      </div>
+      <div class="field col-12">
+        <label >Bildirim Zamanı</label>
+        <p-calendar
+          id="bildirimZamaniUp"
+          formControlName="bildirimZamani"
+          dateFormat="dd/mm/yy"
+
+          class="w-full">
+        </p-calendar>
+      </div>
+    </div>
+    <p-footer>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateMusteriBildirim()" [disabled]="!musteriBildirimUpdateForm.valid"></button>
+    </p-footer>
+  </p-dialog>
+</form>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
