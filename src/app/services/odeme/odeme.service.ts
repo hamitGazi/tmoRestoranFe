@@ -3,34 +3,34 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {EnumRecord, GenericBaseModel} from '../../model/masa/masa.model';
 import {OdemeModel, OdemeSaveModel, OdemeUpdateModel} from '../../model/odeme/odeme.model';
-import {SiparisModel} from '../../model/siparis/siparis.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OdemeService {
-  private apiUrl = 'http://localhost:8080/odeme';
-  private siparisApiUrl = 'http://localhost:8080/siparis';
+  private apiUrl = 'http://localhost:808/odeme';
 
-  constructor(private http: HttpClient) {}
 
-  getAllOdemeler(): Observable<GenericBaseModel<OdemeModel[]>> {
-    return this.http.get<GenericBaseModel<OdemeModel[]>>(this.apiUrl);
+  constructor(private http: HttpClient) {
   }
 
-  getOdemeById(id: number): Observable<GenericBaseModel<OdemeModel>> {
+  getAllOdemeler(): Observable<GenericBaseModel<OdemeModel[]>> {
+    return this.http.get<GenericBaseModel<OdemeModel[]>>(`${this.apiUrl}/all`);
+  }
+
+  getOdemeById(id: any): Observable<GenericBaseModel<OdemeModel>> {
     return this.http.get<GenericBaseModel<OdemeModel>>(`${this.apiUrl}/${id}`);
   }
 
   saveOdeme(data: OdemeSaveModel): Observable<GenericBaseModel<number>> {
-    return this.http.post<GenericBaseModel<number>>(this.apiUrl, data);
+    return this.http.post<GenericBaseModel<number>>(`${this.apiUrl}/save`, data);
   }
 
   updateOdeme(data: OdemeUpdateModel): Observable<GenericBaseModel<number>> {
-    return this.http.put<GenericBaseModel<number>>(this.apiUrl, data);
+    return this.http.put<GenericBaseModel<number>>(`${this.apiUrl}/update`, data);
   }
 
-  deleteOdeme(id: number): Observable<GenericBaseModel<string>> {
+  deleteOdeme(id: any): Observable<GenericBaseModel<string>> {
     return this.http.delete<GenericBaseModel<string>>(`${this.apiUrl}/${id}`);
   }
 
@@ -38,7 +38,7 @@ export class OdemeService {
     return this.http.get<GenericBaseModel<EnumRecord[]>>(`${this.apiUrl}/tur-enum`);
   }
 
-  getAllSiparisler(): Observable<GenericBaseModel<SiparisModel[]>> {
-    return this.http.get<GenericBaseModel<SiparisModel[]>>(this.siparisApiUrl);
-  }
+  /* getAllSiparisler(): Observable<GenericBaseModel<SiparisModel[]>> {
+     return this.http.get<GenericBaseModel<SiparisModel[]>>(this.siparisApiUrl);
+   }*/
 }

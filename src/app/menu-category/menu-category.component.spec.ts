@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { MenuCategoryComponent } from './menu-category.component';
+import {MenuCategoryComponent} from './menu-category.component';
 
 describe('MenuCategoryComponent', () => {
   let component: MenuCategoryComponent;
@@ -10,7 +10,7 @@ describe('MenuCategoryComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [MenuCategoryComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(MenuCategoryComponent);
     component = fixture.componentInstance;

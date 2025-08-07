@@ -10,29 +10,30 @@ import {PersonelModel} from '../../model/personel/personel.model';
   providedIn: 'root'
 })
 export class SiparisService {
-  private apiUrl = 'http://localhost:8080/siparis';
+  private apiUrl = 'http://localhost:8082/siparis';
   private masaApiUrl = 'http://localhost:8080/masalar';
   private personelApiUrl = 'http://localhost:8080/personel';
 
-  constructor(private http: HttpClient) {}
-
-  getAllSiparisler(): Observable<GenericBaseModel<SiparisModel[]>> {
-    return this.http.get<GenericBaseModel<SiparisModel[]>>(this.apiUrl);
+  constructor(private http: HttpClient) {
   }
 
-  getSiparisById(id: number): Observable<GenericBaseModel<SiparisModel>> {
+  getAllSiparisler(): Observable<GenericBaseModel<SiparisModel[]>> {
+    return this.http.get<GenericBaseModel<SiparisModel[]>>(`${this.apiUrl}/all`);
+  }
+
+  getSiparisById(id: any): Observable<GenericBaseModel<SiparisModel>> {
     return this.http.get<GenericBaseModel<SiparisModel>>(`${this.apiUrl}/${id}`);
   }
 
   saveSiparis(data: SiparisSaveModel): Observable<GenericBaseModel<number>> {
-    return this.http.post<GenericBaseModel<number>>(this.apiUrl, data);
+    return this.http.post<GenericBaseModel<number>>(`${this.apiUrl}/save`, data);
   }
 
   updateSiparis(data: SiparisUpdateModel): Observable<GenericBaseModel<number>> {
-    return this.http.put<GenericBaseModel<number>>(this.apiUrl, data);
+    return this.http.put<GenericBaseModel<number>>(`${this.apiUrl}/update`, data);
   }
 
-  deleteSiparis(id: number): Observable<GenericBaseModel<string>> {
+  deleteSiparis(id: any): Observable<GenericBaseModel<string>> {
     return this.http.delete<GenericBaseModel<string>>(`${this.apiUrl}/${id}`);
   }
 
@@ -41,10 +42,10 @@ export class SiparisService {
   }
 
   getAllMasalar(): Observable<GenericBaseModel<MasaModel[]>> {
-    return this.http.get<GenericBaseModel<MasaModel[]>>(this.masaApiUrl);
+    return this.http.get<GenericBaseModel<MasaModel[]>>(`${this.apiUrl}/all`);
   }
 
   getAllPersoneller(): Observable<GenericBaseModel<PersonelModel[]>> {
-    return this.http.get<GenericBaseModel<PersonelModel[]>>(this.personelApiUrl);
+    return this.http.get<GenericBaseModel<PersonelModel[]>>(`${this.apiUrl}/all`);
   }
 }

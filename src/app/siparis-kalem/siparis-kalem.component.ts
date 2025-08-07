@@ -14,6 +14,7 @@ import {Toast} from 'primeng/toast';
 import {ConfirmDialog} from 'primeng/confirmdialog';
 import {InputText} from 'primeng/inputtext';
 import {Tooltip} from 'primeng/tooltip';
+import {MasaModel} from '../model/masa/masa.model';
 
 @Component({
   selector: 'app-siparis-kalem',
@@ -46,6 +47,9 @@ export class SiparisKalemiComponent implements OnInit {
 
   siparisKalemiUpdateForm!: FormGroup;
   displayUpdateForm = signal<boolean>(false);
+  selectedProduct!: MasaModel;
+
+  metaKey: boolean = true;
 
   constructor(
     private siparisKalemiService: SiparisKalemiService,
@@ -80,7 +84,7 @@ export class SiparisKalemiComponent implements OnInit {
   getSiparisOptions() {
     this.siparisKalemiService.getAllSiparisler().subscribe({
       next: (res) => {
-        this.siparisOptions.set(res.data.map(siparis => ({ id: siparis.id, musteriAd: siparis.musteriAd })));
+        this.siparisOptions.set(res.data);
       },
       error: (err) => {
         this.messageService.add({
@@ -95,7 +99,7 @@ export class SiparisKalemiComponent implements OnInit {
   getMenuItemOptions() {
     this.siparisKalemiService.getAllMenuItems().subscribe({
       next: (res) => {
-        this.menuItemOptions.set(res.data.map(item => ({ id: item.id, ad: item.ad })));
+        this.menuItemOptions.set(res.data);
       },
       error: (err) => {
         this.messageService.add({
@@ -113,8 +117,7 @@ export class SiparisKalemiComponent implements OnInit {
   }
 
   showSaveForm() {
-    this.siparisKalemiSaveForm.reset();
-    this.siparisKalemiSaveForm.patchValue({ adet: 1 });
+    this.siparisKalemiSaveForm.reset({adet: 1});
     this.displaySaveForm.set(true);
   }
 
@@ -124,33 +127,42 @@ export class SiparisKalemiComponent implements OnInit {
   }
 
   saveSiparisKalemi() {
-    if (this.siparisKalemiSaveForm.valid) {
-      this.siparisKalemiService.saveSiparisKalemi(this.siparisKalemiSaveForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Sipariş kalemi kaydedildi.'
-          });
-          this.refresh();
-          this.closeSaveForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Sipariş kalemi kaydedilemedi.'
-          });
-        }
-      });
-    }
+
+    this.siparisKalemiService.saveSiparisKalemi(this.siparisKalemiSaveForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Sipariş kalemi kaydedildi.'
+        });
+        this.refresh();
+        this.closeSaveForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Sipariş kalemi kaydedilemedi.'
+        });
+      }
+    });
   }
 
+
   showUpdateForm() {
-    if (this.selectedSiparisKalemiObject()) {
-      this.siparisKalemiUpdateForm.patchValue(this.selectedSiparisKalemiObject()!);
+    this.siparisKalemiUpdateForm.reset({
+      id: this.selectedSiparisKalemiObject()?.id
+    });
+    this.siparisKalemiService.getSiparisKalemiById(this.selectedSiparisKalemiObject()?.id).subscribe(res => {
       this.displayUpdateForm.set(true);
-    }
+      this.siparisKalemiUpdateForm.patchValue({
+        ...res.data,
+        /*  menuItem: res.data.id*/
+
+
+      });
+
+    })
   }
 
   closeUpdateForm() {
@@ -159,30 +171,30 @@ export class SiparisKalemiComponent implements OnInit {
   }
 
   updateSiparisKalemi() {
-    if (this.siparisKalemiUpdateForm.valid) {
-      this.siparisKalemiService.updateSiparisKalemi(this.siparisKalemiUpdateForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Sipariş kalemi güncellendi.'
-          });
-          this.refresh();
-          this.closeUpdateForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Sipariş kalemi güncellenemedi.'
-          });
-        }
-      });
-    }
+
+    this.siparisKalemiService.updateSiparisKalemi(this.siparisKalemiUpdateForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Sipariş kalemi güncellendi.'
+        });
+        this.refresh();
+        this.closeUpdateForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Sipariş kalemi güncellenemedi.'
+        });
+      }
+    });
   }
 
+
   deleteSiparisKalemiConfirm(event: any) {
-    if (!this.selectedSiparisKalemiObject()) return;
+
     this.confirmationService.confirm({
       message: 'Bu sipariş kalemini silmek istediğinize emin misiniz?',
       header: 'Silme Onayı',
@@ -206,24 +218,24 @@ export class SiparisKalemiComponent implements OnInit {
 
   deleteSiparisKalemi() {
     const id = this.selectedSiparisKalemiObject()?.id;
-    if (id) {
-      this.siparisKalemiService.deleteSiparisKalemi(id).subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Sipariş kalemi silindi.'
-          });
-          this.refresh();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Sipariş kalemi silinemedi.'
-          });
-        }
-      });
-    }
+
+    this.siparisKalemiService.deleteSiparisKalemi(id).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Sipariş kalemi silindi.'
+        });
+        this.refresh();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Sipariş kalemi silinemedi.'
+        });
+      }
+    });
   }
+
 }

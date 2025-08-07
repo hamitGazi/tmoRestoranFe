@@ -6,14 +6,13 @@ import {MusteriBildirimService} from '../services/musteri-bildirim/musteri-bildi
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {MusteriBildirimForm} from '../model/musteri-bildirim/musteri-bildirim.form';
 import {Toolbar} from 'primeng/toolbar';
-import {Button, ButtonDirective} from 'primeng/button';
+import {Button} from 'primeng/button';
 import {TableModule} from 'primeng/table';
 import {Dialog} from 'primeng/dialog';
 import {Select} from 'primeng/select';
 import {Toast} from 'primeng/toast';
 import {ConfirmDialog} from 'primeng/confirmdialog';
 import {InputText} from 'primeng/inputtext';
-import {DatePicker} from 'primeng/datepicker';
 import {MusteriBildirimModel} from '../model/musteri-bildirim/musteri-bildirim.model';
 import {MusteriOption} from '../model/rezervasyon/rezervasyon.model';
 
@@ -51,6 +50,7 @@ export class MusteriBildirimComponent implements OnInit {
   selectedProduct!: MasaModel;
 
   metaKey: boolean = true;
+
   constructor(
     private musteriBildirimService: MusteriBildirimService,
     private confirmationService: ConfirmationService,
@@ -136,14 +136,15 @@ export class MusteriBildirimComponent implements OnInit {
 
   showUpdateForm() {
     this.musteriBildirimUpdateForm.reset({
-      id:this.selectedMusteriBildirimObject()?.id
+      id: this.selectedMusteriBildirimObject()?.id
     });
-    this.musteriBildirimService.getMusteriBildirimById(this.selectedMusteriBildirimObject()?.id).subscribe(res=>{
+    this.musteriBildirimService.getMusteriBildirimById(this.selectedMusteriBildirimObject()?.id).subscribe(res => {
       this.displayUpdateForm.set(true);
-      this.musteriBildirimUpdateForm.patchValue( {...res.data});
+      this.musteriBildirimUpdateForm.patchValue({...res.data});
     })
 
   }
+
   closeUpdateForm() {
     this.musteriBildirimUpdateForm.reset();
     this.displayUpdateForm.set(false);
@@ -151,25 +152,25 @@ export class MusteriBildirimComponent implements OnInit {
 
   updateMusteriBildirim() {
 
-      this.musteriBildirimService.updateMusteriBildirim(this.musteriBildirimUpdateForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Bildirim güncellendi.'
-          });
-          this.refresh();
-          this.closeUpdateForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Bildirim güncellenemedi.'
-          });
-        }
-      });
-    }
+    this.musteriBildirimService.updateMusteriBildirim(this.musteriBildirimUpdateForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Bildirim güncellendi.'
+        });
+        this.refresh();
+        this.closeUpdateForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Bildirim güncellenemedi.'
+        });
+      }
+    });
+  }
 
 
   deleteMusteriBildirimConfirm(event: any) {

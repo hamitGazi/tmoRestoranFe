@@ -15,7 +15,8 @@ import {
 export class KullaniciService {
   private apiUrl = 'http://localhost:8080/kullanici';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getAllKullanicilar(): Observable<GenericBaseModel<KullaniciModel[]>> {
     return this.http.get<GenericBaseModel<KullaniciModel[]>>(this.apiUrl);

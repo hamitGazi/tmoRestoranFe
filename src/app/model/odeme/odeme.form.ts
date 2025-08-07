@@ -1,4 +1,4 @@
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 export class OdemeForm {
   static odemeSaveForm(): FormGroup {
@@ -12,7 +12,7 @@ export class OdemeForm {
 
   static odemeUpdateForm(): FormGroup {
     return new FormGroup({
-      id: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      id: new FormControl({value: null, disabled: true}, [Validators.required]),
       siparis: new FormControl(null, [Validators.required]),
       odemeTuru: new FormControl(null, [Validators.required]),
       tutar: new FormControl(null, [Validators.required, Validators.min(0)]),

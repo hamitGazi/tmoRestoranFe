@@ -1,17 +1,18 @@
 import {Component, OnInit, signal} from '@angular/core';
 import {OdemeModel, SiparisOption} from '../model/odeme/odeme.model';
-import {EnumRecord} from '../model/masa/masa.model';
+import {EnumRecord, MasaModel} from '../model/masa/masa.model';
 import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {OdemeService} from '../services/odeme/odeme.service';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {OdemeForm} from '../model/odeme/odeme.form';
 import {Toolbar} from 'primeng/toolbar';
-import {Button, ButtonDirective} from 'primeng/button';
+import {Button} from 'primeng/button';
 import {TableModule} from 'primeng/table';
 import {Dialog} from 'primeng/dialog';
 import {Select} from 'primeng/select';
 import {Toast} from 'primeng/toast';
 import {ConfirmDialog} from 'primeng/confirmdialog';
+import {SiparisService} from '../services/siparis/siparis.service';
 
 @Component({
   selector: 'app-odeme',
@@ -25,7 +26,6 @@ import {ConfirmDialog} from 'primeng/confirmdialog';
     ReactiveFormsModule,
     Dialog,
     Select,
-    ButtonDirective,
     Toast,
     ConfirmDialog
   ],
@@ -42,9 +42,13 @@ export class OdemeComponent implements OnInit {
 
   odemeUpdateForm!: FormGroup;
   displayUpdateForm = signal<boolean>(false);
+  selectedProduct!: MasaModel;
+
+  metaKey: boolean = true;
 
   constructor(
     private odemeService: OdemeService,
+    private siparisService: SiparisService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {
@@ -74,9 +78,9 @@ export class OdemeComponent implements OnInit {
   }
 
   getSiparisOptions() {
-    this.odemeService.getAllSiparisler().subscribe({
+    this.siparisService.getAllSiparisler().subscribe({
       next: (res) => {
-        this.siparisOptions.set(res.data.map(siparis => ({ id: siparis.id, musteriAd: siparis.musteriAd })));
+        this.siparisOptions.set(res.data);
       },
       error: (err) => {
         this.messageService.add({
@@ -110,7 +114,7 @@ export class OdemeComponent implements OnInit {
 
   showSaveForm() {
     this.odemeSaveForm.reset();
-    this.odemeSaveForm.patchValue({ odemeZamani: new Date() });
+    this.odemeSaveForm.patchValue({odemeZamani: new Date()});
     this.displaySaveForm.set(true);
   }
 
@@ -142,12 +146,22 @@ export class OdemeComponent implements OnInit {
     }
   }
 
+
   showUpdateForm() {
-    if (this.selectedOdemeObject()) {
-      this.odemeUpdateForm.patchValue(this.selectedOdemeObject()!);
+    this.odemeUpdateForm.reset({
+      id: this.selectedOdemeObject()?.id
+    });
+    this.odemeService.getOdemeById(this.selectedOdemeObject()?.id).subscribe(res => {
       this.displayUpdateForm.set(true);
-    }
+
+      this.odemeUpdateForm.patchValue({
+        ...res.data,
+
+      });
+
+    })
   }
+
 
   closeUpdateForm() {
     this.odemeUpdateForm.reset();
@@ -155,30 +169,30 @@ export class OdemeComponent implements OnInit {
   }
 
   updateOdeme() {
-    if (this.odemeUpdateForm.valid) {
-      this.odemeService.updateOdeme(this.odemeUpdateForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Ödeme güncellendi.'
-          });
-          this.refresh();
-          this.closeUpdateForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Ödeme güncellenemedi.'
-          });
-        }
-      });
-    }
+
+    this.odemeService.updateOdeme(this.odemeUpdateForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Ödeme güncellendi.'
+        });
+        this.refresh();
+        this.closeUpdateForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Ödeme güncellenemedi.'
+        });
+      }
+    });
   }
 
+
   deleteOdemeConfirm(event: any) {
-    if (!this.selectedOdemeObject()) return;
+
     this.confirmationService.confirm({
       message: 'Bu ödemeyi silmek istediğinize emin misiniz?',
       header: 'Silme Onayı',
@@ -202,24 +216,24 @@ export class OdemeComponent implements OnInit {
 
   deleteOdeme() {
     const id = this.selectedOdemeObject()?.id;
-    if (id) {
-      this.odemeService.deleteOdeme(id).subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Ödeme silindi.'
-          });
-          this.refresh();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Ödeme silinemedi.'
-          });
-        }
-      });
-    }
+
+    this.odemeService.deleteOdeme(id).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Ödeme silindi.'
+        });
+        this.refresh();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Ödeme silinemedi.'
+        });
+      }
+    });
   }
+
 }

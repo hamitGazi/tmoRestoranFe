@@ -94,7 +94,7 @@ export class StokComponent implements OnInit {
   getMenuItemOptions() {
     this.stokService.getAllMenuItems().subscribe({
       next: (res) => {
-        this.menuItemOptions.set(res.data.map(item => ({ id: item.id, ad: item.ad })));
+        this.menuItemOptions.set(res.data.map(item => ({id: item.id, ad: item.ad})));
       },
       error: (err) => {
         this.messageService.add({
@@ -113,7 +113,7 @@ export class StokComponent implements OnInit {
 
   showSaveForm() {
     this.stokSaveForm.reset();
-    this.stokSaveForm.patchValue({ birim: 'ADET' });
+    this.stokSaveForm.patchValue({birim: 'ADET'});
     this.displaySaveForm.set(true);
   }
 

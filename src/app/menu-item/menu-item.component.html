@@ -1,4 +1,3 @@
-
 <p-toolbar class="mt-0">
   <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
 
@@ -74,7 +73,7 @@
       <th>#</th>
       <th>Kategori</th>
       <th>Ürün Adı</th>
-     <th>Resim Yolu</th>
+      <th>Resim Yolu</th>
       <th>Ek Özellikler</th>
       <th>Aktif</th>
       <th>Oluşturma Tarihi</th>
@@ -84,11 +83,11 @@
   <ng-template #body let-i="rowIndex" let-menuItem>
     <tr [pSelectableRow]="menuItem">
       <td>{{ i + 1 }}</td>
-      <td>{{menuItem.kategori?.ad }}</td>
+      <td>{{ menuItem.kategori?.ad }}</td>
       <td>{{ menuItem.ad }}</td>
-      <td>{{menuItem.resimYolu}}</td>
-      <td>{{menuItem.ekOzellikler}}</td>
-      <td>{{menuItem.aktif? 'Evet':'Hayır'}}</td>
+      <td>{{ menuItem.resimYolu }}</td>
+      <td>{{ menuItem.ekOzellikler }}</td>
+      <td>{{ menuItem.aktif ? 'Evet' : 'Hayır' }}</td>
       <td>{{ menuItem.olusturmaTarih }}</td>
       <td>{{ menuItem.aciklama }}</td>
     </tr>
@@ -123,12 +122,13 @@
 
       <div class="field col-12">
         <label for="aciklama">Açıklama</label>
-        <input id="aciklama"  placeholder="Açıklama giriniz" pInputText class="w-full" formControlName="aciklama">
+        <input id="aciklama" placeholder="Açıklama giriniz" pInputText class="w-full" formControlName="aciklama">
       </div>
 
       <div class="field col-12">
         <label for="ekOzellikler">Ek Özellikler</label>
-        <input id="ekOzellikler" pInputText class="w-full" placeholder="Ek özellikler giriniz" formControlName="ekOzellikler">
+        <input id="ekOzellikler" pInputText class="w-full" placeholder="Ek özellikler giriniz"
+               formControlName="ekOzellikler">
       </div>
       <div class="field col-12">
         <p-checkbox inputId="aktif" formControlName="aktif" binary="true" label="Aktif mi?"></p-checkbox>
@@ -138,7 +138,8 @@
 
     <ng-template #footer>
       <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
-      <p-button (click)="saveMenuItem()" [disabled]="!menuItemSaveForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
+      <p-button (click)="saveMenuItem()" [disabled]="!menuItemSaveForm.valid" icon="pi pi-save"
+                label="Kaydet"></p-button>
     </ng-template>
   </p-dialog>
 </form>
@@ -173,12 +174,13 @@
 
       <div class="field col-12">
         <label for="aciklamaUp">Açıklama</label>
-        <input id="aciklamaUp"  placeholder="Açıklama giriniz" pInputText class="w-full" formControlName="aciklama">
+        <input id="aciklamaUp" placeholder="Açıklama giriniz" pInputText class="w-full" formControlName="aciklama">
       </div>
 
       <div class="field col-12">
         <label for="ekOzelliklerUp">Ek Özellikler</label>
-        <input id="ekOzelliklerUp" pInputText class="w-full" placeholder="Ek özellikler giriniz" formControlName="ekOzellikler">
+        <input id="ekOzelliklerUp" pInputText class="w-full" placeholder="Ek özellikler giriniz"
+               formControlName="ekOzellikler">
       </div>
     </div>
 
@@ -188,7 +190,8 @@
 
     <ng-template #footer>
       <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
-      <p-button (click)="updateMenuItem()" [disabled]="!menuItemUpdateForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
+      <p-button (click)="updateMenuItem()" [disabled]="!menuItemUpdateForm.valid" icon="pi pi-save"
+                label="Kaydet"></p-button>
     </ng-template>
   </p-dialog>
 </form>

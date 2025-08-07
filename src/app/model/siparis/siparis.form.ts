@@ -1,5 +1,4 @@
-
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 export class SiparisForm {
   static siparisSaveForm(): FormGroup {
@@ -13,7 +12,7 @@ export class SiparisForm {
 
   static siparisUpdateForm(): FormGroup {
     return new FormGroup({
-      id: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      id: new FormControl({value: null, disabled: true}, [Validators.required]),
       musteriAd: new FormControl('', [Validators.required]),
       personelId: new FormControl(null, [Validators.required]),
       siparisDurumu: new FormControl(null, [Validators.required]),

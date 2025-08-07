@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { SiparisKalemComponent } from './siparis-kalem.component';
+import {SiparisKalemComponent} from './siparis-kalem.component';
 
 describe('SiparisKalemComponent', () => {
   let component: SiparisKalemComponent;
@@ -10,7 +10,7 @@ describe('SiparisKalemComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [SiparisKalemComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(SiparisKalemComponent);
     component = fixture.componentInstance;

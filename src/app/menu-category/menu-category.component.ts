@@ -87,32 +87,33 @@ export class MenuCategoryComponent implements OnInit {
 
   saveMenuCategory() {
 
-      this.menuCategoryService.saveMenuCategory(this.menuCategorySaveForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Menü kategorisi kaydedildi.'
-          });
-          this.refresh();
-          this.closeSaveForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Menü kategorisi kaydedilemedi.'
-          });
-        }
-      });
-    }
+    this.menuCategoryService.saveMenuCategory(this.menuCategorySaveForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Menü kategorisi kaydedildi.'
+        });
+        this.refresh();
+        this.closeSaveForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Menü kategorisi kaydedilemedi.'
+        });
+      }
+    });
+  }
+
   showUpdateForm() {
     this.menuCategoryUpdateForm.reset({
-      id:this.selectedMenuCategoryObject()?.id
+      id: this.selectedMenuCategoryObject()?.id
     });
 
-    this.menuCategoryService.getMenuCategoryById(this.selectedMenuCategoryObject()?.id).subscribe(res=>{
-   this.displayUpdateForm.set(true);
+    this.menuCategoryService.getMenuCategoryById(this.selectedMenuCategoryObject()?.id).subscribe(res => {
+      this.displayUpdateForm.set(true);
       this.menuCategoryUpdateForm.patchValue({
         ...res.data
       })
@@ -129,25 +130,25 @@ export class MenuCategoryComponent implements OnInit {
   }
 
   updateMenuCategory() {
-      this.menuCategoryService.updateMenuCategory(this.selectedMenuCategoryObject()).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Menü kategorisi güncellendi.'
-          });
-          this.refresh();
-          this.closeUpdateForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Menü kategorisi güncellenemedi.'
-          });
-        }
-      });
-    }
+    this.menuCategoryService.updateMenuCategory(this.selectedMenuCategoryObject()).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Menü kategorisi güncellendi.'
+        });
+        this.refresh();
+        this.closeUpdateForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Menü kategorisi güncellenemedi.'
+        });
+      }
+    });
+  }
 
 
   deleteMenuCategoryConfirm(event: any) {

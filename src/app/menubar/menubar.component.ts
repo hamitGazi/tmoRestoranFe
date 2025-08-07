@@ -1,7 +1,7 @@
-import { Component, OnInit, signal } from '@angular/core';
-import { MenuItem } from 'primeng/api';
-import { AuthService } from '../services/masa/AuthService';
-import { MenubarModule } from 'primeng/menubar';
+import {Component, OnInit, signal} from '@angular/core';
+import {MenuItem} from 'primeng/api';
+import {AuthService} from '../services/masa/AuthService';
+import {MenubarModule} from 'primeng/menubar';
 
 @Component({
   selector: 'app-menubar',
@@ -13,7 +13,8 @@ import { MenubarModule } from 'primeng/menubar';
 export class MenubarComponent implements OnInit {
   items = signal<MenuItem[]>([]);
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {
+  }
 
   ngOnInit() {
     const role = this.authService.getUserRole();

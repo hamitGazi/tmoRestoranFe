@@ -50,6 +50,7 @@ export class MenuFiyatComponent implements OnInit {
   selectedProduct!: MasaModel;
 
   metaKey: boolean = true;
+
   constructor(
     private menuFiyatService: MenuFiyatService,
     private menuItemService: MenuItemService,
@@ -114,38 +115,39 @@ export class MenuFiyatComponent implements OnInit {
 
   saveMenuFiyat() {
 
-      this.menuFiyatService.saveMenuFiyat(this.menuFiyatSaveForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Fiyat kaydedildi.'
-          });
-          this.refresh();
-          this.closeSaveForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Fiyat kaydedilemedi.'
-          });
-        }
-      });
-    }
+    this.menuFiyatService.saveMenuFiyat(this.menuFiyatSaveForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Fiyat kaydedildi.'
+        });
+        this.refresh();
+        this.closeSaveForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Fiyat kaydedilemedi.'
+        });
+      }
+    });
+  }
 
 
   showUpdateForm() {
     this.menuFiyatUpdateForm.reset({
       id: this.selectedMenuFiyatObject()?.id
     });
-    this.menuFiyatService.getMenuFiyatById(this.selectedMenuFiyatObject()?.id).subscribe(res=>{
+    this.menuFiyatService.getMenuFiyatById(this.selectedMenuFiyatObject()?.id).subscribe(res => {
       this.displayUpdateForm.set(true);
-      const baslangic= new Date(res.data.gecerlilikBaslangic);
+      const baslangic = new Date(res.data.gecerlilikBaslangic);
 
-      this.menuFiyatUpdateForm.patchValue( {...res.data,
+      this.menuFiyatUpdateForm.patchValue({
+        ...res.data,
         menuItem: res.data.menuItem.id,
-        gecerlilikBaslangic:baslangic,
+        gecerlilikBaslangic: baslangic,
 
       });
 

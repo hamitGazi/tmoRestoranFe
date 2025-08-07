@@ -1,4 +1,4 @@
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 export class SiparisKalemiForm {
   static siparisKalemiSaveForm(): FormGroup {
@@ -13,7 +13,7 @@ export class SiparisKalemiForm {
 
   static siparisKalemiUpdateForm(): FormGroup {
     return new FormGroup({
-      id: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      id: new FormControl({value: null, disabled: true}, [Validators.required]),
       menuItem: new FormControl(null, [Validators.required]),
       adet: new FormControl(null, [Validators.required, Validators.min(1)]),
       birimFiyat: new FormControl(null, [Validators.required, Validators.min(0)]),

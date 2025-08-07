@@ -4,7 +4,7 @@ import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {MasaService} from '../services/masa/masa.service';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {MasaForm} from '../model/masa/masa.form';
-import {Button, ButtonDirective} from 'primeng/button';
+import {Button} from 'primeng/button';
 import {Toolbar} from 'primeng/toolbar';
 import {TableModule} from 'primeng/table';
 import {Dialog} from 'primeng/dialog';
@@ -46,6 +46,7 @@ export class MasaComponent implements OnInit {
   selectedProduct!: MasaModel;
 
   metaKey: boolean = true;
+
   constructor(
     private masaService: MasaService,
     private confirmationService: ConfirmationService,
@@ -56,7 +57,7 @@ export class MasaComponent implements OnInit {
   }
 
   ngOnInit() {
-   this.getAllMasalar();
+    this.getAllMasalar();
     this.getMasaKonumEnum();
     this.getMasaDurumEnum();
   }
@@ -112,9 +113,7 @@ export class MasaComponent implements OnInit {
   }
 
   showSaveForm() {
-    this.masaSaveForm.reset({
-
-    });
+    this.masaSaveForm.reset({});
     this.displaySaveForm.set(true);
   }
 
@@ -124,36 +123,37 @@ export class MasaComponent implements OnInit {
   }
 
   saveMasa() {
-      this.masaService.saveMasa(this.masaSaveForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Masa kaydedildi.'
-          });
-          this.refresh();
-          this.closeSaveForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Masa kaydedilemedi.'
-          });
-        }
-      });
+    this.masaService.saveMasa(this.masaSaveForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Masa kaydedildi.'
+        });
+        this.refresh();
+        this.closeSaveForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Masa kaydedilemedi.'
+        });
+      }
+    });
 
   }
-  showUpdateForm() {
-      this.masaUpdateForm.reset({
-        id:this.selectedMasaObject()?.id
-      });
-      this.masaService.getMasaById(this.selectedMasaObject()?.id).subscribe(res=>{
-        this.displayUpdateForm.set(true);
-        this.masaUpdateForm.patchValue( {...res.data});
-      })
 
-    }
+  showUpdateForm() {
+    this.masaUpdateForm.reset({
+      id: this.selectedMasaObject()?.id
+    });
+    this.masaService.getMasaById(this.selectedMasaObject()?.id).subscribe(res => {
+      this.displayUpdateForm.set(true);
+      this.masaUpdateForm.patchValue({...res.data});
+    })
+
+  }
 
   closeUpdateForm() {
     this.masaUpdateForm.reset();
@@ -161,25 +161,25 @@ export class MasaComponent implements OnInit {
   }
 
   updateMasa() {
-      this.masaService.updateMasa(this.masaUpdateForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Masa güncellendi.'
-          });
-          this.refresh();
-          this.closeUpdateForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Masa güncellenemedi.'
-          });
-        }
-      });
-    }
+    this.masaService.updateMasa(this.masaUpdateForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Masa güncellendi.'
+        });
+        this.refresh();
+        this.closeUpdateForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Masa güncellenemedi.'
+        });
+      }
+    });
+  }
 
 
   deleteMasaConfirm(event: any) {

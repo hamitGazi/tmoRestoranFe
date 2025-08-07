@@ -1,4 +1,3 @@
-
 <p-toolbar class="mt-0">
   <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
 
@@ -79,15 +78,15 @@
       <th>Oluşturma Tarihi</th>
     </tr>
   </ng-template>
-      <ng-template #body let-musteri let-i="rowIndex">
-        <tr [pSelectableRow]="musteri">
+  <ng-template #body let-musteri let-i="rowIndex">
+    <tr [pSelectableRow]="musteri">
       <td>{{ i + 1 }}</td>
       <td>{{ musteri.ad }}</td>
       <td>{{ musteri.soyad }}</td>
       <td>{{ musteri.telefon }}</td>
       <td>{{ musteri.email || '-' }}</td>
       <td>{{ musteri.adres || '-' }}</td>
-      <td>{{ musteri.olusturmaTarih || '-'}}</td>
+      <td>{{ musteri.olusturmaTarih || '-' }}</td>
     </tr>
   </ng-template>
 </p-table>
@@ -105,12 +104,12 @@
       </div>
       <div class="field col-12">
         <label for="telefon" style="font-weight: bold">Telefon</label>
-      <input class="w-full"
-             formControlName="telefon"
-             id="telefon"
-              pInputText
-             placeholder="Telefon giriniz (10 hane)" type="text" maxlength="10" >
-    </div>
+        <input class="w-full"
+               formControlName="telefon"
+               id="telefon"
+               pInputText
+               placeholder="Telefon giriniz (10 hane)" type="text" maxlength="10">
+      </div>
       <div class="field col-12">
         <label for="email" style="font-weight: bold">Email</label>
         <input id="email" placeholder="Email giriniz" pInputText class="w-full" formControlName="email">
@@ -158,7 +157,8 @@
     </div>
     <ng-template #footer>
       <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
-      <p-button (click)="updateMusteri()" [disabled]="!musteriUpdateForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
+      <p-button (click)="updateMusteri()" [disabled]="!musteriUpdateForm.valid" icon="pi pi-save"
+                label="Kaydet"></p-button>
     </ng-template>
   </p-dialog>
 </form>

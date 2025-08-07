@@ -10,10 +10,11 @@ export interface MenuItemModel {
   guncelemeTarih: string;
 }
 
-export interface GenelProsesModel{
+export interface GenelProsesModel {
   id: number;
   ad: string;
 }
+
 export interface MenuItemSaveModel {
   ad: string;
   aciklama: string;

@@ -12,7 +12,7 @@ export class MenuCategoryForm {
 
   static menuCategoryUpdateForm(): FormGroup {
     return new FormGroup({
-      id: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      id: new FormControl({value: null, disabled: true}, [Validators.required]),
       ad: new FormControl('', [Validators.required]),
       aciklama: new FormControl(''),
       menuSira: new FormControl(null, [Validators.required, Validators.min(1)]),

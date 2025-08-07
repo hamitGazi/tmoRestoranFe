@@ -151,7 +151,8 @@
     </div>
     <ng-template #footer>
       <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
-      <p-button (click)="saveMenuFiyat()" [disabled]="!menuFiyatSaveForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
+      <p-button (click)="saveMenuFiyat()" [disabled]="!menuFiyatSaveForm.valid" icon="pi pi-save"
+                label="Kaydet"></p-button>
     </ng-template>
   </p-dialog>
 </form>
@@ -160,18 +161,18 @@
   <p-dialog [(visible)]="displayUpdateForm" [modal]="true" [style]="{width: '400px'}" header="Fiyat Düzenle">
     <div class="formgrid grid">
 
-        <div class="field col-12">
-          <label for="menuItemd" style="font-weight: bold">Menü Ürünü</label>
-          <p-select
-            [options]="menuItemOptions()"
-            class="w-full"
-            formControlName="menuItem"
-            id="menuItemd"
-            optionLabel="ad"
-            optionValue="id"
-            placeholder="Ürün seçiniz">
-          </p-select>
-        </div>
+      <div class="field col-12">
+        <label for="menuItemd" style="font-weight: bold">Menü Ürünü</label>
+        <p-select
+          [options]="menuItemOptions()"
+          class="w-full"
+          formControlName="menuItem"
+          id="menuItemd"
+          optionLabel="ad"
+          optionValue="id"
+          placeholder="Ürün seçiniz">
+        </p-select>
+      </div>
       <div class="field col-6">
         <label for="fiyatUp">Fiyat</label>
         <input class="w-full" formControlName="fiyat" id="fiyatUp" pInputText type="number">

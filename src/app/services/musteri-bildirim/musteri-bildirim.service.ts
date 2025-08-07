@@ -15,7 +15,8 @@ import {
 export class MusteriBildirimService {
   private apiUrl = 'http://localhost:8082/musteri-bildirim';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getAllMusteriBildirimler(): Observable<GenericBaseModel<MusteriBildirimModel[]>> {
     return this.http.get<GenericBaseModel<MusteriBildirimModel[]>>(`${this.apiUrl}/all`);

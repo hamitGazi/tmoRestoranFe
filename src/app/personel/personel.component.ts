@@ -1,6 +1,6 @@
 import {Component, OnInit, signal} from '@angular/core';
 import {PersonelModel} from '../model/personel/personel.model';
-import {EnumRecord} from '../model/masa/masa.model';
+import {EnumRecord, MasaModel} from '../model/masa/masa.model';
 import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {PersonelService} from '../services/personel/personel.service';
 import {ConfirmationService, MessageService} from 'primeng/api';
@@ -12,6 +12,7 @@ import {Dialog} from 'primeng/dialog';
 import {Select} from 'primeng/select';
 import {Toast} from 'primeng/toast';
 import {ConfirmDialog} from 'primeng/confirmdialog';
+import {InputText} from 'primeng/inputtext';
 
 @Component({
   selector: 'app-personel',
@@ -26,7 +27,8 @@ import {ConfirmDialog} from 'primeng/confirmdialog';
     Dialog,
     Select,
     Toast,
-    ConfirmDialog
+    ConfirmDialog,
+    InputText
   ],
   styleUrl: './personel.component.css'
 })
@@ -41,6 +43,9 @@ export class PersonelComponent implements OnInit {
 
   personelUpdateForm!: FormGroup;
   displayUpdateForm = signal<boolean>(false);
+  selectedProduct!: MasaModel;
+
+  metaKey: boolean = true;
 
   constructor(
     private personelService: PersonelService,
@@ -102,33 +107,44 @@ export class PersonelComponent implements OnInit {
   }
 
   savePersonel() {
-    if (this.personelSaveForm.valid) {
-      this.personelService.savePersonel(this.personelSaveForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Personel kaydedildi.'
-          });
-          this.refresh();
-          this.closeSaveForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Personel kaydedilemedi.'
-          });
-        }
-      });
-    }
+
+    this.personelService.savePersonel(this.personelSaveForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Personel kaydedildi.'
+        });
+        this.refresh();
+        this.closeSaveForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Personel kaydedilemedi.'
+        });
+      }
+    });
   }
 
+
   showUpdateForm() {
-    if (this.selectedPersonelObject()) {
-      this.personelUpdateForm.patchValue(this.selectedPersonelObject()!);
+    this.personelUpdateForm.reset({
+      id: this.selectedPersonelObject()?.id
+    });
+    this.personelService.getPersonelById(this.selectedPersonelObject()?.id).subscribe(res => {
       this.displayUpdateForm.set(true);
-    }
+
+
+      this.personelUpdateForm.patchValue({
+        ...res.data,
+        /*  menuItem: res.data.id*/
+
+
+      });
+
+    })
   }
 
   closeUpdateForm() {
@@ -137,30 +153,30 @@ export class PersonelComponent implements OnInit {
   }
 
   updatePersonel() {
-    if (this.personelUpdateForm.valid) {
-      this.personelService.updatePersonel(this.personelUpdateForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Personel güncellendi.'
-          });
-          this.refresh();
-          this.closeUpdateForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Personel güncellenemedi.'
-          });
-        }
-      });
-    }
+
+    this.personelService.updatePersonel(this.personelUpdateForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Personel güncellendi.'
+        });
+        this.refresh();
+        this.closeUpdateForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Personel güncellenemedi.'
+        });
+      }
+    });
   }
 
+
   deletePersonelConfirm(event: any) {
-    if (!this.selectedPersonelObject()) return;
+
     this.confirmationService.confirm({
       message: 'Bu personeli silmek istediğinize emin misiniz?',
       header: 'Silme Onayı',
@@ -184,24 +200,24 @@ export class PersonelComponent implements OnInit {
 
   deletePersonel() {
     const id = this.selectedPersonelObject()?.id;
-    if (id) {
-      this.personelService.deletePersonel(id).subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Personel silindi.'
-          });
-          this.refresh();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Personel silinemedi.'
-          });
-        }
-      });
-    }
+
+    this.personelService.deletePersonel(id).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Personel silindi.'
+        });
+        this.refresh();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Personel silinemedi.'
+        });
+      }
+    });
   }
+
 }

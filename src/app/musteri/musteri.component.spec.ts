@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { MusteriComponent } from './musteri.component';
+import {MusteriComponent} from './musteri.component';
 
 describe('MusteriComponent', () => {
   let component: MusteriComponent;
@@ -10,7 +10,7 @@ describe('MusteriComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [MusteriComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(MusteriComponent);
     component = fixture.componentInstance;

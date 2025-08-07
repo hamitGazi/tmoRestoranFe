@@ -1,43 +1,74 @@
 <p-toolbar class="mt-0">
   <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
-    @if (!selectedRezervasyonObject()) {
-      <p-button
-        class="buttonRefresh"
-        icon="pi pi-refresh"
-        (click)="refresh()"
-        [style]="{'background-color': '#4087be'}">
-      </p-button>
-      <p-button
-        class="buttonAdd"
-        icon="pi pi-plus"
-        (click)="showSaveForm()"
-        [style]="{'background-color': '#28a745', 'margin': '2px'}">
-      </p-button>
-    }
+
+    <p-button
+      (click)="refresh()"
+      [style]="{
+        'background-color': '#4087be',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonRefresh"
+      icon="pi pi-refresh"
+      label="Yenile">
+    </p-button>
+
+    <p-button
+      (click)="showSaveForm()"
+      [style]="{
+        'background-color': '#28a745',
+        'margin': '2px',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonAdd"
+      icon="pi pi-plus"
+      label="Ekle">
+    </p-button>
+
     @if (selectedRezervasyonObject()) {
       <p-button
+        label="Güncele"
         class="buttonEdit"
         icon="pi pi-pen-to-square"
         (click)="showUpdateForm()"
-        [style]="{'background-color': '#ff9800'}">
+        [style]="{
+          'background-color': '#ff9800',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
       </p-button>
+
       <p-button
+        label="Sil"
         class="buttonDelete"
         icon="pi pi-trash"
         (click)="deleteRezervasyonConfirm($event)"
-        [style]="{'background-color': '#dc3545', 'margin': '2px'}">
+        [style]="{
+          'background-color': '#dc3545',
+          'margin': '2px',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
       </p-button>
     }
   </div>
 </p-toolbar>
 
 <p-table
-  [value]="rezervasyonDatas()"
   [(selection)]="selectedRezervasyonObject"
-  styleClass="p-datatable-striped">
-  <ng-template pTemplate="header">
+  [metaKeySelection]="metaKey"
+  [tableStyle]="{'min-width': '50rem'}"
+  [value]="rezervasyonDatas()"
+  dataKey="id"
+  selectionMode="single"
+  stripedRows>
+  <ng-template #header>
     <tr>
-      <th></th>
       <th>#</th>
       <th>Müşteri</th>
       <th>Masa</th>
@@ -47,143 +78,148 @@
       <th>Oluşturma Tarihi</th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-rezervasyon let-i="rowIndex">
-    <tr>
-      <td><p-tableRadioButton [value]="rezervasyon"></p-tableRadioButton></td>
+  <ng-template #body let-i="rowIndex" let-rezervasyon>
+    <tr [pSelectableRow]="rezervasyon">
       <td>{{ i + 1 }}</td>
-      <!--<td>{{ musteriOptions().find(musteri => musteri.id === rezervasyon.musteriId)?.ad || 'Bilinmeyen Müşteri' }}</td>
-      <td>{{ masaOptions().find(masa => masa.id === rezervasyon.masaId)?.qrKodUrl || 'Bilinmeyen Masa' }}</td>
-      <td>{{ rezervasyon.rezervasyonZamani | date:'dd/MM/yyyy HH:mm' }}</td>
+      <
+      <td>{{ rezervasyon.musteriId?.ad || 'Bilinmeyen Müşteri' }}</td>
+      <td>{{ rezervasyon.masaId?.qrKodUrl || 'Bilinmeyen Masa' }}</td>
+      <td>{{ rezervasyon.rezervasyonZamani }}</td>
       <td>{{ rezervasyon.kisiSayisi }}</td>
-      <td>{{ durumOptions().find(durum => durum.name === rezervasyon.durum)?.label || rezervasyon.durum }}</td>
-      <td>{{ rezervasyon.olusturmaTarih | date:'dd/MM/yyyy' }}</td>-->
+      <td>{{ rezervasyon.durum?.label || rezervasyon.durum }}</td>
+      <td>{{ rezervasyon.olusturmaTarih }}</td>
     </tr>
   </ng-template>
 </p-table>
 
 <form [formGroup]="rezervasyonSaveForm">
-  <p-dialog header="Rezervasyon Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
+  <p-dialog [(visible)]="displaySaveForm" [modal]="true" [style]="{width: '400px'}" header="Rezervasyon Ekle">
     <div class="formgrid grid">
       <div class="field col-12">
         <label for="musteriId" style="font-weight: bold">Müşteri</label>
         <p-select
-          id="musteriId"
           [options]="musteriOptions()"
+          class="w-full"
+          formControlName="musteriId"
+          id="musteriId"
           optionLabel="ad"
           optionValue="id"
-          formControlName="musteriId"
-          class="w-full"
           placeholder="Müşteri seçiniz">
         </p-select>
       </div>
       <div class="field col-12">
         <label for="masaId" style="font-weight: bold">Masa</label>
         <p-select
-          id="masaId"
           [options]="masaOptions()"
+          class="w-full"
+          formControlName="masaId"
+          id="masaId"
           optionLabel="qrKodUrl"
           optionValue="id"
-          formControlName="masaId"
-          class="w-full"
           placeholder="Masa seçiniz">
         </p-select>
       </div>
       <div class="field col-12">
-        <label  style="font-weight: bold">Rezervasyon Zamanı</label>
-        <p-calendar
-          id="rezervasyonZamani"
+        <label style="font-weight: bold">Rezervasyon Zamanı</label>
+        <p-date-picker
+          [showButtonBar]="true"
+          [style]="{width:'100%'}"
+          appendTo="body"
+          dateFormat="dd.mm.yy"
           formControlName="rezervasyonZamani"
-          dateFormat="dd/mm/yy"
-
-          class="w-full">
-        </p-calendar>
+        ></p-date-picker>
       </div>
       <div class="field col-12">
         <label for="kisiSayisi" style="font-weight: bold">Kişi Sayısı</label>
-        <input id="kisiSayisi" type="number" placeholder="Kişi sayısı giriniz" pInputText class="w-full" formControlName="kisiSayisi">
+        <input class="w-full" formControlName="kisiSayisi"
+               id="kisiSayisi" min="0"
+               pInputText
+               placeholder="Kişi sayısı giriniz" type="number">
       </div>
       <div class="field col-12">
         <label for="durum" style="font-weight: bold">Durum</label>
         <p-select
-          id="durum"
           [options]="durumOptions()"
+          class="w-full"
+          formControlName="durum"
+          id="durum"
           optionLabel="label"
           optionValue="name"
-          formControlName="durum"
-          class="w-full"
           placeholder="Durum seçiniz">
         </p-select>
       </div>
     </div>
-    <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSaveForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="saveRezervasyon()" [disabled]="!rezervasyonSaveForm.valid"></button>
-    </p-footer>
+    <ng-template #footer>
+      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="saveRezervasyon()" [disabled]="!rezervasyonSaveForm.valid" icon="pi pi-save"
+                label="Kaydet"></p-button>
+    </ng-template>
   </p-dialog>
 </form>
 
 <form [formGroup]="rezervasyonUpdateForm">
-  <p-dialog header="Rezervasyon Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
+  <p-dialog [(visible)]="displayUpdateForm" [modal]="true" [style]="{width: '400px'}" header="Rezervasyon Düzenle">
     <div class="formgrid grid">
       <div class="field col-12">
-        <label for="idUp">Rezervasyon ID</label>
-        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
-      </div>
-      <div class="field col-12">
-        <label for="musteriIdUp">Müşteri</label>
+        <label for="musteriI" style="font-weight: bold">Müşteri</label>
         <p-select
-          id="musteriIdUp"
           [options]="musteriOptions()"
+          class="w-full"
+          formControlName="musteriId"
+          id="musteriI"
           optionLabel="ad"
           optionValue="id"
-          formControlName="musteriId"
-          class="w-full"
           placeholder="Müşteri seçiniz">
         </p-select>
       </div>
       <div class="field col-12">
-        <label for="masaIdUp">Masa</label>
+        <label for="masaI" style="font-weight: bold">Masa</label>
         <p-select
-          id="masaIdUp"
           [options]="masaOptions()"
+          class="w-full"
+          formControlName="masaId"
+          id="masaI"
           optionLabel="qrKodUrl"
           optionValue="id"
-          formControlName="masaId"
-          class="w-full"
           placeholder="Masa seçiniz">
         </p-select>
       </div>
       <div class="field col-12">
-        <label for=>Rezervasyon Zamanı</label>
-        <p-calendar
-          id="rezervasyonZamaniUp"
+        <label style="font-weight: bold">Rezervasyon Zamanı</label>
+        <p-date-picker
+          [showButtonBar]="true"
+          [style]="{width:'100%'}"
+          appendTo="body"
+          dateFormat="dd.mm.yy"
           formControlName="rezervasyonZamani"
-          dateFormat="dd/mm/yy"
-
-          class="w-full">
-        </p-calendar>
+        ></p-date-picker>
       </div>
       <div class="field col-12">
-        <label for="kisiSayisiUp">Kişi Sayısı</label>
-        <input id="kisiSayisiUp" type="number" pInputText class="w-full" formControlName="kisiSayisi">
+        <label for="kisiSayis" style="font-weight: bold">Kişi Sayısı</label>
+        <input class="w-full" formControlName="kisiSayisi"
+               id="kisiSayis" min="0"
+               pInputText
+               placeholder="Kişi sayısı giriniz" type="number">
       </div>
       <div class="field col-12">
-        <label for="durumUp">Durum</label>
+        <label for="durumup" style="font-weight: bold">Durum</label>
         <p-select
-          id="durumUp"
           [options]="durumOptions()"
+          class="w-full"
+          formControlName="durum"
+          id="durumup"
           optionLabel="label"
           optionValue="name"
-          formControlName="durum"
-          class="w-full"
           placeholder="Durum seçiniz">
         </p-select>
       </div>
     </div>
-    <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateRezervasyon()" [disabled]="!rezervasyonUpdateForm.valid"></button>
-    </p-footer>
+
+    <ng-template #footer>
+      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="updateRezervasyon()" [disabled]="!rezervasyonUpdateForm.valid" icon="pi pi-save"
+                label="Kaydet"></p-button>
+    </ng-template>
   </p-dialog>
 </form>
 

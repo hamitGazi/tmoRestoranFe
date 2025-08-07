@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { MenuFiyatComponent } from './menu-fiyat.component';
+import {MenuFiyatComponent} from './menu-fiyat.component';
 
 describe('MenuFiyatComponent', () => {
   let component: MenuFiyatComponent;
@@ -10,7 +10,7 @@ describe('MenuFiyatComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [MenuFiyatComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(MenuFiyatComponent);
     component = fixture.componentInstance;

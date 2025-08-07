@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 import {GenericBaseModel} from '../../model/masa/masa.model';
 import {DashboardOzetModel, SiparisDurumGrafikModel} from '../../model/dashbord/dashbord.model';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 /*
 export class DashboardService {
   private apiUrl = 'http://localhost:8080/dashboard';

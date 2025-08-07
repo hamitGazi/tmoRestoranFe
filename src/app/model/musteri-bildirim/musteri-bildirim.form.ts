@@ -1,4 +1,4 @@
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 export class MusteriBildirimForm {
   static musteriBildirimSaveForm(): FormGroup {
@@ -8,7 +8,6 @@ export class MusteriBildirimForm {
       puan: new FormControl(null, [Validators.required]),
       yorum: new FormControl(null),
       siparis: new FormControl(null),
-
 
 
     });

@@ -18,33 +18,34 @@ export class SiparisKalemiService {
   private siparisApiUrl = 'http://localhost:8080/siparis';
   private menuItemApiUrl = 'http://localhost:8080/menu-item';
 
-  constructor(private http: HttpClient) {}
-
-  getAllSiparisKalemleri(): Observable<GenericBaseModel<SiparisKalemiModel[]>> {
-    return this.http.get<GenericBaseModel<SiparisKalemiModel[]>>(this.apiUrl);
+  constructor(private http: HttpClient) {
   }
 
-  getSiparisKalemiById(id: number): Observable<GenericBaseModel<SiparisKalemiModel>> {
+  getAllSiparisKalemleri(): Observable<GenericBaseModel<SiparisKalemiModel[]>> {
+    return this.http.get<GenericBaseModel<SiparisKalemiModel[]>>(`${this.apiUrl}/all`);
+  }
+
+  getSiparisKalemiById(id: any): Observable<GenericBaseModel<SiparisKalemiModel>> {
     return this.http.get<GenericBaseModel<SiparisKalemiModel>>(`${this.apiUrl}/${id}`);
   }
 
   saveSiparisKalemi(data: SiparisKalemiSaveModel): Observable<GenericBaseModel<number>> {
-    return this.http.post<GenericBaseModel<number>>(this.apiUrl, data);
+    return this.http.post<GenericBaseModel<number>>(`${this.apiUrl}/save`, data);
   }
 
   updateSiparisKalemi(data: SiparisKalemiUpdateModel): Observable<GenericBaseModel<number>> {
-    return this.http.put<GenericBaseModel<number>>(this.apiUrl, data);
+    return this.http.put<GenericBaseModel<number>>(`${this.apiUrl}/update`, data);
   }
 
-  deleteSiparisKalemi(id: number): Observable<GenericBaseModel<string>> {
+  deleteSiparisKalemi(id: any): Observable<GenericBaseModel<string>> {
     return this.http.delete<GenericBaseModel<string>>(`${this.apiUrl}/${id}`);
   }
 
   getAllSiparisler(): Observable<GenericBaseModel<SiparisModel[]>> {
-    return this.http.get<GenericBaseModel<SiparisModel[]>>(this.siparisApiUrl);
+    return this.http.get<GenericBaseModel<SiparisModel[]>>(`${this.apiUrl}/all`);
   }
 
   getAllMenuItems(): Observable<GenericBaseModel<MenuItemModel[]>> {
-    return this.http.get<GenericBaseModel<MenuItemModel[]>>(this.menuItemApiUrl);
+    return this.http.get<GenericBaseModel<MenuItemModel[]>>(`${this.apiUrl}/all`);
   }
 }

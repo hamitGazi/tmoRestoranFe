@@ -100,45 +100,49 @@ export class MenuItemComponent implements OnInit {
     this.getAllMenuItems();
     this.selectedMenuItemObject.set(null);
   }
+
   showSaveForm() {
-    this.menuItemSaveForm.reset({ aktif: true });
+    this.menuItemSaveForm.reset({aktif: true});
     this.displaySaveForm.set(true);
   }
+
   closeSaveForm() {
     this.menuItemSaveForm.reset();
     this.displaySaveForm.set(false);
   }
 
   saveMenuItem() {
-      this.menuItemService.saveMenuItem(this.menuItemSaveForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Menü ürünü kaydedildi.'
-          });
-          this.refresh();
-          this.closeSaveForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Menü ürünü kaydedilemedi.'
-          });
-        }
-      });
-    }
+    this.menuItemService.saveMenuItem(this.menuItemSaveForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Menü ürünü kaydedildi.'
+        });
+        this.refresh();
+        this.closeSaveForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Menü ürünü kaydedilemedi.'
+        });
+      }
+    });
+  }
 
   showUpdateForm() {
-    console.log("deeeeeeeeeeeeee",this.selectedMenuItemObject()?.kategori);
+    console.log("deeeeeeeeeeeeee", this.selectedMenuItemObject()?.kategori);
     this.menuItemUpdateForm.reset({
-      id:this.selectedMenuItemObject()?.id,
+      id: this.selectedMenuItemObject()?.id,
     });
-    this.menuItemService.getMenuItemById(this.selectedMenuItemObject()?.id).subscribe(res=>{
+    this.menuItemService.getMenuItemById(this.selectedMenuItemObject()?.id).subscribe(res => {
       this.displayUpdateForm.set(true);
-      this.menuItemUpdateForm.patchValue( {...res.data,
-        kategoriId:res.data.kategori.id  });
+      this.menuItemUpdateForm.patchValue({
+        ...res.data,
+        kategoriId: res.data.kategori.id
+      });
     })
   }
 
@@ -149,25 +153,25 @@ export class MenuItemComponent implements OnInit {
   }
 
   updateMenuItem() {
-      this.menuItemService.updateMenuItem(this.menuItemUpdateForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Menü ürünü güncellendi.'
-          });
-          this.refresh();
-          this.closeUpdateForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Menü ürünü güncellenemedi.'
-          });
-        }
-      });
-    }
+    this.menuItemService.updateMenuItem(this.menuItemUpdateForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Menü ürünü güncellendi.'
+        });
+        this.refresh();
+        this.closeUpdateForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Menü ürünü güncellenemedi.'
+        });
+      }
+    });
+  }
 
 
   deleteMenuItemConfirm(event: any) {

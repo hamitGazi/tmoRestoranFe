@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {EnumRecord, GenericBaseModel, MasaModel, MasaSaveModel, MasaUpdateModel} from '../../model/masa/masa.model';
+import {EnumRecord, GenericBaseModel, MasaModel} from '../../model/masa/masa.model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,8 @@ import {EnumRecord, GenericBaseModel, MasaModel, MasaSaveModel, MasaUpdateModel}
 export class MasaService {
   private apiUrl = 'http://localhost:8082/masalar';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getAllMasalar(): Observable<GenericBaseModel<MasaModel[]>> {
     return this.http.get<GenericBaseModel<MasaModel[]>>(`${this.apiUrl}/all`);

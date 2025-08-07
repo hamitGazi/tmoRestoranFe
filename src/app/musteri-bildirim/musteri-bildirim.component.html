@@ -1,5 +1,3 @@
-
-
 <p-toolbar class="mt-0">
   <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
 
@@ -30,34 +28,34 @@
       label="Ekle">
     </p-button>
 
-    @if (selectedMusteriBildirimObject()) {
-      <p-button
-        label="Güncele"
-        class="buttonEdit"
-        icon="pi pi-pen-to-square"
-        (click)="showUpdateForm()"
-        [style]="{
+    <!--@if (selectedMusteriBildirimObject()) {-->
+    <p-button
+      label="Güncele"
+      class="buttonEdit"
+      icon="pi pi-pen-to-square"
+      (click)="showUpdateForm()"
+      [style]="{
           'background-color': '#ff9800',
           'border': 'none',
           'box-shadow': 'none',
           'outline': 'none'
         }">
-      </p-button>
+    </p-button>
 
-      <p-button
-        label="Sil"
-        class="buttonDelete"
-        icon="pi pi-trash"
-        (click)="deleteMusteriBildirimConfirm($event)"
-        [style]="{
+    <p-button
+      label="Sil"
+      class="buttonDelete"
+      icon="pi pi-trash"
+      (click)="deleteMusteriBildirimConfirm($event)"
+      [style]="{
           'background-color': '#dc3545',
           'margin': '2px',
           'border': 'none',
           'box-shadow': 'none',
           'outline': 'none'
         }">
-      </p-button>
-    }
+    </p-button>
+    <!-- }-->
   </div>
 </p-toolbar>
 
@@ -80,17 +78,19 @@
       <th>Bildirim Zamanı</th>
     </tr>
   </ng-template>
-    <ng-template #body let-bildirim let-i="rowIndex">
-      <tr [pSelectableRow]="bildirim">
-      <td><p-tableRadioButton [value]="bildirim"></p-tableRadioButton></td>
+  <ng-template #body let-bildirim let-i="rowIndex">
+    <tr [pSelectableRow]="bildirim">
+      <td>
+        <p-tableRadioButton [value]="bildirim"></p-tableRadioButton>
+      </td>
       <td>{{ i + 1 }}</td>
-      <td>{{ bildirim.musteriAd|| 'Bilinmeyen Müşteri' }}</td>
-        <td>{{bildirim?.siparis?.ad||'-'}}</td>
-      <td>{{  bildirim.geriBildirimTur?.label || bildirim.geriBildirimTur }}</td>
-        <td>{{bildirim.puan}}</td>
-        <td>{{bildirim.yorum}}</td>
+      <td>{{ bildirim.musteriAd || 'Bilinmeyen Müşteri' }}</td>
+      <td>{{ bildirim?.siparis?.ad || '-' }}</td>
+      <td>{{ bildirim.geriBildirimTur?.label || bildirim.geriBildirimTur }}</td>
+      <td>{{ bildirim.puan }}</td>
+      <td>{{ bildirim.yorum }}</td>
       <td>{{ bildirim.olusturmaTarih || '-' }}</td>
-        <td>{{ bildirim.guncelleTarih || '-' }}</td>
+      <td>{{ bildirim.guncelleTarih || '-' }}</td>
     </tr>
   </ng-template>
 </p-table>
@@ -116,7 +116,8 @@
       </div>
       <div class="field col-12">
         <label for="siparis" style="font-weight: bold">Siparis</label>
-        <input id="siparis" placeholder="Siparisiniz giriniz" pInputText class="w-full" formControlName="siparis" upperCase="">
+        <input id="siparis" placeholder="Siparisiniz giriniz" pInputText class="w-full" formControlName="siparis"
+               upperCase="">
       </div>
       <div class="field col-12">
         <label for="puan" style="font-weight: bold">Puan</label>
@@ -124,7 +125,7 @@
                formControlName="puan"
                id="puan"
                pInputText
-               placeholder="Puan  giriniz (1-5 )" type="number" min="1" max="5" >
+               placeholder="Puan  giriniz (1-5 )" type="number" min="1" max="5">
       </div>
 
       <div class="field col-12">
@@ -135,7 +136,8 @@
 
     <ng-template #footer>
       <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
-      <p-button (click)="saveMusteriBildirim()" [disabled]="!musteriBildirimSaveForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
+      <p-button (click)="saveMusteriBildirim()" [disabled]="!musteriBildirimSaveForm.valid" icon="pi pi-save"
+                label="Kaydet"></p-button>
     </ng-template>
   </p-dialog>
 </form>
@@ -161,7 +163,8 @@
       </div>
       <div class="field col-12">
         <label for="siparisi" style="font-weight: bold">Siparis</label>
-        <input id="siparisi" placeholder="Siparisiniz giriniz" pInputText class="w-full" formControlName="siparis"upperCase="">
+        <input id="siparisi" placeholder="Siparisiniz giriniz" pInputText class="w-full" formControlName="siparis"
+               upperCase="">
       </div>
       <div class="field col-12">
         <label for="puanı" style="font-weight: bold">Puan</label>
@@ -169,7 +172,7 @@
                formControlName="puan"
                id="puanı"
                pInputText
-               placeholder="Puan  giriniz (1-5 )" type="number" min="1" max="5" >
+               placeholder="Puan  giriniz (1-5 )" type="number" min="1" max="5">
       </div>
 
       <div class="field col-12">
@@ -180,7 +183,8 @@
 
     <ng-template #footer>
       <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
-      <p-button (click)="updateMusteriBildirim()" [disabled]="!musteriBildirimUpdateForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
+      <p-button (click)="updateMusteriBildirim()" [disabled]="!musteriBildirimUpdateForm.valid" icon="pi pi-save"
+                label="Kaydet"></p-button>
     </ng-template>
 
   </p-dialog>

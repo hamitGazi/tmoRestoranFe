@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { StokComponent } from './stok.component';
+import {StokComponent} from './stok.component';
 
 describe('StokComponent', () => {
   let component: StokComponent;
@@ -10,7 +10,7 @@ describe('StokComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [StokComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(StokComponent);
     component = fixture.componentInstance;

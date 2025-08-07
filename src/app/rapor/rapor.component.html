@@ -1,10 +1,17 @@
 <p-toolbar class="mt-0">
   <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
+
     <p-button
+      (click)="resetFilter()"
+      [style]="{
+        'background-color': '#4087be',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
       class="buttonRefresh"
       icon="pi pi-refresh"
-      (click)="resetFilter()"
-      [style]="{'background-color': '#4087be'}">
+      label="Yenile">
     </p-button>
   </div>
 </p-toolbar>
@@ -12,24 +19,22 @@
 <form [formGroup]="raporFilterForm">
   <div class="formgrid grid mb-3">
     <div class="field col-12 md:col-4">
-      <label >Başlangıç Tarihi</label>
-      <p-calendar
-        id="tarihBaslangic"
-        formControlName="tarihBaslangic"
-        dateFormat="dd/mm/yy"
-
-        class="w-full">
-      </p-calendar>
+      <label>Başlangıç Tarihi</label>
+      <p-date-picker
+        [showButtonBar]="true"
+        [style]="{width:'100%'}"
+        appendTo="body"
+        dateFormat="dd.mm.yy" formControlName="gecerlilikBitis"
+      ></p-date-picker>
     </div>
     <div class="field col-12 md:col-4">
-      <label >Bitiş Tarihi</label>
-      <p-calendar
-        id="tarihBitis"
-        formControlName="tarihBitis"
-        dateFormat="dd/mm/yy"
-
-        class="w-full">
-      </p-calendar>
+      <label>Bitiş Tarihi</label>
+      <p-date-picker
+        [showButtonBar]="true"
+        [style]="{width:'100%'}"
+        appendTo="body"
+        dateFormat="dd.mm.yy" formControlName="tarihBitis"
+      ></p-date-picker>
     </div>
     <div class="field col-12 md:col-4">
       <label for="odemeTuru">Ödeme Türü</label>
@@ -49,29 +54,44 @@
         label="Filtrele"
         icon="pi pi-filter"
         (click)="filterRapor()"
-        [style]="{'background-color': '#28a745'}">
+        [style]="{'background-color': '#28a745',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }">
       </p-button>
     </div>
   </div>
 </form>
-
 <p-table
+
+  [tableStyle]="{'min-width': '50rem'}"
   [value]="raporDatas()"
-  styleClass="p-datatable-striped">
-  <ng-template pTemplate="header">
+  styleClass="p-datatable-striped"
+  dataKey="id"
+  selectionMode="single"
+  stripedRows>
+  <ng-template #header>
     <tr>
       <th>#</th>
+      <!--<p-table
+        [value]="raporDatas()"
+        styleClass="p-datatable-striped">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>#</th>-->
       <th>Tarih</th>
       <th>Ödeme Türü</th>
       <th>Toplam Tutar</th>
       <th>Sipariş Sayısı</th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-rapor let-i="rowIndex">
+  <ng-template #body let-rapor let-i="rowIndex">
     <tr>
       <td>{{ i + 1 }}</td>
-      <<!--td>{{ rapor.tarih | date:'dd/MM/yyyy' }}</td>
-      <td>{{ odemeTurOptions().find(tur => tur.name === rapor.odemeTuru)?.label || rapor.odemeTuru }}</td>-->
+      <td>{{ rapor.tarih }}</td>
+      <td>{{ rapor.odemeTuru?.label || rapor.odemeTuru }}</td>
+      -->
       <td>{{ rapor.toplamTutar }}</td>
       <td>{{ rapor.siparisSayisi }}</td>
     </tr>

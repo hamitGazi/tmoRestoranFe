@@ -31,13 +31,77 @@
   </div>
 </p-toolbar>
 
+<p-toolbar class="mt-0">
+  <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
+
+    <p-button
+      (click)="refresh()"
+      [style]="{
+        'background-color': '#4087be',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonRefresh"
+      icon="pi pi-refresh"
+      label="Yenile">
+    </p-button>
+
+    <p-button
+      (click)="showSaveForm()"
+      [style]="{
+        'background-color': '#28a745',
+        'margin': '2px',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonAdd"
+      icon="pi pi-plus"
+      label="Ekle">
+    </p-button>
+
+    @if (selectedSiparisKalemiObject()) {
+      <p-button
+        label="Güncele"
+        class="buttonEdit"
+        icon="pi pi-pen-to-square"
+        (click)="showUpdateForm()"
+        [style]="{
+          'background-color': '#ff9800',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
+      </p-button>
+
+      <p-button
+        label="Sil"
+        class="buttonDelete"
+        icon="pi pi-trash"
+        (click)="deleteSiparisKalemiConfirm($event)"
+        [style]="{
+          'background-color': '#dc3545',
+          'margin': '2px',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
+      </p-button>
+    }
+  </div>
+</p-toolbar>
+
 <p-table
-  [value]="siparisKalemiDatas()"
   [(selection)]="selectedSiparisKalemiObject"
-  styleClass="p-datatable-striped">
-  <ng-template pTemplate="header">
+  [metaKeySelection]="metaKey"
+  [tableStyle]="{'min-width': '50rem'}"
+  [value]="siparisKalemiDatas()"
+  dataKey="id"
+  selectionMode="single"
+  stripedRows>
+  <ng-template #header>
     <tr>
-      <th></th>
       <th>#</th>
       <th>Sipariş</th>
       <th>Menü Ürünü</th>
@@ -46,12 +110,12 @@
       <th>Not</th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-kalem let-i="rowIndex">
-    <tr>
-      <td><p-tableRadioButton [value]="kalem"></p-tableRadioButton></td>
+  <ng-template #body let-kalem let-i="rowIndex">
+    <tr [pSelectableRow]="kalem">
       <td>{{ i + 1 }}</td>
-    <!--  <td>{{ siparisOptions().find(siparis => siparis.id === kalem.siparisId)?.musteriAd || 'Bilinmeyen Sipariş' }}</td>
-      <td>{{ menuItemOptions().find(item => item.id === kalem.menuItemId)?.ad || 'Bilinmeyen Ürün' }}</td>-->
+      <
+      <td>{{ kalem.siparis.id === kalem.siparisId.musteriAd || 'Bilinmeyen Sipariş' }}</td>
+      <td>{{ kalem.menuItemId?.ad || 'Bilinmeyen Ürün' }}</td>
       <td>{{ kalem.adet }}</td>
       <td>{{ kalem.birimFiyat }}</td>
       <td>{{ kalem.not || '-' }}</td>
@@ -88,21 +152,25 @@
       </div>
       <div class="field col-12">
         <label for="adet" style="font-weight: bold">Adet</label>
-        <input id="adet" type="number" placeholder="Adet giriniz" pInputText class="w-full" formControlName="adet">
+        <input id="adet" type="number" placeholder="Adet giriniz" pInputText class="w-full" formControlName="adet"
+               min="1">
       </div>
       <div class="field col-12">
         <label for="birimFiyat" style="font-weight: bold">Birim Fiyat</label>
-        <input id="birimFiyat" type="number" placeholder="Birim fiyat giriniz" pInputText class="w-full" formControlName="birimFiyat">
+        <input id="birimFiyat" type="number" placeholder="Birim fiyat giriniz" pInputText class="w-full"
+               formControlName="birimFiyat">
       </div>
       <div class="field col-12">
         <label for="not" style="font-weight: bold">Not</label>
         <input id="not" placeholder="Not giriniz" pInputText class="w-full" formControlName="not">
       </div>
     </div>
-    <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSaveForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="saveSiparisKalemi()" [disabled]="!siparisKalemiSaveForm.valid"></button>
-    </p-footer>
+
+    <ng-template #footer>
+      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="saveSiparisKalemi()" [disabled]="!siparisKalemiSaveForm.valid" icon="pi pi-save"
+                label="Kaydet"></p-button>
+    </ng-template>
   </p-dialog>
 </form>
 
@@ -111,7 +179,8 @@
     <div class="formgrid grid">
       <div class="field col-12">
         <label for="idUp">Kalem ID</label>
-        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
+        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!"
+               tooltipPosition="top">
       </div>
       <div class="field col-12">
         <label for="menuItemIdUp">Menü Ürünü</label>
@@ -127,7 +196,7 @@
       </div>
       <div class="field col-12">
         <label for="adetUp">Adet</label>
-        <input id="adetUp" type="number" pInputText class="w-full" formControlName="adet">
+        <input id="adetUp" type="number" pInputText class="w-full" formControlName="adet" min="1">
       </div>
       <div class="field col-12">
         <label for="birimFiyatUp">Birim Fiyat</label>
@@ -138,10 +207,12 @@
         <input id="notUp" pInputText class="w-full" formControlName="not">
       </div>
     </div>
-    <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateSiparisKalemi()" [disabled]="!siparisKalemiUpdateForm.valid"></button>
-    </p-footer>
+
+    <ng-template #footer>
+      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="updateSiparisKalemi()" [disabled]="!siparisKalemiUpdateForm.valid" icon="pi pi-save"
+                label="Kaydet"></p-button>
+    </ng-template>
   </p-dialog>
 </form>
 

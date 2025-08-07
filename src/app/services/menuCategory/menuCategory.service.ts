@@ -1,12 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {Observable} from 'rxjs';
 import {GenericBaseModel} from '../../model/masa/masa.model';
-import {
-  MenuCategoryModel,
-  MenuCategorySaveModel,
-  MenuCategoryUpdateModel
-} from '../../model/menuCategory/menu-category.model';
+import {MenuCategoryModel} from '../../model/menuCategory/menu-category.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +10,8 @@ import {
 export class MenuCategoryService {
   private apiUrl = 'http://localhost:8082/menu-category';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getAllMenuCategories(): Observable<GenericBaseModel<MenuCategoryModel[]>> {
     return this.http.get<GenericBaseModel<MenuCategoryModel[]>>(`${this.apiUrl}/all`);

@@ -53,7 +53,9 @@
   </ng-template>
   <ng-template pTemplate="body" let-kullanici let-i="rowIndex">
     <tr>
-      <td><p-tableRadioButton [value]="kullanici"></p-tableRadioButton></td>
+      <td>
+        <p-tableRadioButton [value]="kullanici"></p-tableRadioButton>
+      </td>
       <td>{{ i + 1 }}</td>
       <td>{{ kullanici.kullaniciAdi }}</td>
       <td>{{ kullanici.email }}</td>
@@ -68,7 +70,8 @@
     <div class="formgrid grid">
       <div class="field col-12">
         <label for="kullaniciAdi" style="font-weight: bold">Kullanıcı Adı</label>
-        <input id="kullaniciAdi" placeholder="Kullanıcı adı giriniz" pInputText class="w-full" formControlName="kullaniciAdi">
+        <input id="kullaniciAdi" placeholder="Kullanıcı adı giriniz" pInputText class="w-full"
+               formControlName="kullaniciAdi">
       </div>
       <div class="field col-12">
         <label for="email" style="font-weight: bold">E-posta</label>
@@ -92,8 +95,10 @@
       </div>
     </div>
     <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSaveForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="saveKullanici()" [disabled]="!kullaniciSaveForm.valid"></button>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal"
+              (click)="closeSaveForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="saveKullanici()"
+              [disabled]="!kullaniciSaveForm.valid"></button>
     </p-footer>
   </p-dialog>
 </form>
@@ -103,7 +108,8 @@
     <div class="formgrid grid">
       <div class="field col-12">
         <label for="idUp">Kullanıcı ID</label>
-        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
+        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!"
+               tooltipPosition="top">
       </div>
       <div class="field col-12">
         <label for="kullaniciAdiUp">Kullanıcı Adı</label>
@@ -114,7 +120,7 @@
         <input id="emailUp" pInputText class="w-full" formControlName="email">
       </div>
       <div class="field col-12">
-        <label >Rol</label>
+        <label>Rol</label>
         <p-select
           id="rolUp"
           [options]="rolOptions()"
@@ -127,8 +133,10 @@
       </div>
     </div>
     <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateKullanici()" [disabled]="!kullaniciUpdateForm.valid"></button>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal"
+              (click)="closeUpdateForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateKullanici()"
+              [disabled]="!kullaniciUpdateForm.valid"></button>
     </p-footer>
   </p-dialog>
 </form>
@@ -138,12 +146,15 @@
     <div class="formgrid grid">
       <div class="field col-12">
         <label for="yeniSifre">Yeni Şifre</label>
-        <p-password id="yeniSifre" placeholder="Yeni şifre giriniz" formControlName="yeniSifre" class="w-full"></p-password>
+        <p-password id="yeniSifre" placeholder="Yeni şifre giriniz" formControlName="yeniSifre"
+                    class="w-full"></p-password>
       </div>
     </div>
     <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSifreDegistirForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Değiştir" (click)="degistirSifre()" [disabled]="!sifreDegistirForm.valid"></button>
+      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal"
+              (click)="closeSifreDegistirForm()"></button>
+      <button type="button" pButton icon="pi pi-save" label="Değiştir" (click)="degistirSifre()"
+              [disabled]="!sifreDegistirForm.valid"></button>
     </p-footer>
   </p-dialog>
 </form>

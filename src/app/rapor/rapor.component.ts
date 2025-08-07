@@ -11,6 +11,7 @@ import {Select} from 'primeng/select';
 import {TableModule} from 'primeng/table';
 import {UIChart} from 'primeng/chart';
 import {Toast} from 'primeng/toast';
+import {DatePicker} from "primeng/datepicker";
 
 @Component({
   selector: 'app-rapor',
@@ -24,7 +25,8 @@ import {Toast} from 'primeng/toast';
     Select,
     TableModule,
     UIChart,
-    Toast
+    Toast,
+    DatePicker
   ],
   styleUrl: './rapor.component.css'
 })
@@ -49,7 +51,7 @@ export class RaporComponent implements OnInit {
   }
 
   getSatisRaporlari() {
-    const { tarihBaslangic, tarihBitis, odemeTuru } = this.raporFilterForm.value;
+    const {tarihBaslangic, tarihBitis, odemeTuru} = this.raporFilterForm.value;
     this.raporService.getSatisRaporlari(tarihBaslangic, tarihBitis, odemeTuru).subscribe({
       next: (res) => {
         this.raporDatas.set(res.data);
@@ -88,6 +90,7 @@ export class RaporComponent implements OnInit {
     this.raporFilterForm.reset();
     this.getSatisRaporlari();
   }
+
   chartOptions = {
     responsive: true,
     scales: {

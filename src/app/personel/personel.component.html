@@ -31,13 +31,78 @@
   </div>
 </p-toolbar>
 
+
+<p-toolbar class="mt-0">
+  <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
+
+    <p-button
+      (click)="refresh()"
+      [style]="{
+        'background-color': '#4087be',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonRefresh"
+      icon="pi pi-refresh"
+      label="Yenile">
+    </p-button>
+
+    <p-button
+      (click)="showSaveForm()"
+      [style]="{
+        'background-color': '#28a745',
+        'margin': '2px',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonAdd"
+      icon="pi pi-plus"
+      label="Ekle">
+    </p-button>
+
+    @if (selectedPersonelObject()) {
+      <p-button
+        label="Güncele"
+        class="buttonEdit"
+        icon="pi pi-pen-to-square"
+        (click)="showUpdateForm()"
+        [style]="{
+          'background-color': '#ff9800',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
+      </p-button>
+
+      <p-button
+        label="Sil"
+        class="buttonDelete"
+        icon="pi pi-trash"
+        (click)="deletePersonelConfirm($event)"
+        [style]="{
+          'background-color': '#dc3545',
+          'margin': '2px',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
+      </p-button>
+    }
+  </div>
+</p-toolbar>
+
 <p-table
-  [value]="personelDatas()"
   [(selection)]="selectedPersonelObject"
-  styleClass="p-datatable-striped">
-  <ng-template pTemplate="header">
+  [metaKeySelection]="metaKey"
+  [tableStyle]="{'min-width': '50rem'}"
+  [value]="personelDatas()"
+  dataKey="id"
+  selectionMode="single"
+  stripedRows>
+  <ng-template #header>
     <tr>
-      <th></th>
       <th>#</th>
       <th>Ad</th>
       <th>Soyad</th>
@@ -47,16 +112,15 @@
       <th>Oluşturma Tarihi</th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-personel let-i="rowIndex">
-    <tr>
-      <td><p-tableRadioButton [value]="personel"></p-tableRadioButton></td>
+  <ng-template #body let-personel let-i="rowIndex">
+    <tr [pSelectableRow]="personel">
       <td>{{ i + 1 }}</td>
       <td>{{ personel.ad }}</td>
       <td>{{ personel.soyad }}</td>
       <td>{{ personel.telefon }}</td>
       <td>{{ personel.email || '-' }}</td>
-      <!--<td>{{ rolOptions().find(rol => rol.name === personel.rol)?.label || personel.rol }}</td>
-      <td>{{ personel.olusturmaTarih | date:'dd/MM/yyyy' }}</td>-->
+      <td>{{ personel.rol.label || personel.rol }}</td>
+      <td>{{ personel.olusturmaTarih }}</td>
     </tr>
   </ng-template>
 </p-table>
@@ -74,7 +138,11 @@
       </div>
       <div class="field col-12">
         <label for="telefon" style="font-weight: bold">Telefon</label>
-        <input id="telefon" placeholder="Telefon giriniz (10 hane)" pInputText class="w-full" formControlName="telefon">
+        <input class="w-full"
+               formControlName="telefon"
+               id="telefon"
+               pInputText
+               placeholder="Telefon giriniz (10 hane)" type="text" maxlength="10">
       </div>
       <div class="field col-12">
         <label for="email" style="font-weight: bold">Email</label>
@@ -93,10 +161,12 @@
         </p-select>
       </div>
     </div>
-    <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSaveForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="savePersonel()" [disabled]="!personelSaveForm.valid"></button>
-    </p-footer>
+
+    <ng-template #footer>
+      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="savePersonel()" [disabled]="!personelSaveForm.valid" icon="pi pi-save"
+                label="Kaydet"></p-button>
+    </ng-template>
   </p-dialog>
 </form>
 
@@ -105,7 +175,8 @@
     <div class="formgrid grid">
       <div class="field col-12">
         <label for="idUp">Personel ID</label>
-        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
+        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!"
+               tooltipPosition="top">
       </div>
       <div class="field col-12">
         <label for="adUp">Ad</label>
@@ -116,8 +187,12 @@
         <input id="soyadUp" pInputText class="w-full" formControlName="soyad">
       </div>
       <div class="field col-12">
-        <label for="telefonUp">Telefon</label>
-        <input id="telefonUp" pInputText class="w-full" formControlName="telefon">
+        <label for="telefonUp" style="font-weight: bold">Telefon</label>
+        <input class="w-full"
+               formControlName="telefon"
+               id="telefonUp"
+               pInputText
+               placeholder="Telefon giriniz (10 hane)" type="text" maxlength="10">
       </div>
       <div class="field col-12">
         <label for="emailUp">Email</label>
@@ -136,10 +211,12 @@
         </p-select>
       </div>
     </div>
-    <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updatePersonel()" [disabled]="!personelUpdateForm.valid"></button>
-    </p-footer>
+
+    <ng-template #footer>
+      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="updatePersonel()" [disabled]="!personelUpdateForm.valid" icon="pi pi-save"
+                label="Kaydet"></p-button>
+    </ng-template>
   </p-dialog>
 </form>
 

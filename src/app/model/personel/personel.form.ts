@@ -1,4 +1,4 @@
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 export class PersonelForm {
   static personelSaveForm(): FormGroup {
@@ -13,7 +13,7 @@ export class PersonelForm {
 
   static personelUpdateForm(): FormGroup {
     return new FormGroup({
-      id: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      id: new FormControl({value: null, disabled: true}, [Validators.required]),
       ad: new FormControl('', [Validators.required]),
       soyad: new FormControl('', [Validators.required]),
       telefon: new FormControl('', [Validators.required, Validators.pattern('^[0-9]{10}$')]),

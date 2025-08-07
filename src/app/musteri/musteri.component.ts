@@ -90,36 +90,37 @@ export class MusteriComponent implements OnInit {
 
   saveMusteri() {
 
-      this.musteriService.saveMusteri(this.musteriSaveForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Müşteri kaydedildi.'
-          });
-          this.refresh();
-          this.closeSaveForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Müşteri kaydedilemedi.'
-          });
-        }
-      });
-    }
+    this.musteriService.saveMusteri(this.musteriSaveForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Müşteri kaydedildi.'
+        });
+        this.refresh();
+        this.closeSaveForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Müşteri kaydedilemedi.'
+        });
+      }
+    });
+  }
 
   showUpdateForm() {
     this.musteriUpdateForm.reset({
       id: this.selectedMusteriObject()?.id
     });
-    this.musteriService.getMusteriById(this.selectedMusteriObject()?.id).subscribe(res=>{
+    this.musteriService.getMusteriById(this.selectedMusteriObject()?.id).subscribe(res => {
       this.displayUpdateForm.set(true);
 
 
-      this.musteriUpdateForm.patchValue( {...res.data,
-      /*  menuItem: res.data.id*/
+      this.musteriUpdateForm.patchValue({
+        ...res.data,
+        /*  menuItem: res.data.id*/
 
 
       });
@@ -134,25 +135,25 @@ export class MusteriComponent implements OnInit {
 
   updateMusteri() {
 
-      this.musteriService.updateMusteri(this.musteriUpdateForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Müşteri güncellendi.'
-          });
-          this.refresh();
-          this.closeUpdateForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Müşteri güncellenemedi.'
-          });
-        }
-      });
-    }
+    this.musteriService.updateMusteri(this.musteriUpdateForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Müşteri güncellendi.'
+        });
+        this.refresh();
+        this.closeUpdateForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Müşteri güncellenemedi.'
+        });
+      }
+    });
+  }
 
 
   deleteMusteriConfirm(event: any) {

@@ -1,7 +1,7 @@
 import {Component, OnInit, signal} from '@angular/core';
 import {MusteriOption, RezervasyonModel} from '../model/rezervasyon/rezervasyon.model';
 import {MasaOption} from '../model/siparis/siparis.model';
-import {EnumRecord} from '../model/masa/masa.model';
+import {EnumRecord, MasaModel} from '../model/masa/masa.model';
 import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {RezervasyonService} from '../services/rezervasyon/rezervasyon.service';
 import {ConfirmationService, MessageService} from 'primeng/api';
@@ -13,6 +13,7 @@ import {Dialog} from 'primeng/dialog';
 import {Select} from 'primeng/select';
 import {Toast} from 'primeng/toast';
 import {ConfirmDialog} from 'primeng/confirmdialog';
+import {DatePicker} from 'primeng/datepicker';
 
 @Component({
   selector: 'app-rezervasyon',
@@ -27,7 +28,8 @@ import {ConfirmDialog} from 'primeng/confirmdialog';
     Dialog,
     Select,
     Toast,
-    ConfirmDialog
+    ConfirmDialog,
+    DatePicker
   ],
   styleUrl: './rezervasyon.component.css'
 })
@@ -43,6 +45,9 @@ export class RezervasyonComponent implements OnInit {
 
   rezervasyonUpdateForm!: FormGroup;
   displayUpdateForm = signal<boolean>(false);
+  selectedProduct!: MasaModel;
+
+  metaKey: boolean = true;
 
   constructor(
     private rezervasyonService: RezervasyonService,
@@ -78,7 +83,7 @@ export class RezervasyonComponent implements OnInit {
   getMusteriOptions() {
     this.rezervasyonService.getAllMusteriler().subscribe({
       next: (res) => {
-        this.musteriOptions.set(res.data.map(musteri => ({ id: musteri.id, ad: musteri.ad + ' ' + musteri.soyad })));
+        this.musteriOptions.set(res.data);
       },
       error: (err) => {
         this.messageService.add({
@@ -93,7 +98,7 @@ export class RezervasyonComponent implements OnInit {
   getMasaOptions() {
     this.rezervasyonService.getAllMasalar().subscribe({
       next: (res) => {
-        this.masaOptions.set(res.data.map(masa => ({ id: masa.id, qrKodUrl: masa.qrKodUrl })));
+        this.masaOptions.set(res.data);
       },
       error: (err) => {
         this.messageService.add({
@@ -126,8 +131,9 @@ export class RezervasyonComponent implements OnInit {
   }
 
   showSaveForm() {
-    this.rezervasyonSaveForm.reset();
-    this.rezervasyonSaveForm.patchValue({ durum: 'BEKLEMEDE', rezervasyonZamani: new Date() });
+    this.rezervasyonSaveForm.reset({
+      durum: 'BEKLEMEDE', rezervasyonZamani: new Date()
+    });
     this.displaySaveForm.set(true);
   }
 
@@ -137,33 +143,43 @@ export class RezervasyonComponent implements OnInit {
   }
 
   saveRezervasyon() {
-    if (this.rezervasyonSaveForm.valid) {
-      this.rezervasyonService.saveRezervasyon(this.rezervasyonSaveForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Rezervasyon kaydedildi.'
-          });
-          this.refresh();
-          this.closeSaveForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Rezervasyon kaydedilemedi.'
-          });
-        }
-      });
-    }
+
+    this.rezervasyonService.saveRezervasyon(this.rezervasyonSaveForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Rezervasyon kaydedildi.'
+        });
+        this.refresh();
+        this.closeSaveForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Rezervasyon kaydedilemedi.'
+        });
+      }
+    });
   }
 
+
   showUpdateForm() {
-    if (this.selectedRezervasyonObject()) {
-      this.rezervasyonUpdateForm.patchValue(this.selectedRezervasyonObject()!);
+    this.rezervasyonUpdateForm.reset({
+      id: this.selectedRezervasyonObject()?.id
+    });
+    this.rezervasyonService.getRezervasyonById(this.selectedRezervasyonObject()?.id).subscribe(res => {
       this.displayUpdateForm.set(true);
-    }
+      const baslangic = new Date(res.data.rezervasyonZamani);
+
+      this.rezervasyonUpdateForm.patchValue({
+        ...res.data,
+        rezervasyonZamani: baslangic,
+
+      });
+
+    })
   }
 
   closeUpdateForm() {
@@ -172,30 +188,30 @@ export class RezervasyonComponent implements OnInit {
   }
 
   updateRezervasyon() {
-    if (this.rezervasyonUpdateForm.valid) {
-      this.rezervasyonService.updateRezervasyon(this.rezervasyonUpdateForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Rezervasyon güncellendi.'
-          });
-          this.refresh();
-          this.closeUpdateForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Rezervasyon güncellenemedi.'
-          });
-        }
-      });
-    }
+
+    this.rezervasyonService.updateRezervasyon(this.rezervasyonUpdateForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Rezervasyon güncellendi.'
+        });
+        this.refresh();
+        this.closeUpdateForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Rezervasyon güncellenemedi.'
+        });
+      }
+    });
   }
 
+
   deleteRezervasyonConfirm(event: any) {
-    if (!this.selectedRezervasyonObject()) return;
+
     this.confirmationService.confirm({
       message: 'Bu rezervasyonu silmek istediğinize emin misiniz?',
       header: 'Silme Onayı',
@@ -219,24 +235,24 @@ export class RezervasyonComponent implements OnInit {
 
   deleteRezervasyon() {
     const id = this.selectedRezervasyonObject()?.id;
-    if (id) {
-      this.rezervasyonService.deleteRezervasyon(id).subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Rezervasyon silindi.'
-          });
-          this.refresh();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Rezervasyon silinemedi.'
-          });
-        }
-      });
-    }
+
+    this.rezervasyonService.deleteRezervasyon(id).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Rezervasyon silindi.'
+        });
+        this.refresh();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Rezervasyon silinemedi.'
+        });
+      }
+    });
   }
 }
+

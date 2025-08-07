@@ -18,10 +18,12 @@ export interface MenuFiyatSaveModel {
   gecerlilikBitis: string | null;
   aktif: boolean;
 }
-export interface GenelProsesModel{
+
+export interface GenelProsesModel {
   id: number;
   ad: string;
 }
+
 export interface MenuFiyatUpdateModel {
   id: number;
   fiyat: number;

@@ -10,7 +10,8 @@ import {MusteriModel, MusteriSaveModel, MusteriUpdateModel} from '../../model/mu
 export class MusteriService {
   private apiUrl = 'http://localhost:8082/musteri';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   getAllMusteriler(): Observable<GenericBaseModel<MusteriModel[]>> {
     return this.http.get<GenericBaseModel<MusteriModel[]>>(`${this.apiUrl}/all`);

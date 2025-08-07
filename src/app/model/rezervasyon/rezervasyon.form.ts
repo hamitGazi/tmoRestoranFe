@@ -1,4 +1,4 @@
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 export class RezervasyonForm {
   static rezervasyonSaveForm(): FormGroup {
@@ -13,7 +13,7 @@ export class RezervasyonForm {
 
   static rezervasyonUpdateForm(): FormGroup {
     return new FormGroup({
-      id: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      id: new FormControl({value: null, disabled: true}, [Validators.required]),
       musteriId: new FormControl(null, [Validators.required]),
       masaId: new FormControl(null, [Validators.required]),
       rezervasyonZamani: new FormControl(null, [Validators.required]),

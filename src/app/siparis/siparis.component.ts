@@ -1,6 +1,6 @@
 import {Component, OnInit, signal} from '@angular/core';
 import {MasaOption, PersonelOption, SiparisModel} from '../model/siparis/siparis.model';
-import {EnumRecord} from '../model/masa/masa.model';
+import {EnumRecord, MasaModel} from '../model/masa/masa.model';
 import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {SiparisService} from '../services/siparis/siparis.service';
 import {ConfirmationService, MessageService} from 'primeng/api';
@@ -44,6 +44,10 @@ export class SiparisComponent implements OnInit {
   siparisUpdateForm!: FormGroup;
   displayUpdateForm = signal<boolean>(false);
 
+  selectedProduct!: MasaModel;
+
+  metaKey: boolean = true;
+
   constructor(
     private siparisService: SiparisService,
     private confirmationService: ConfirmationService,
@@ -78,7 +82,7 @@ export class SiparisComponent implements OnInit {
   getMasaOptions() {
     this.siparisService.getAllMasalar().subscribe({
       next: (res) => {
-        this.masaOptions.set(res.data.map(masa => ({ id: masa.id, qrKodUrl: masa.qrKodUrl })));
+        this.masaOptions.set(res.data);
       },
       error: (err) => {
         this.messageService.add({
@@ -93,7 +97,7 @@ export class SiparisComponent implements OnInit {
   getPersonelOptions() {
     this.siparisService.getAllPersoneller().subscribe({
       next: (res) => {
-        this.personelOptions.set(res.data.map(personel => ({ id: personel.id, ad: personel.ad })));
+        this.personelOptions.set(res.data.map(personel => ({id: personel.id, ad: personel.ad})));
       },
       error: (err) => {
         this.messageService.add({
@@ -136,33 +140,44 @@ export class SiparisComponent implements OnInit {
   }
 
   saveSiparis() {
-    if (this.siparisSaveForm.valid) {
-      this.siparisService.saveSiparis(this.siparisSaveForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Sipariş kaydedildi.'
-          });
-          this.refresh();
-          this.closeSaveForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Sipariş kaydedilemedi.'
-          });
-        }
-      });
-    }
+
+    this.siparisService.saveSiparis(this.siparisSaveForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Sipariş kaydedildi.'
+        });
+        this.refresh();
+        this.closeSaveForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Sipariş kaydedilemedi.'
+        });
+      }
+    });
   }
 
+
   showUpdateForm() {
-    if (this.selectedSiparisObject()) {
-      this.siparisUpdateForm.patchValue(this.selectedSiparisObject()!);
+    this.siparisUpdateForm.reset({
+      id: this.selectedSiparisObject()?.id
+    });
+    this.siparisService.getSiparisById(this.selectedSiparisObject()?.id).subscribe(res => {
       this.displayUpdateForm.set(true);
-    }
+
+
+      this.siparisUpdateForm.patchValue({
+        ...res.data,
+        /*  menuItem: res.data.id*/
+
+
+      });
+
+    })
   }
 
   closeUpdateForm() {
@@ -171,30 +186,30 @@ export class SiparisComponent implements OnInit {
   }
 
   updateSiparis() {
-    if (this.siparisUpdateForm.valid) {
-      this.siparisService.updateSiparis(this.siparisUpdateForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Sipariş güncellendi.'
-          });
-          this.refresh();
-          this.closeUpdateForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Sipariş güncellenemedi.'
-          });
-        }
-      });
-    }
+
+    this.siparisService.updateSiparis(this.siparisUpdateForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Sipariş güncellendi.'
+        });
+        this.refresh();
+        this.closeUpdateForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Sipariş güncellenemedi.'
+        });
+      }
+    });
   }
 
+
   deleteSiparisConfirm(event: any) {
-    if (!this.selectedSiparisObject()) return;
+
     this.confirmationService.confirm({
       message: 'Bu siparişi silmek istediğinize emin misiniz?',
       header: 'Silme Onayı',
@@ -218,24 +233,24 @@ export class SiparisComponent implements OnInit {
 
   deleteSiparis() {
     const id = this.selectedSiparisObject()?.id;
-    if (id) {
-      this.siparisService.deleteSiparis(id).subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Sipariş silindi.'
-          });
-          this.refresh();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Sipariş silinemedi.'
-          });
-        }
-      });
-    }
+
+    this.siparisService.deleteSiparis(id).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Sipariş silindi.'
+        });
+        this.refresh();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Sipariş silinemedi.'
+        });
+      }
+    });
   }
+
 }
