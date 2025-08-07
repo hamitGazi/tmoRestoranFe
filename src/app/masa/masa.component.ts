@@ -26,7 +26,6 @@ import {Tooltip} from 'primeng/tooltip';
     Toast,
     ConfirmDialog,
     InputText,
-    ButtonDirective,
     Select,
     Tooltip,
 
@@ -43,6 +42,10 @@ export class MasaComponent implements OnInit {
   displaySaveForm = signal<boolean>(false);
   masaUpdateForm!: FormGroup;
   displayUpdateForm = signal<boolean>(false);
+
+  selectedProduct!: MasaModel;
+
+  metaKey: boolean = true;
   constructor(
     private masaService: MasaService,
     private confirmationService: ConfirmationService,
@@ -53,7 +56,7 @@ export class MasaComponent implements OnInit {
   }
 
   ngOnInit() {
-  /*  this.getAllMasalar();*/
+   this.getAllMasalar();
     this.getMasaKonumEnum();
     this.getMasaDurumEnum();
   }
@@ -109,7 +112,9 @@ export class MasaComponent implements OnInit {
   }
 
   showSaveForm() {
-    this.masaSaveForm.reset();
+    this.masaSaveForm.reset({
+
+    });
     this.displaySaveForm.set(true);
   }
 
@@ -119,7 +124,6 @@ export class MasaComponent implements OnInit {
   }
 
   saveMasa() {
-    if (this.masaSaveForm.valid) {
       this.masaService.saveMasa(this.masaSaveForm.value).subscribe({
         next: (res) => {
           this.messageService.add({
@@ -138,15 +142,18 @@ export class MasaComponent implements OnInit {
           });
         }
       });
-    }
-  }
 
-  showUpdateForm() {
-    if (this.selectedMasaObject()) {
-      this.masaUpdateForm.patchValue(this.selectedMasaObject()!);
-      this.displayUpdateForm.set(true);
-    }
   }
+  showUpdateForm() {
+      this.masaUpdateForm.reset({
+        id:this.selectedMasaObject()?.id
+      });
+      this.masaService.getMasaById(this.selectedMasaObject()?.id).subscribe(res=>{
+        this.displayUpdateForm.set(true);
+        this.masaUpdateForm.patchValue( {...res.data});
+      })
+
+    }
 
   closeUpdateForm() {
     this.masaUpdateForm.reset();
@@ -154,7 +161,6 @@ export class MasaComponent implements OnInit {
   }
 
   updateMasa() {
-    if (this.masaUpdateForm.valid) {
       this.masaService.updateMasa(this.masaUpdateForm.value).subscribe({
         next: (res) => {
           this.messageService.add({
@@ -174,7 +180,7 @@ export class MasaComponent implements OnInit {
         }
       });
     }
-  }
+
 
   deleteMasaConfirm(event: any) {
     if (!this.selectedMasaObject()) return;

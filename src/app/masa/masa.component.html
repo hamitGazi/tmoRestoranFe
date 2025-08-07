@@ -1,43 +1,73 @@
 <p-toolbar class="mt-0">
   <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
-    @if (!selectedMasaObject()) {
-      <p-button
-        class="buttonRefresh"
-        icon="pi pi-refresh"
-        (click)="refresh()"
-        [style]="{'background-color': '#4087be'}">
-      </p-button>
-      <p-button
-        class="buttonAdd"
-        icon="pi pi-plus"
-        (click)="showSaveForm()"
-        [style]="{'background-color': '#28a745', 'margin': '2px'}">
-      </p-button>
-    }
+
+    <p-button
+      (click)="refresh()"
+      [style]="{
+        'background-color': '#4087be',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonRefresh"
+      icon="pi pi-refresh"
+      label="Yenile">
+    </p-button>
+
+    <p-button
+      (click)="showSaveForm()"
+      [style]="{
+        'background-color': '#28a745',
+        'margin': '2px',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonAdd"
+      icon="pi pi-plus"
+      label="Ekle">
+    </p-button>
+
     @if (selectedMasaObject()) {
       <p-button
+        label="Güncele"
         class="buttonEdit"
         icon="pi pi-pen-to-square"
         (click)="showUpdateForm()"
-        [style]="{'background-color': '#ff9800'}">
+        [style]="{
+          'background-color': '#ff9800',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
       </p-button>
+
       <p-button
+        label="Sil"
         class="buttonDelete"
         icon="pi pi-trash"
         (click)="deleteMasaConfirm($event)"
-        [style]="{'background-color': '#dc3545', 'margin': '2px'}">
+        [style]="{
+          'background-color': '#dc3545',
+          'margin': '2px',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
       </p-button>
     }
   </div>
 </p-toolbar>
 
-<p-table
-  [value]="masaDatas()"
-  [(selection)]="selectedMasaObject"
-  styleClass="p-datatable-striped">
-  <ng-template pTemplate="header">
+<p-table [(selection)]="selectedMasaObject"
+         [value]="masaDatas()"
+         [metaKeySelection]="metaKey"
+         [tableStyle]="{'min-width': '50rem'}"
+         dataKey="id"
+         selectionMode="single"
+         stripedRows>
+  <ng-template #header>
     <tr>
-      <th></th>
       <th>#</th>
       <th>QR Kod</th>
       <th>Kapasite</th>
@@ -46,96 +76,109 @@
       <th>Oluşturma Tarihi</th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-masa let-i="rowIndex">
-    <tr>
-      <td><p-tableRadioButton [value]="masa"></p-tableRadioButton></td>
+  <ng-template #body let-i="rowIndex" let-masa>
+    <tr [pSelectableRow]="masa">
       <td>{{ i + 1 }}</td>
       <td>{{ masa.qrKodUrl }}</td>
       <td>{{ masa.kapasite }}</td>
-      <!--<td>{{ masaKonumOptions().find(konum => konum.name === masa.masaKonum)?.label || masa.masaKonum }}</td>
-      <td>{{ masaDurumOptions().find(durum => durum.name === masa.masaDurum)?.label || masa.masaDurum }}</td>
-      <td>{{ masa.olusturmaTarih | date:'dd/MM/yyyy' }}</td>-->
+      <td>{{ masa.masaKonum }}</td>
+      <td>{{ masa.masaDurum }}</td>
+      <td>{{ masa.olusturmaTarih }}</td>
     </tr>
   </ng-template>
 </p-table>
-
 <form [formGroup]="masaSaveForm">
-  <p-dialog header="Masa Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
+  <p-dialog [(visible)]="displaySaveForm" [modal]="true" [style]="{width: '500px'}" header="Masa Ekle">
     <div class="formgrid grid">
-      <div class="field col-12">
+      <div class="field col-6">
         <label for="qrKodUrl" style="font-weight: bold">QR Kod URL</label>
-        <input id="qrKodUrl" placeholder="QR kod URL giriniz" pInputText class="w-full" formControlName="qrKodUrl">
+        <input class="w-full" formControlName="qrKodUrl"
+               id="qrKodUrl"
+               pInputText placeholder="QR kod URL giriniz" upperCase>
       </div>
-      <div class="field col-12">
+
+      <div class="field col-6">
         <label for="kapasite" style="font-weight: bold">Kapasite</label>
-        <input id="kapasite" type="number" placeholder="Kapasite giriniz" pInputText class="w-full" formControlName="kapasite">
+        <input class="w-full" formControlName="kapasite" id="kapasite" pInputText placeholder="Kapasite giriniz"
+               type="number">
       </div>
       <div class="field col-12">
         <label style="font-weight: bold">Masa Konumu</label>
         <p-select
-          id="masaKonum"
           [options]="masaKonumEnumList()"
+          [style]="{width: '100%'}"
+          appendTo="body"
+          class="w-full"
+          formControlName="masaKonum"
+          id="masaKonum"
           optionLabel="label"
           optionValue="name"
-          formControlName="masaKonum"
-          class="w-full"
           placeholder="Konum seçiniz">
         </p-select>
       </div>
     </div>
-    <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSaveForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="saveMasa()" [disabled]="!masaSaveForm.valid"></button>
-    </p-footer>
+    <ng-template #footer>
+      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="saveMasa()" [disabled]="!masaSaveForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
+    </ng-template>
   </p-dialog>
 </form>
 
 <form [formGroup]="masaUpdateForm">
-  <p-dialog header="Masa Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
+  <p-dialog [(visible)]="displayUpdateForm" [modal]="true" [style]="{width: '500px'}" header="Masa Düzenle">
     <div class="formgrid grid">
-      <div class="field col-12">
+      <div class="field col-6">
         <label for="idUp">Masa ID</label>
-        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
+        <input class="w-full" formControlName="id" id="idUp" pInputText pTooltip="Bu alan düzenlenemez!" readonly
+               upperCase>
       </div>
-      <div class="field col-12">
+
+      <div class="field col-6">
         <label for="qrKodUrlUp">QR Kod URL</label>
-        <input id="qrKodUrlUp" pInputText class="w-full" formControlName="qrKodUrl">
+        <input class="w-full" formControlName="qrKodUrl" id="qrKodUrlUp" pInputText>
       </div>
       <div class="field col-12">
         <label for="kapasiteUp">Kapasite</label>
-        <input id="kapasiteUp" type="number" pInputText class="w-full" formControlName="kapasite">
+        <input class="w-full"
+               formControlName="kapasite"
+               id="kapasiteUp"
+               min="0"
+               pInputText
+               type="number">
       </div>
+
       <div class="field col-12">
-        <label >Masa Konumu</label>
+        <label>Masa Konumu</label>
         <p-select
-          id="masaKonumUp"
           [options]="masaKonumEnumList()"
+          appendTo="body"
+          class="w-full"
+          formControlName="masaKonum"
+          id="masaKonumUp"
           optionLabel="label"
           optionValue="name"
-          formControlName="masaKonum"
-          class="w-full"
           placeholder="Konum seçiniz">
         </p-select>
       </div>
       <div class="field col-12">
-        <label >Masa Durumu</label>
+        <label>Masa Durumu</label>
         <p-select
-          id="masaDurumUp"
           [options]="masaDurumEnumList()"
+          appendTo="body"
+          class="w-full"
+          formControlName="masaDurum"
+          id="masaDurumUp"
           optionLabel="label"
           optionValue="name"
-          formControlName="masaDurum"
-          class="w-full"
           placeholder="Durum seçiniz">
         </p-select>
       </div>
     </div>
-    <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateMasa()" [disabled]="!masaUpdateForm.valid"></button>
-    </p-footer>
+    <ng-template #footer>
+      <p-button (click)="closeUpdateForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="updateMasa()" [disabled]="!masaUpdateForm.valid" icon="pi pi-save" label="Düzenle"></p-button>
+    </ng-template>
   </p-dialog>
 </form>
-
 <p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>

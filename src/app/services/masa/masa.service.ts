@@ -15,15 +15,15 @@ export class MasaService {
     return this.http.get<GenericBaseModel<MasaModel[]>>(`${this.apiUrl}/all`);
   }
 
-  getMasaById(id: number): Observable<GenericBaseModel<MasaModel>> {
+  getMasaById(id: any): Observable<GenericBaseModel<MasaModel>> {
     return this.http.get<GenericBaseModel<MasaModel>>(`${this.apiUrl}/${id}`);
   }
 
-  saveMasa(data: MasaSaveModel): Observable<GenericBaseModel<number>> {
+  saveMasa(data: any): Observable<GenericBaseModel<number>> {
     return this.http.post<GenericBaseModel<number>>(`${this.apiUrl}/save`, data);
   }
 
-  updateMasa(data: MasaUpdateModel): Observable<GenericBaseModel<number>> {
+  updateMasa(data: any): Observable<GenericBaseModel<number>> {
     return this.http.put<GenericBaseModel<number>>(`${this.apiUrl}/update`, data);
   }
 

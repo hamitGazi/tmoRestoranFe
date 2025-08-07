@@ -1,6 +1,7 @@
+<!--
 <p-panel header="Yönetim Paneli" styleClass="mb-3">
   <div class="grid">
-<!--    <div *ngFor="let stat of stats$ " class="col-12 md:col-3">
+&lt;!&ndash;    <div *ngFor="let stat of stats$ " class="col-12 md:col-3">
       <p-card>
         <div class="flex align-items-center gap-3">
           <i class="pi {{ stat.icon }}" [style.color]="stat.color" style="font-size: 2rem;"></i>
@@ -10,7 +11,7 @@
           </div>
         </div>
       </p-card>
-    </div>-->
+    </div>&ndash;&gt;
   </div>
 </p-panel>
 
@@ -26,3 +27,45 @@
     </p-panel>
   </div>
 </div>
+-->
+<div class="grid">
+  <div class="col-12 md:col-6 lg:col-3">
+    <p-card header="Toplam Sipariş" styleClass="shadow-2">
+      <div class="flex justify-content-between align-items-center">
+        <span class="text-3xl font-bold">{{ ozetData()?.toplamSiparis || 0 }}</span>
+        <i class="pi pi-shopping-cart" style="font-size: 2rem; color: #4087be;"></i>
+      </div>
+    </p-card>
+  </div>
+  <div class="col-12 md:col-6 lg:col-3">
+    <p-card header="Toplam Gelir" styleClass="shadow-2">
+      <div class="flex justify-content-between align-items-center">
+        <span class="text-3xl font-bold">{{ ozetData()?.toplamGelir || 0 | currency:'TRY' }}</span>
+        <i class="pi pi-wallet" style="font-size: 2rem; color: #28a745;"></i>
+      </div>
+    </p-card>
+  </div>
+  <div class="col-12 md:col-6 lg:col-3">
+    <p-card header="Aktif Masalar" styleClass="shadow-2">
+      <div class="flex justify-content-between align-items-center">
+        <span class="text-3xl font-bold">{{ ozetData()?.aktifMasalar || 0 }}</span>
+        <i class="pi pi-table" style="font-size: 2rem; color: #ff9800;"></i>
+      </div>
+    </p-card>
+  </div>
+  <div class="col-12 md:col-6 lg:col-3">
+    <p-card header="Bekleyen Rezervasyonlar" styleClass="shadow-2">
+      <div class="flex justify-content-between align-items-center">
+        <span class="text-3xl font-bold">{{ ozetData()?.bekleyenRezervasyonlar || 0 }}</span>
+        <i class="pi pi-calendar" style="font-size: 2rem; color: #dc3545;"></i>
+      </div>
+    </p-card>
+  </div>
+  <div class="col-12">
+    <p-card header="Sipariş Durum Dağılımı" styleClass="shadow-2">
+      <p-chart type="pie" [data]="siparisDurumChartData()" [options]="{ plugins: { legend: { position: 'bottom' } } }"></p-chart>
+    </p-card>
+  </div>
+</div>
+
+<p-toast></p-toast>

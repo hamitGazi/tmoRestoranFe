@@ -9,32 +9,29 @@ import {MenuCategoryModel} from '../../model/menuCategory/menu-category.model';
   providedIn: 'root'
 })
 export class MenuItemService {
-  private apiUrl = 'http://localhost:8080/menu-item';
-  private categoryApiUrl = 'http://localhost:8080/menu-category';
+  private apiUrl = 'http://localhost:8082/menu-item';
+
 
   constructor(private http: HttpClient) {}
 
   getAllMenuItems(): Observable<GenericBaseModel<MenuItemModel[]>> {
-    return this.http.get<GenericBaseModel<MenuItemModel[]>>(this.apiUrl);
+    return this.http.get<GenericBaseModel<MenuItemModel[]>>(`${this.apiUrl}/all`);
   }
 
-  getMenuItemById(id: number): Observable<GenericBaseModel<MenuItemModel>> {
+  getMenuItemById(id: any): Observable<GenericBaseModel<MenuItemModel>> {
     return this.http.get<GenericBaseModel<MenuItemModel>>(`${this.apiUrl}/${id}`);
   }
 
-  saveMenuItem(data: MenuItemSaveModel): Observable<GenericBaseModel<number>> {
-    return this.http.post<GenericBaseModel<number>>(this.apiUrl, data);
+  saveMenuItem(data: any): Observable<GenericBaseModel<number>> {
+    return this.http.post<GenericBaseModel<number>>(`${this.apiUrl}/save`, data);
   }
 
   updateMenuItem(data: MenuItemUpdateModel): Observable<GenericBaseModel<number>> {
-    return this.http.put<GenericBaseModel<number>>(this.apiUrl, data);
+    return this.http.put<GenericBaseModel<number>>(`${this.apiUrl}/update`, data);
   }
 
   deleteMenuItem(id: number): Observable<GenericBaseModel<string>> {
     return this.http.delete<GenericBaseModel<string>>(`${this.apiUrl}/${id}`);
   }
 
-  getAllMenuCategories(): Observable<GenericBaseModel<MenuCategoryModel[]>> {
-    return this.http.get<GenericBaseModel<MenuCategoryModel[]>>(this.categoryApiUrl);
-  }
 }

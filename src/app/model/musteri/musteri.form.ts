@@ -5,15 +5,15 @@ export class MusteriForm {
     return new FormGroup({
       ad: new FormControl('', [Validators.required]),
       soyad: new FormControl('', [Validators.required]),
-      telefon: new FormControl('', [Validators.required, Validators.pattern('^[0-9]{10}$')]),
-      email: new FormControl('', [Validators.email]),
+      telefon: new FormControl(''),
+      email: new FormControl(''),
       adres: new FormControl('')
     });
   }
 
   static musteriUpdateForm(): FormGroup {
     return new FormGroup({
-      id: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      id: new FormControl( [Validators.required]),
       ad: new FormControl('', [Validators.required]),
       soyad: new FormControl('', [Validators.required]),
       telefon: new FormControl('', [Validators.required, Validators.pattern('^[0-9]{10}$')]),

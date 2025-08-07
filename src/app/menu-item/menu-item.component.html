@@ -1,49 +1,195 @@
 
-<form [formGroup]="menuItemUpdateForm">
-  <p-dialog header="Menü Ürünü Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
+<p-toolbar class="mt-0">
+  <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
+
+    <p-button
+      (click)="refresh()"
+      [style]="{
+        'background-color': '#4087be',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonRefresh"
+      icon="pi pi-refresh"
+      label="Yenile">
+    </p-button>
+
+    <p-button
+      (click)="showSaveForm()"
+      [style]="{
+        'background-color': '#28a745',
+        'margin': '2px',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonAdd"
+      icon="pi pi-plus"
+      label="Ekle">
+    </p-button>
+
+    @if (selectedMenuItemObject()) {
+      <p-button
+        label="Güncele"
+        class="buttonEdit"
+        icon="pi pi-pen-to-square"
+        (click)="showUpdateForm()"
+        [style]="{
+          'background-color': '#ff9800',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
+      </p-button>
+
+      <p-button
+        label="Sil"
+        class="buttonDelete"
+        icon="pi pi-trash"
+        (click)="deleteMenuItemConfirm($event)"
+        [style]="{
+          'background-color': '#dc3545',
+          'margin': '2px',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
+      </p-button>
+    }
+  </div>
+</p-toolbar>
+
+
+<p-table [(selection)]="selectedMenuItemObject"
+         [value]="menuItemDatas()"
+         [metaKeySelection]="metaKey"
+         [tableStyle]="{'min-width': '50rem'}"
+         dataKey="id"
+         selectionMode="single"
+         stripedRows>
+  <ng-template #header>
+
+    <tr>
+      <th>#</th>
+      <th>Kategori</th>
+      <th>Ürün Adı</th>
+     <th>Resim Yolu</th>
+      <th>Ek Özellikler</th>
+      <th>Aktif</th>
+      <th>Oluşturma Tarihi</th>
+      <th>Açıklama</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-i="rowIndex" let-menuItem>
+    <tr [pSelectableRow]="menuItem">
+      <td>{{ i + 1 }}</td>
+      <td>{{menuItem.kategori?.ad }}</td>
+      <td>{{ menuItem.ad }}</td>
+      <td>{{menuItem.resimYolu}}</td>
+      <td>{{menuItem.ekOzellikler}}</td>
+      <td>{{menuItem.aktif? 'Evet':'Hayır'}}</td>
+      <td>{{ menuItem.olusturmaTarih }}</td>
+      <td>{{ menuItem.aciklama }}</td>
+    </tr>
+  </ng-template>
+</p-table>
+<form [formGroup]="menuItemSaveForm">
+  <p-dialog header="Menü Öğesi Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
     <div class="formgrid grid">
       <div class="field col-12">
-        <label for="idUp">Ürün ID</label>
-        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
-      </div>
-      <div class="field col-12">
-        <label for="adUp">Ürün Adı</label>
-        <input id="adUp" pInputText class="w-full" formControlName="ad">
-      </div>
-      <div class="field col-12">
-        <label for="aciklamaUp">Açıklama</label>
-        <input id="aciklamaUp" pInputText class="w-full" formControlName="aciklama">
-      </div>
-      <div class="field col-12">
-        <label for="kategoriIdUp">Kategori</label>
+        <label style="font-weight: bold">Kategori</label>
         <p-select
-          id="kategoriIdUp"
           [options]="menuCategoryOptions()"
+          [style]="{width: '100%'}"
+          appendTo="body"
+          class="w-full"
+          formControlName="kategoriId"
           optionLabel="ad"
           optionValue="id"
-          formControlName="kategoriId"
-          class="w-full"
-          placeholder="Kategori seçiniz">
+          placeholder="Konum seçiniz">
         </p-select>
       </div>
+
       <div class="field col-12">
-        <label for="aktifUp">Aktif</label>
-        <p-checkbox id="aktifUp" [binary]="true" formControlName="aktif"></p-checkbox>
+        <label for="urunAdi">Ürün Adı</label>
+        <input id="urunAdi" pInputText class="w-full" placeholder="Ürün adı giriniz" formControlName="ad">
       </div>
+
+      <div class="field col-12">
+        <label for="resimYolu">Resim Yolu</label>
+        <input id="resimYolu" pInputText class="w-full" placeholder="Resim yolu giriniz" formControlName="resimYolu">
+      </div>
+
+      <div class="field col-12">
+        <label for="aciklama">Açıklama</label>
+        <input id="aciklama"  placeholder="Açıklama giriniz" pInputText class="w-full" formControlName="aciklama">
+      </div>
+
+      <div class="field col-12">
+        <label for="ekOzellikler">Ek Özellikler</label>
+        <input id="ekOzellikler" pInputText class="w-full" placeholder="Ek özellikler giriniz" formControlName="ekOzellikler">
+      </div>
+      <div class="field col-12">
+        <p-checkbox inputId="aktif" formControlName="aktif" binary="true" label="Aktif mi?"></p-checkbox>
+      </div>
+
+    </div>
+
+    <ng-template #footer>
+      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="saveMenuItem()" [disabled]="!menuItemSaveForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
+    </ng-template>
+  </p-dialog>
+</form>
+<form [formGroup]="menuItemUpdateForm">
+  <p-dialog header="Menü Öğesi Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
+    <div class="formgrid grid">
+
+      <div class="field col-12">
+        <label style="font-weight: bold">Kategori</label>
+        <p-select
+          [options]="menuCategoryOptions()"
+          [style]="{width: '100%'}"
+          appendTo="body"
+          class="w-full"
+          formControlName="kategoriId"
+          optionLabel="ad"
+          optionValue="id"
+          placeholder="Konum seçiniz">
+        </p-select>
+      </div>
+
+      <div class="field col-12">
+        <label for="urunAdiUp">Ürün Adı</label>
+        <input id="urunAdiUp" pInputText class="w-full" formControlName="ad">
+      </div>
+
+
       <div class="field col-12">
         <label for="resimYoluUp">Resim Yolu</label>
-        <input id="resimYoluUp" pInputText class="w-full" formControlName="resimYolu">
+        <input id="resimYoluUp" pInputText class="w-full" placeholder="Resim yolu giriniz" formControlName="resimYolu">
       </div>
+
+      <div class="field col-12">
+        <label for="aciklamaUp">Açıklama</label>
+        <input id="aciklamaUp"  placeholder="Açıklama giriniz" pInputText class="w-full" formControlName="aciklama">
+      </div>
+
       <div class="field col-12">
         <label for="ekOzelliklerUp">Ek Özellikler</label>
-        <input id="ekOzelliklerUp" pInputText class="w-full" formControlName="ekOzellikler">
+        <input id="ekOzelliklerUp" pInputText class="w-full" placeholder="Ek özellikler giriniz" formControlName="ekOzellikler">
       </div>
     </div>
 
-<!--    <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateMenuItem()" [disabled]="!menuItemUpdateForm.valid"></button>
-    </p-footer>-->
+    <div class="field col-12">
+      <p-checkbox inputId="aktifUp" formControlName="aktif" binary="true" label="Aktif mi?"></p-checkbox>
+    </div>
+
+    <ng-template #footer>
+      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="updateMenuItem()" [disabled]="!menuItemUpdateForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
+    </ng-template>
   </p-dialog>
 </form>
 

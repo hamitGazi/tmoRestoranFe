@@ -9,32 +9,29 @@ import {MenuItemModel} from '../../model/menu-item/menu-item.model';
   providedIn: 'root'
 })
 export class MenuFiyatService {
-  private apiUrl = 'http://localhost:8080/menu-fiyat';
-  private menuItemApiUrl = 'http://localhost:8080/menu-item';
+  private apiUrl = 'http://localhost:8082/menu-fiyat';
+
 
   constructor(private http: HttpClient) {}
 
   getAllMenuFiyatlar(): Observable<GenericBaseModel<MenuFiyatModel[]>> {
-    return this.http.get<GenericBaseModel<MenuFiyatModel[]>>(this.apiUrl);
+    return this.http.get<GenericBaseModel<MenuFiyatModel[]>>(`${this.apiUrl}/all`);
   }
 
-  getMenuFiyatById(id: number): Observable<GenericBaseModel<MenuFiyatModel>> {
+  getMenuFiyatById(id: any): Observable<GenericBaseModel<MenuFiyatModel>> {
     return this.http.get<GenericBaseModel<MenuFiyatModel>>(`${this.apiUrl}/${id}`);
   }
 
   saveMenuFiyat(data: MenuFiyatSaveModel): Observable<GenericBaseModel<number>> {
-    return this.http.post<GenericBaseModel<number>>(this.apiUrl, data);
+    return this.http.post<GenericBaseModel<number>>(`${this.apiUrl}/save`, data);
   }
 
   updateMenuFiyat(data: MenuFiyatUpdateModel): Observable<GenericBaseModel<number>> {
-    return this.http.put<GenericBaseModel<number>>(this.apiUrl, data);
+    return this.http.put<GenericBaseModel<number>>(`${this.apiUrl}/update`, data);
   }
 
   deleteMenuFiyat(id: number): Observable<GenericBaseModel<string>> {
     return this.http.delete<GenericBaseModel<string>>(`${this.apiUrl}/${id}`);
-  }
 
-  getAllMenuItems(): Observable<GenericBaseModel<MenuItemModel[]>> {
-    return this.http.get<GenericBaseModel<MenuItemModel[]>>(this.menuItemApiUrl);
   }
 }

@@ -7,31 +7,30 @@ import {
   MusteriBildirimSaveModel,
   MusteriBildirimUpdateModel
 } from '../../model/musteri-bildirim/musteri-bildirim.model';
-import {MusteriModel} from '../../model/musteri/musteri.model';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class MusteriBildirimService {
-  private apiUrl = 'http://localhost:8080/musteri-bildirim';
-  private musteriApiUrl = 'http://localhost:8080/musteri';
+  private apiUrl = 'http://localhost:8082/musteri-bildirim';
 
   constructor(private http: HttpClient) {}
 
   getAllMusteriBildirimler(): Observable<GenericBaseModel<MusteriBildirimModel[]>> {
-    return this.http.get<GenericBaseModel<MusteriBildirimModel[]>>(this.apiUrl);
+    return this.http.get<GenericBaseModel<MusteriBildirimModel[]>>(`${this.apiUrl}/all`);
   }
 
-  getMusteriBildirimById(id: number): Observable<GenericBaseModel<MusteriBildirimModel>> {
+  getMusteriBildirimById(id: any): Observable<GenericBaseModel<MusteriBildirimModel>> {
     return this.http.get<GenericBaseModel<MusteriBildirimModel>>(`${this.apiUrl}/${id}`);
   }
 
   saveMusteriBildirim(data: MusteriBildirimSaveModel): Observable<GenericBaseModel<number>> {
-    return this.http.post<GenericBaseModel<number>>(this.apiUrl, data);
+    return this.http.post<GenericBaseModel<number>>(`${this.apiUrl}/save`, data);
   }
 
   updateMusteriBildirim(data: MusteriBildirimUpdateModel): Observable<GenericBaseModel<number>> {
-    return this.http.put<GenericBaseModel<number>>(this.apiUrl, data);
+    return this.http.put<GenericBaseModel<number>>(`${this.apiUrl}/update`, data);
   }
 
   deleteMusteriBildirim(id: number): Observable<GenericBaseModel<string>> {
@@ -42,7 +41,4 @@ export class MusteriBildirimService {
     return this.http.get<GenericBaseModel<EnumRecord[]>>(`${this.apiUrl}/tur-enum`);
   }
 
-  getAllMusteriler(): Observable<GenericBaseModel<MusteriModel[]>> {
-    return this.http.get<GenericBaseModel<MusteriModel[]>>(this.musteriApiUrl);
-  }
 }

@@ -11,6 +11,8 @@ import {Dialog} from 'primeng/dialog';
 import {Checkbox} from 'primeng/checkbox';
 import {Toast} from 'primeng/toast';
 import {ConfirmDialog} from 'primeng/confirmdialog';
+import {InputText} from 'primeng/inputtext';
+import {MasaModel} from '../model/masa/masa.model';
 
 @Component({
   selector: 'app-menu-category',
@@ -24,14 +26,16 @@ import {ConfirmDialog} from 'primeng/confirmdialog';
     Dialog,
     Checkbox,
     Toast,
-    ConfirmDialog
+    ConfirmDialog,
+    InputText
   ],
   styleUrl: './menu-category.component.css'
 })
 export class MenuCategoryComponent implements OnInit {
   menuCategoryDatas = signal<MenuCategoryModel[]>([]);
   selectedMenuCategoryObject = signal<MenuCategoryModel | null>(null);
-
+  selectedProduct!: MasaModel;
+  metaKey: boolean = true;
   menuCategorySaveForm!: FormGroup;
   displaySaveForm = signal<boolean>(false);
 
@@ -72,7 +76,7 @@ export class MenuCategoryComponent implements OnInit {
   }
 
   showSaveForm() {
-    this.menuCategorySaveForm.reset();
+    this.menuCategorySaveForm.reset({aktif: true});
     this.displaySaveForm.set(true);
   }
 
@@ -82,7 +86,7 @@ export class MenuCategoryComponent implements OnInit {
   }
 
   saveMenuCategory() {
-    if (this.menuCategorySaveForm.valid) {
+
       this.menuCategoryService.saveMenuCategory(this.menuCategorySaveForm.value).subscribe({
         next: (res) => {
           this.messageService.add({
@@ -102,9 +106,17 @@ export class MenuCategoryComponent implements OnInit {
         }
       });
     }
-  }
-
   showUpdateForm() {
+    this.menuCategoryUpdateForm.reset({
+      id:this.selectedMenuCategoryObject()?.id
+    });
+
+    this.menuCategoryService.getMenuCategoryById(this.selectedMenuCategoryObject()?.id).subscribe(res=>{
+   this.displayUpdateForm.set(true);
+      this.menuCategoryUpdateForm.patchValue({
+        ...res.data
+      })
+    })
     if (this.selectedMenuCategoryObject()) {
       this.menuCategoryUpdateForm.patchValue(this.selectedMenuCategoryObject()!);
       this.displayUpdateForm.set(true);
@@ -117,8 +129,7 @@ export class MenuCategoryComponent implements OnInit {
   }
 
   updateMenuCategory() {
-    if (this.menuCategoryUpdateForm.valid) {
-      this.menuCategoryService.updateMenuCategory(this.menuCategoryUpdateForm.value).subscribe({
+      this.menuCategoryService.updateMenuCategory(this.selectedMenuCategoryObject()).subscribe({
         next: (res) => {
           this.messageService.add({
             severity: 'success',
@@ -137,7 +148,7 @@ export class MenuCategoryComponent implements OnInit {
         }
       });
     }
-  }
+
 
   deleteMenuCategoryConfirm(event: any) {
     if (!this.selectedMenuCategoryObject()) return;

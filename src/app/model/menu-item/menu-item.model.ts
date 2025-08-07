@@ -2,7 +2,7 @@ export interface MenuItemModel {
   id: number;
   ad: string;
   aciklama: string;
-  kategori: number; // MenuCategoryEntity ID
+  kategori: GenelProsesModel; // MenuCategoryEntity ID
   aktif: boolean;
   resimYolu: string;
   ekOzellikler: string;
@@ -10,6 +10,10 @@ export interface MenuItemModel {
   guncelemeTarih: string;
 }
 
+export interface GenelProsesModel{
+  id: number;
+  ad: string;
+}
 export interface MenuItemSaveModel {
   ad: string;
   aciklama: string;

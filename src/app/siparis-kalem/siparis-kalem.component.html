@@ -63,25 +63,25 @@
   <p-dialog header="Sipariş Kalemi Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
     <div class="formgrid grid">
       <div class="field col-12">
-        <label for="siparisId" style="font-weight: bold">Sipariş</label>
+        <label for="siparis" style="font-weight: bold">Sipariş</label>
         <p-select
-          id="siparisId"
+          id="siparis"
           [options]="siparisOptions()"
           optionLabel="musteriAd"
           optionValue="id"
-          formControlName="siparisId"
+          formControlName="siparis"
           class="w-full"
           placeholder="Sipariş seçiniz">
         </p-select>
       </div>
       <div class="field col-12">
-        <label for="menuItemId" style="font-weight: bold">Menü Ürünü</label>
+        <label for="menuItem" style="font-weight: bold">Menü Ürünü</label>
         <p-select
-          id="menuItemId"
+          id="menuItem"
           [options]="menuItemOptions()"
           optionLabel="ad"
           optionValue="id"
-          formControlName="menuItemId"
+          formControlName="menuItem"
           class="w-full"
           placeholder="Ürün seçiniz">
         </p-select>
@@ -120,7 +120,7 @@
           [options]="menuItemOptions()"
           optionLabel="ad"
           optionValue="id"
-          formControlName="menuItemId"
+          formControlName="menuItem"
           class="w-full"
           placeholder="Ürün seçiniz">
         </p-select>

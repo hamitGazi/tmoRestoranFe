@@ -7,7 +7,7 @@ export class MenuItemForm {
       ad: new FormControl('', [Validators.required]),
       aciklama: new FormControl(''),
       kategoriId: new FormControl(null, [Validators.required]),
-      aktif: new FormControl(true, [Validators.required]),
+      aktif: new FormControl(true),
       resimYolu: new FormControl(''),
       ekOzellikler: new FormControl('')
     });
@@ -15,11 +15,11 @@ export class MenuItemForm {
 
   static menuItemUpdateForm(): FormGroup {
     return new FormGroup({
-      id: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      id: new FormControl( [Validators.required]),
       ad: new FormControl('', [Validators.required]),
       aciklama: new FormControl(''),
       kategoriId: new FormControl(null, [Validators.required]),
-      aktif: new FormControl(true, [Validators.required]),
+      aktif: new FormControl(true),
       resimYolu: new FormControl(''),
       ekOzellikler: new FormControl('')
     });

@@ -12,6 +12,10 @@ import {Select} from 'primeng/select';
 import {Checkbox} from 'primeng/checkbox';
 import {Toast} from 'primeng/toast';
 import {ConfirmDialog} from 'primeng/confirmdialog';
+import {MenuItemService} from '../services/menu-item/menu-item.service';
+import {InputText} from 'primeng/inputtext';
+import {DatePicker} from 'primeng/datepicker';
+import {MasaModel} from '../model/masa/masa.model';
 
 @Component({
   selector: 'app-menu-fiyat',
@@ -27,7 +31,9 @@ import {ConfirmDialog} from 'primeng/confirmdialog';
     Select,
     Checkbox,
     Toast,
-    ConfirmDialog
+    ConfirmDialog,
+    InputText,
+    DatePicker,
   ],
   styleUrl: './menu-fiyat.component.css'
 })
@@ -41,9 +47,12 @@ export class MenuFiyatComponent implements OnInit {
 
   menuFiyatUpdateForm!: FormGroup;
   displayUpdateForm = signal<boolean>(false);
+  selectedProduct!: MasaModel;
 
+  metaKey: boolean = true;
   constructor(
     private menuFiyatService: MenuFiyatService,
+    private menuItemService: MenuItemService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {
@@ -54,6 +63,8 @@ export class MenuFiyatComponent implements OnInit {
   ngOnInit() {
     this.getAllMenuFiyatlar();
     this.getMenuItemOptions();
+
+
   }
 
   getAllMenuFiyatlar() {
@@ -72,9 +83,9 @@ export class MenuFiyatComponent implements OnInit {
   }
 
   getMenuItemOptions() {
-    this.menuFiyatService.getAllMenuItems().subscribe({
+    this.menuItemService.getAllMenuItems().subscribe({
       next: (res) => {
-        this.menuItemOptions.set(res.data.map(item => ({ id: item.id, ad: item.ad })));
+        this.menuItemOptions.set(res.data);
       },
       error: (err) => {
         this.messageService.add({
@@ -102,7 +113,7 @@ export class MenuFiyatComponent implements OnInit {
   }
 
   saveMenuFiyat() {
-    if (this.menuFiyatSaveForm.valid) {
+
       this.menuFiyatService.saveMenuFiyat(this.menuFiyatSaveForm.value).subscribe({
         next: (res) => {
           this.messageService.add({
@@ -122,13 +133,23 @@ export class MenuFiyatComponent implements OnInit {
         }
       });
     }
-  }
+
 
   showUpdateForm() {
-    if (this.selectedMenuFiyatObject()) {
-      this.menuFiyatUpdateForm.patchValue(this.selectedMenuFiyatObject()!);
+    this.menuFiyatUpdateForm.reset({
+      id: this.selectedMenuFiyatObject()?.id
+    });
+    this.menuFiyatService.getMenuFiyatById(this.selectedMenuFiyatObject()?.id).subscribe(res=>{
       this.displayUpdateForm.set(true);
-    }
+      const baslangic= new Date(res.data.gecerlilikBaslangic);
+
+      this.menuFiyatUpdateForm.patchValue( {...res.data,
+        menuItem: res.data.menuItem.id,
+        gecerlilikBaslangic:baslangic,
+
+      });
+
+    })
   }
 
   closeUpdateForm() {

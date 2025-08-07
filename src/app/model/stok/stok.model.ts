@@ -3,7 +3,7 @@ export interface StokModel {
   malzemeAdi: string;
   miktar: number;
   birim: string; // Enum: KG, LT, ADET
-  menuItemId: number | null;
+  menuItem: number | null;
   olusturmaTarih: string;
 }
 
@@ -11,7 +11,7 @@ export interface StokSaveModel {
   malzemeAdi: string;
   miktar: number;
   birim: string;
-  menuItemId: number | null;
+  menuItem: number | null;
 }
 
 export interface StokUpdateModel {
@@ -19,7 +19,7 @@ export interface StokUpdateModel {
   malzemeAdi: string;
   miktar: number;
   birim: string;
-  menuItemId: number | null;
+  menuItem: number | null;
 }
 
 export interface GenericBaseModel<T> {

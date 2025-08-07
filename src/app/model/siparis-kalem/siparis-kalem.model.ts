@@ -1,15 +1,15 @@
 export interface SiparisKalemiModel {
   id: number;
-  siparisId: number;
-  menuItemId: number;
+  siparis: number;
+  menuItem: number;
   adet: number;
   birimFiyat: number;
   not: string | null;
 }
 
 export interface SiparisKalemiSaveModel {
-  siparisId: number;
-  menuItemId: number;
+  siparis: number;
+  menuItem: number;
   adet: number;
   birimFiyat: number;
   not: string | null;
@@ -17,7 +17,7 @@ export interface SiparisKalemiSaveModel {
 
 export interface SiparisKalemiUpdateModel {
   id: number;
-  menuItemId: number;
+  menuItem: number;
   adet: number;
   birimFiyat: number;
   not: string | null;

@@ -23,9 +23,9 @@ export class MenubarComponent implements OnInit {
   private getMenuItems(role: string): MenuItem[] {
     const menuItems: MenuItem[] = [
       {
-        label: 'Ana Sayfa',
-        icon: 'pi pi-home',
-        routerLink: '/home'
+        label: 'Dashboard',
+        icon: 'pi pi-chart-line',
+        routerLink: '/dashboard'
       },
       {
         label: 'Masalar',
@@ -124,11 +124,11 @@ export class MenubarComponent implements OnInit {
 
     // Role göre filtreleme
     if (role === 'GARSON') {
-      return menuItems.filter(item => ['Ana Sayfa', 'Masalar', 'Siparişler', 'Müşteriler', 'Rezervasyonlar'].includes(item.label!));
+      return menuItems.filter(item => ['Dashboard', 'Masalar', 'Siparişler', 'Müşteriler', 'Rezervasyonlar'].includes(item.label!));
     } else if (role === 'MUTFAK') {
-      return menuItems.filter(item => ['Ana Sayfa', 'Siparişler', 'Stok'].includes(item.label!));
+      return menuItems.filter(item => ['Dashboard', 'Siparişler', 'Stok'].includes(item.label!));
     } else if (role === 'KASA') {
-      return menuItems.filter(item => ['Ana Sayfa', 'Siparişler', 'Ödemeler'].includes(item.label!));
+      return menuItems.filter(item => ['Dashboard', 'Siparişler', 'Ödemeler'].includes(item.label!));
     }
     return menuItems; // YONETICI için tüm menü
   }

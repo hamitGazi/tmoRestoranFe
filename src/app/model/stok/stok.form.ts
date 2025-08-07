@@ -6,7 +6,7 @@ export class StokForm {
       malzemeAdi: new FormControl('', [Validators.required]),
       miktar: new FormControl(null, [Validators.required, Validators.min(0)]),
       birim: new FormControl(null, [Validators.required]),
-      menuItemId: new FormControl(null)
+      menuItem: new FormControl(null)
     });
   }
 
@@ -16,7 +16,7 @@ export class StokForm {
       malzemeAdi: new FormControl('', [Validators.required]),
       miktar: new FormControl(null, [Validators.required, Validators.min(0)]),
       birim: new FormControl(null, [Validators.required]),
-      menuItemId: new FormControl(null)
+      menuItem: new FormControl(null)
     });
   }
 }

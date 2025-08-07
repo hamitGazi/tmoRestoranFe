@@ -1,6 +1,6 @@
 import {Component, OnInit, signal} from '@angular/core';
-import {MusteriBildirimModel, MusteriOption} from '../model/musteri-bildirim/musteri-bildirim.model';
-import {EnumRecord} from '../model/masa/masa.model';
+
+import {EnumRecord, MasaModel} from '../model/masa/masa.model';
 import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {MusteriBildirimService} from '../services/musteri-bildirim/musteri-bildirim.service';
 import {ConfirmationService, MessageService} from 'primeng/api';
@@ -12,6 +12,10 @@ import {Dialog} from 'primeng/dialog';
 import {Select} from 'primeng/select';
 import {Toast} from 'primeng/toast';
 import {ConfirmDialog} from 'primeng/confirmdialog';
+import {InputText} from 'primeng/inputtext';
+import {DatePicker} from 'primeng/datepicker';
+import {MusteriBildirimModel} from '../model/musteri-bildirim/musteri-bildirim.model';
+import {MusteriOption} from '../model/rezervasyon/rezervasyon.model';
 
 @Component({
   selector: 'app-musteri-bildirim',
@@ -25,9 +29,10 @@ import {ConfirmDialog} from 'primeng/confirmdialog';
     ReactiveFormsModule,
     Dialog,
     Select,
-    ButtonDirective,
     Toast,
-    ConfirmDialog
+    ConfirmDialog,
+    InputText,
+
   ],
   styleUrl: './musteri-bildirim.component.css'
 })
@@ -36,14 +41,16 @@ export class MusteriBildirimComponent implements OnInit {
   musteriBildirimDatas = signal<MusteriBildirimModel[]>([]);
   selectedMusteriBildirimObject = signal<MusteriBildirimModel | null>(null);
   musteriOptions = signal<MusteriOption[]>([]);
-  bildirimTurOptions = signal<EnumRecord[]>([]);
+  geriBildirimTurEnumList = signal<EnumRecord[]>([]);
 
   musteriBildirimSaveForm!: FormGroup;
   displaySaveForm = signal<boolean>(false);
 
   musteriBildirimUpdateForm!: FormGroup;
   displayUpdateForm = signal<boolean>(false);
+  selectedProduct!: MasaModel;
 
+  metaKey: boolean = true;
   constructor(
     private musteriBildirimService: MusteriBildirimService,
     private confirmationService: ConfirmationService,
@@ -55,8 +62,7 @@ export class MusteriBildirimComponent implements OnInit {
 
   ngOnInit() {
     this.getAllMusteriBildirimler();
-    this.getMusteriOptions();
-    this.getBildirimTurOptions();
+    this.getGeriBildirimTurEnum();
   }
 
   getAllMusteriBildirimler() {
@@ -74,25 +80,10 @@ export class MusteriBildirimComponent implements OnInit {
     });
   }
 
-  getMusteriOptions() {
-    this.musteriBildirimService.getAllMusteriler().subscribe({
-      next: (res) => {
-        this.musteriOptions.set(res.data.map(musteri => ({ id: musteri.id, ad: musteri.ad + ' ' + musteri.soyad })));
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Hata',
-          detail: 'Müşteriler yüklenemedi.'
-        });
-      }
-    });
-  }
-
-  getBildirimTurOptions() {
+  getGeriBildirimTurEnum() {
     this.musteriBildirimService.getBildirimTurEnum().subscribe({
       next: (res) => {
-        this.bildirimTurOptions.set(res.data);
+        this.geriBildirimTurEnumList.set(res.data);
       },
       error: (err) => {
         this.messageService.add({
@@ -111,7 +102,6 @@ export class MusteriBildirimComponent implements OnInit {
 
   showSaveForm() {
     this.musteriBildirimSaveForm.reset();
-    this.musteriBildirimSaveForm.patchValue({ bildirimZamani: new Date() });
     this.displaySaveForm.set(true);
   }
 
@@ -143,20 +133,24 @@ export class MusteriBildirimComponent implements OnInit {
     }
   }
 
-  showUpdateForm() {
-    if (this.selectedMusteriBildirimObject()) {
-      this.musteriBildirimUpdateForm.patchValue(this.selectedMusteriBildirimObject()!);
-      this.displayUpdateForm.set(true);
-    }
-  }
 
+  showUpdateForm() {
+    this.musteriBildirimUpdateForm.reset({
+      id:this.selectedMusteriBildirimObject()?.id
+    });
+    this.musteriBildirimService.getMusteriBildirimById(this.selectedMusteriBildirimObject()?.id).subscribe(res=>{
+      this.displayUpdateForm.set(true);
+      this.musteriBildirimUpdateForm.patchValue( {...res.data});
+    })
+
+  }
   closeUpdateForm() {
     this.musteriBildirimUpdateForm.reset();
     this.displayUpdateForm.set(false);
   }
 
   updateMusteriBildirim() {
-    if (this.musteriBildirimUpdateForm.valid) {
+
       this.musteriBildirimService.updateMusteriBildirim(this.musteriBildirimUpdateForm.value).subscribe({
         next: (res) => {
           this.messageService.add({
@@ -176,7 +170,7 @@ export class MusteriBildirimComponent implements OnInit {
         }
       });
     }
-  }
+
 
   deleteMusteriBildirimConfirm(event: any) {
     if (!this.selectedMusteriBildirimObject()) return;

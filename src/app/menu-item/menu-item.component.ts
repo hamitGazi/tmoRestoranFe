@@ -11,6 +11,11 @@ import {Toast} from 'primeng/toast';
 import {ConfirmDialog} from 'primeng/confirmdialog';
 
 import {InputText} from 'primeng/inputtext';
+import {Button} from 'primeng/button';
+import {Toolbar} from 'primeng/toolbar';
+import {TableModule} from 'primeng/table';
+import {MasaModel} from '../model/masa/masa.model';
+import {MenuCategoryService} from '../services/menuCategory/menuCategory.service';
 
 @Component({
   selector: 'app-menu-item',
@@ -22,7 +27,10 @@ import {InputText} from 'primeng/inputtext';
     Checkbox,
     Toast,
     ConfirmDialog,
-    InputText
+    InputText,
+    Button,
+    Toolbar,
+    TableModule
   ],
   styleUrl: './menu-item.component.css'
 })
@@ -38,8 +46,14 @@ export class MenuItemComponent implements OnInit {
   menuItemUpdateForm!: FormGroup;
   displayUpdateForm = signal<boolean>(false);
 
+
+  selectedProduct!: MasaModel;
+
+  metaKey: boolean = true;
+
   constructor(
     private menuItemService: MenuItemService,
+    private menuCategoryService: MenuCategoryService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {
@@ -68,9 +82,9 @@ export class MenuItemComponent implements OnInit {
   }
 
   getMenuCategoryOptions() {
-    this.menuItemService.getAllMenuCategories().subscribe({
+    this.menuCategoryService.getAllMenuCategories().subscribe({
       next: (res) => {
-        this.menuCategoryOptions.set(res.data.map(cat => ({ id: cat.id, ad: cat.ad })));
+        this.menuCategoryOptions.set(res.data);
       },
       error: (err) => {
         this.messageService.add({
@@ -86,19 +100,16 @@ export class MenuItemComponent implements OnInit {
     this.getAllMenuItems();
     this.selectedMenuItemObject.set(null);
   }
-
   showSaveForm() {
-    this.menuItemSaveForm.reset();
+    this.menuItemSaveForm.reset({ aktif: true });
     this.displaySaveForm.set(true);
   }
-
   closeSaveForm() {
     this.menuItemSaveForm.reset();
     this.displaySaveForm.set(false);
   }
 
   saveMenuItem() {
-    if (this.menuItemSaveForm.valid) {
       this.menuItemService.saveMenuItem(this.menuItemSaveForm.value).subscribe({
         next: (res) => {
           this.messageService.add({
@@ -118,14 +129,19 @@ export class MenuItemComponent implements OnInit {
         }
       });
     }
-  }
 
   showUpdateForm() {
-    if (this.selectedMenuItemObject()) {
-      this.menuItemUpdateForm.patchValue(this.selectedMenuItemObject()!);
+    console.log("deeeeeeeeeeeeee",this.selectedMenuItemObject()?.kategori);
+    this.menuItemUpdateForm.reset({
+      id:this.selectedMenuItemObject()?.id,
+    });
+    this.menuItemService.getMenuItemById(this.selectedMenuItemObject()?.id).subscribe(res=>{
       this.displayUpdateForm.set(true);
-    }
+      this.menuItemUpdateForm.patchValue( {...res.data,
+        kategoriId:res.data.kategori.id  });
+    })
   }
+
 
   closeUpdateForm() {
     this.menuItemUpdateForm.reset();
@@ -133,7 +149,6 @@ export class MenuItemComponent implements OnInit {
   }
 
   updateMenuItem() {
-    if (this.menuItemUpdateForm.valid) {
       this.menuItemService.updateMenuItem(this.menuItemUpdateForm.value).subscribe({
         next: (res) => {
           this.messageService.add({
@@ -153,7 +168,7 @@ export class MenuItemComponent implements OnInit {
         }
       });
     }
-  }
+
 
   deleteMenuItemConfirm(event: any) {
     if (!this.selectedMenuItemObject()) return;

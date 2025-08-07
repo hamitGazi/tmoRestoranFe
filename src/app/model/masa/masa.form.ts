@@ -11,7 +11,7 @@ export class MasaForm {
 
   static masaUpdateForm(): FormGroup {
     return new FormGroup({
-      id: new FormControl({ value: null, disabled: true }, [Validators.required]),
+      id: new FormControl( [Validators.required]),
       qrKodUrl: new FormControl('', [Validators.required]),
       kapasite: new FormControl(null, [Validators.required, Validators.min(1)]),
       masaKonum: new FormControl(null, [Validators.required]),

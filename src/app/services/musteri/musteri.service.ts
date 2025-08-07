@@ -8,24 +8,24 @@ import {MusteriModel, MusteriSaveModel, MusteriUpdateModel} from '../../model/mu
   providedIn: 'root'
 })
 export class MusteriService {
-  private apiUrl = 'http://localhost:8080/musteri';
+  private apiUrl = 'http://localhost:8082/musteri';
 
   constructor(private http: HttpClient) {}
 
   getAllMusteriler(): Observable<GenericBaseModel<MusteriModel[]>> {
-    return this.http.get<GenericBaseModel<MusteriModel[]>>(this.apiUrl);
+    return this.http.get<GenericBaseModel<MusteriModel[]>>(`${this.apiUrl}/all`);
   }
 
-  getMusteriById(id: number): Observable<GenericBaseModel<MusteriModel>> {
+  getMusteriById(id: any): Observable<GenericBaseModel<MusteriModel>> {
     return this.http.get<GenericBaseModel<MusteriModel>>(`${this.apiUrl}/${id}`);
   }
 
   saveMusteri(data: MusteriSaveModel): Observable<GenericBaseModel<number>> {
-    return this.http.post<GenericBaseModel<number>>(this.apiUrl, data);
+    return this.http.post<GenericBaseModel<number>>(`${this.apiUrl}/save`, data);
   }
 
   updateMusteri(data: MusteriUpdateModel): Observable<GenericBaseModel<number>> {
-    return this.http.put<GenericBaseModel<number>>(this.apiUrl, data);
+    return this.http.put<GenericBaseModel<number>>(`${this.apiUrl}/update`, data);
   }
 
   deleteMusteri(id: number): Observable<GenericBaseModel<string>> {

@@ -1,24 +1,26 @@
 export interface MusteriBildirimModel {
   id: number;
-  musteriId: number;
-  bildirimTuru: string; // Enum: SIPARIS_BILDIRIMI, PROMOSYON, DIGER
+  musteriAd: string;
+  geriBildirimTur: string; // Enum: SIPARIS_BILDIRIMI, PROMOSYON, DIGER
   mesaj: string;
   bildirimZamani: string;
 }
 
 export interface MusteriBildirimSaveModel {
-  musteriId: number;
-  bildirimTuru: string;
-  mesaj: string;
-  bildirimZamani: string;
+  musteriAd: string;
+  geriBildirimTur: string;
+  puan: number;
+  yorum: string;
+  siparis: string;
 }
 
 export interface MusteriBildirimUpdateModel {
   id: number;
-  musteriId: number;
-  bildirimTuru: string;
-  mesaj: string;
-  bildirimZamani: string;
+  musteriAd: string;
+  geriBildirimTur: string;
+  puan: number;
+  yorum: string;
+  siparis: string
 }
 
 export interface GenericBaseModel<T> {
@@ -33,7 +35,8 @@ export interface EnumRecord {
   label: string;
 }
 
-export interface MusteriOption {
+export interface ProjeIdAdModel {
   id: number;
   ad: string;
 }
+

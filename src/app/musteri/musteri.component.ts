@@ -10,6 +10,8 @@ import {TableModule} from 'primeng/table';
 import {Dialog} from 'primeng/dialog';
 import {Toast} from 'primeng/toast';
 import {ConfirmDialog} from 'primeng/confirmdialog';
+import {InputText} from 'primeng/inputtext';
+import {MasaModel} from '../model/masa/masa.model';
 
 @Component({
   selector: 'app-musteri',
@@ -23,7 +25,8 @@ import {ConfirmDialog} from 'primeng/confirmdialog';
     ReactiveFormsModule,
     Dialog,
     Toast,
-    ConfirmDialog
+    ConfirmDialog,
+    InputText
   ],
   styleUrl: './musteri.component.css'
 })
@@ -37,6 +40,10 @@ export class MusteriComponent implements OnInit {
 
   musteriUpdateForm!: FormGroup;
   displayUpdateForm = signal<boolean>(false);
+
+  selectedProduct!: MasaModel;
+
+  metaKey: boolean = true;
 
   constructor(
     private musteriService: MusteriService,
@@ -82,7 +89,7 @@ export class MusteriComponent implements OnInit {
   }
 
   saveMusteri() {
-    if (this.musteriSaveForm.valid) {
+
       this.musteriService.saveMusteri(this.musteriSaveForm.value).subscribe({
         next: (res) => {
           this.messageService.add({
@@ -102,13 +109,22 @@ export class MusteriComponent implements OnInit {
         }
       });
     }
-  }
 
   showUpdateForm() {
-    if (this.selectedMusteriObject()) {
-      this.musteriUpdateForm.patchValue(this.selectedMusteriObject()!);
+    this.musteriUpdateForm.reset({
+      id: this.selectedMusteriObject()?.id
+    });
+    this.musteriService.getMusteriById(this.selectedMusteriObject()?.id).subscribe(res=>{
       this.displayUpdateForm.set(true);
-    }
+
+
+      this.musteriUpdateForm.patchValue( {...res.data,
+      /*  menuItem: res.data.id*/
+
+
+      });
+
+    })
   }
 
   closeUpdateForm() {
@@ -117,7 +133,7 @@ export class MusteriComponent implements OnInit {
   }
 
   updateMusteri() {
-    if (this.musteriUpdateForm.valid) {
+
       this.musteriService.updateMusteri(this.musteriUpdateForm.value).subscribe({
         next: (res) => {
           this.messageService.add({
@@ -137,7 +153,7 @@ export class MusteriComponent implements OnInit {
         }
       });
     }
-  }
+
 
   deleteMusteriConfirm(event: any) {
     if (!this.selectedMusteriObject()) return;

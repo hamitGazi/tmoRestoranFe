@@ -1,13 +1,13 @@
 export interface OdemeModel {
   id: number;
-  siparisId: number;
+  siparis: number;
   odemeTuru: string; // Enum: NAKIT, KREDI_KARTI, HAVALE
   tutar: number;
   odemeZamani: string;
 }
 
 export interface OdemeSaveModel {
-  siparisId: number;
+  siparis: number;
   odemeTuru: string;
   tutar: number;
   odemeZamani: string;
@@ -15,7 +15,7 @@ export interface OdemeSaveModel {
 
 export interface OdemeUpdateModel {
   id: number;
-  siparisId: number;
+  siparis: number;
   odemeTuru: string;
   tutar: number;
   odemeZamani: string;

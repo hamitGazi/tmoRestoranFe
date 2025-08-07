@@ -1,41 +1,76 @@
+
+
 <p-toolbar class="mt-0">
   <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
-     @if (!selectedMusteriBildirimObject()) {
+
     <p-button
+      (click)="refresh()"
+      [style]="{
+        'background-color': '#4087be',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
       class="buttonRefresh"
       icon="pi pi-refresh"
-      (click)="refresh()"
-      [style]="{'background-color': '#4087be'}">
+      label="Yenile">
     </p-button>
+
     <p-button
+      (click)="showSaveForm()"
+      [style]="{
+        'background-color': '#28a745',
+        'margin': '2px',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
       class="buttonAdd"
       icon="pi pi-plus"
-      (click)="showSaveForm()"
-      [style]="{'background-color': '#28a745', 'margin': '2px'}">
+      label="Ekle">
     </p-button>
-  }
+
     @if (selectedMusteriBildirimObject()) {
       <p-button
+        label="Güncele"
         class="buttonEdit"
         icon="pi pi-pen-to-square"
         (click)="showUpdateForm()"
-        [style]="{'background-color': '#ff9800'}">
+        [style]="{
+          'background-color': '#ff9800',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
       </p-button>
+
       <p-button
+        label="Sil"
         class="buttonDelete"
         icon="pi pi-trash"
         (click)="deleteMusteriBildirimConfirm($event)"
-        [style]="{'background-color': '#dc3545', 'margin': '2px'}">
+        [style]="{
+          'background-color': '#dc3545',
+          'margin': '2px',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
       </p-button>
     }
   </div>
 </p-toolbar>
 
 <p-table
-  [value]="musteriBildirimDatas()"
   [(selection)]="selectedMusteriBildirimObject"
-  styleClass="p-datatable-striped">
-  <ng-template pTemplate="header">
+  [metaKeySelection]="metaKey"
+  [tableStyle]="{'min-width': '50rem'}"
+  [value]="musteriBildirimDatas()"
+  dataKey="id"
+  selectionMode="single"
+  stripedRows>
+  <ng-template #header>
+
     <tr>
       <th></th>
       <th>#</th>
@@ -45,14 +80,17 @@
       <th>Bildirim Zamanı</th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-bildirim let-i="rowIndex">
-    <tr>
+    <ng-template #body let-bildirim let-i="rowIndex">
+      <tr [pSelectableRow]="bildirim">
       <td><p-tableRadioButton [value]="bildirim"></p-tableRadioButton></td>
       <td>{{ i + 1 }}</td>
-      <<!--td>{{ musteriOptions().find(musteri => musteri.id === bildirim.musteriId)?.ad || 'Bilinmeyen Müşteri' }}</td>
-      <td>{{ bildirimTurOptions().find(tur => tur.name === bildirim.bildirimTuru)?.label || bildirim.bildirimTuru }}</td>
-      <td>{{ bildirim.mesaj }}</td>
-      <td>{{ bildirim.bildirimZamani | date:'dd/MM/yyyy HH:mm' }}</td>-->
+      <td>{{ bildirim.musteriAd|| 'Bilinmeyen Müşteri' }}</td>
+        <td>{{bildirim?.siparis?.ad||'-'}}</td>
+      <td>{{  bildirim.geriBildirimTur?.label || bildirim.geriBildirimTur }}</td>
+        <td>{{bildirim.puan}}</td>
+        <td>{{bildirim.yorum}}</td>
+      <td>{{ bildirim.olusturmaTarih || '-' }}</td>
+        <td>{{ bildirim.guncelleTarih || '-' }}</td>
     </tr>
   </ng-template>
 </p-table>
@@ -61,48 +99,44 @@
   <p-dialog header="Bildirim Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
     <div class="formgrid grid">
       <div class="field col-12">
-        <label for="musteriId" style="font-weight: bold">Müşteri</label>
+        <label for="geri" style="font-weight: bold">Geri Bildirim Türü </label>
         <p-select
-          id="musteriId"
-          [options]="musteriOptions()"
-          optionLabel="ad"
-          optionValue="id"
-          formControlName="musteriId"
-          class="w-full"
-          placeholder="Müşteri seçiniz">
-        </p-select>
-      </div>
-      <div class="field col-12">
-        <label for="bildirimTuru" style="font-weight: bold">Bildirim Türü</label>
-        <p-select
-          id="bildirimTuru"
-          [options]="bildirimTurOptions()"
+          id="geri"
+          [options]="geriBildirimTurEnumList()"
           optionLabel="label"
           optionValue="name"
-          formControlName="bildirimTuru"
+          formControlName="geriBildirimTur"
           class="w-full"
-          placeholder="Bildirim türü seçiniz">
+          placeholder="Geri Bildirim Türü seçiniz">
         </p-select>
       </div>
       <div class="field col-12">
-        <label for="mesaj" style="font-weight: bold">Mesaj</label>
-        <input id="mesaj" placeholder="Mesaj giriniz" pInputText class="w-full" formControlName="mesaj">
+        <label for="musteriAd" style="font-weight: bold"> Müteri Adı</label>
+        <input id="musteriAd" placeholder="Adınızı giriniz" pInputText class="w-full" formControlName="musteriAd">
       </div>
       <div class="field col-12">
-        <label style="font-weight: bold">Bildirim Zamanı</label>
-        <p-calendar
-          id="bildirimZamani"
-          formControlName="bildirimZamani"
-          dateFormat="dd/mm/yy"
+        <label for="siparis" style="font-weight: bold">Siparis</label>
+        <input id="siparis" placeholder="Siparisiniz giriniz" pInputText class="w-full" formControlName="siparis" upperCase="">
+      </div>
+      <div class="field col-12">
+        <label for="puan" style="font-weight: bold">Puan</label>
+        <input class="w-full"
+               formControlName="puan"
+               id="puan"
+               pInputText
+               placeholder="Puan  giriniz (1-5 )" type="number" min="1" max="5" >
+      </div>
 
-          class="w-full">
-        </p-calendar>
+      <div class="field col-12">
+        <label for="mesaj" style="font-weight: bold">Mesaj</label>
+        <input id="mesaj" placeholder="Yorum giriniz" pInputText class="w-full" formControlName="yorum" upperCase="">
       </div>
     </div>
-    <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeSaveForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="saveMusteriBildirim()" [disabled]="!musteriBildirimSaveForm.valid"></button>
-    </p-footer>
+
+    <ng-template #footer>
+      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="saveMusteriBildirim()" [disabled]="!musteriBildirimSaveForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
+    </ng-template>
   </p-dialog>
 </form>
 
@@ -110,52 +144,45 @@
   <p-dialog header="Bildirim Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
     <div class="formgrid grid">
       <div class="field col-12">
-        <label for="idUp">Bildirim ID</label>
-        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!" tooltipPosition="top">
-      </div>
-      <div class="field col-12">
-        <label for="musteriIdUp">Müşteri</label>
+        <label for="geriUp" style="font-weight: bold">Geri Bildirim Türü </label>
         <p-select
-          id="musteriIdUp"
-          [options]="musteriOptions()"
-          optionLabel="ad"
-          optionValue="id"
-          formControlName="musteriId"
-          class="w-full"
-          placeholder="Müşteri seçiniz">
-        </p-select>
-      </div>
-      <div class="field col-12">
-        <label for="bildirimTuruUp">Bildirim Türü</label>
-        <p-select
-          id="bildirimTuruUp"
-          [options]="bildirimTurOptions()"
+          id="geriUp"
+          [options]="geriBildirimTurEnumList()"
           optionLabel="label"
           optionValue="name"
-          formControlName="bildirimTuru"
+          formControlName="geriBildirimTur"
           class="w-full"
-          placeholder="Bildirim türü seçiniz">
+          placeholder="Geri Bildirim Türü seçiniz">
         </p-select>
       </div>
       <div class="field col-12">
-        <label for="mesajUp">Mesaj</label>
-        <input id="mesajUp" pInputText class="w-full" formControlName="mesaj">
+        <label for="musteriAdi" style="font-weight: bold"> Müteri Adı</label>
+        <input id="musteriAdi" placeholder="Adınızı giriniz" pInputText class="w-full" formControlName="musteriAd">
       </div>
       <div class="field col-12">
-        <label >Bildirim Zamanı</label>
-        <p-calendar
-          id="bildirimZamaniUp"
-          formControlName="bildirimZamani"
-          dateFormat="dd/mm/yy"
+        <label for="siparisi" style="font-weight: bold">Siparis</label>
+        <input id="siparisi" placeholder="Siparisiniz giriniz" pInputText class="w-full" formControlName="siparis"upperCase="">
+      </div>
+      <div class="field col-12">
+        <label for="puanı" style="font-weight: bold">Puan</label>
+        <input class="w-full"
+               formControlName="puan"
+               id="puanı"
+               pInputText
+               placeholder="Puan  giriniz (1-5 )" type="number" min="1" max="5" >
+      </div>
 
-          class="w-full">
-        </p-calendar>
+      <div class="field col-12">
+        <label for="mesajı" style="font-weight: bold">Mesaj</label>
+        <input id="mesajı" placeholder="Yorum giriniz" pInputText class="w-full" formControlName="yorum" upperCase="">
       </div>
     </div>
-    <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal" (click)="closeUpdateForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateMusteriBildirim()" [disabled]="!musteriBildirimUpdateForm.valid"></button>
-    </p-footer>
+
+    <ng-template #footer>
+      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="updateMusteriBildirim()" [disabled]="!musteriBildirimUpdateForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
+    </ng-template>
+
   </p-dialog>
 </form>
 

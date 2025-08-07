@@ -1,9 +1,9 @@
 export interface MenuFiyatModel {
   id: number;
-  menuItemId: number;
+  menuItem: GenelProsesModel;
   fiyat: number;
   indirimFiyati: number | null;
-  gecerlilikBaslangic: string;
+  gecerlilikBaslangic: Date;
   gecerlilikBitis: string | null;
   aktif: boolean;
   olusturmaTarih: string;
@@ -11,14 +11,17 @@ export interface MenuFiyatModel {
 }
 
 export interface MenuFiyatSaveModel {
-  menuItemId: number;
+  menuItem: number;
   fiyat: number;
   indirimFiyati: number | null;
   gecerlilikBaslangic: string;
   gecerlilikBitis: string | null;
   aktif: boolean;
 }
-
+export interface GenelProsesModel{
+  id: number;
+  ad: string;
+}
 export interface MenuFiyatUpdateModel {
   id: number;
   fiyat: number;
