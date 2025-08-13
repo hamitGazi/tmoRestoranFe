@@ -6,13 +6,15 @@ import {StokService} from '../services/stok/stok.service';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {StokForm} from '../model/stok/stok.form';
 import {Toolbar} from 'primeng/toolbar';
-import {Button, ButtonDirective} from 'primeng/button';
+import {Button} from 'primeng/button';
 import {TableModule} from 'primeng/table';
 import {Dialog} from 'primeng/dialog';
 import {Select} from 'primeng/select';
 import {InputText} from 'primeng/inputtext';
 import {Toast} from 'primeng/toast';
 import {ConfirmDialog} from 'primeng/confirmdialog';
+import {Tooltip} from 'primeng/tooltip';
+import {MenuItemService} from '../services/menu-item/menu-item.service';
 
 @Component({
   selector: 'app-stok',
@@ -26,10 +28,10 @@ import {ConfirmDialog} from 'primeng/confirmdialog';
     ReactiveFormsModule,
     Dialog,
     Select,
-    ButtonDirective,
     InputText,
     Toast,
-    ConfirmDialog
+    ConfirmDialog,
+    Tooltip
   ],
   styleUrl: './stok.component.css'
 })
@@ -46,8 +48,13 @@ export class StokComponent implements OnInit {
   stokUpdateForm!: FormGroup;
   displayUpdateForm = signal<boolean>(false);
 
+  selectedProduct!: StokModel;
+
+  metaKey: boolean = true;
+
   constructor(
     private stokService: StokService,
+    private menuItemService: MenuItemService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {
@@ -92,9 +99,9 @@ export class StokComponent implements OnInit {
   }
 
   getMenuItemOptions() {
-    this.stokService.getAllMenuItems().subscribe({
+    this.menuItemService.getAllMenuItems().subscribe({
       next: (res) => {
-        this.menuItemOptions.set(res.data.map(item => ({id: item.id, ad: item.ad})));
+        this.menuItemOptions.set(res.data);
       },
       error: (err) => {
         this.messageService.add({
@@ -105,7 +112,6 @@ export class StokComponent implements OnInit {
       }
     });
   }
-
   refresh() {
     this.getAllStoklar();
     this.selectedStokObject.set(null);
@@ -123,7 +129,6 @@ export class StokComponent implements OnInit {
   }
 
   saveStok() {
-    if (this.stokSaveForm.valid) {
       this.stokService.saveStok(this.stokSaveForm.value).subscribe({
         next: (res) => {
           this.messageService.add({
@@ -143,13 +148,21 @@ export class StokComponent implements OnInit {
         }
       });
     }
-  }
 
   showUpdateForm() {
-    if (this.selectedStokObject()) {
-      this.stokUpdateForm.patchValue(this.selectedStokObject()!);
+    this.stokUpdateForm.reset({
+      id: this.selectedStokObject()?.id
+    });
+    this.stokService.getStokById(this.selectedStokObject()?.id).subscribe(res => {
       this.displayUpdateForm.set(true);
-    }
+
+
+      this.stokUpdateForm.patchValue({
+        ...res.data,
+
+      });
+
+    })
   }
 
   closeUpdateForm() {
@@ -158,7 +171,7 @@ export class StokComponent implements OnInit {
   }
 
   updateStok() {
-    if (this.stokUpdateForm.valid) {
+
       this.stokService.updateStok(this.stokUpdateForm.value).subscribe({
         next: (res) => {
           this.messageService.add({
@@ -178,10 +191,10 @@ export class StokComponent implements OnInit {
         }
       });
     }
-  }
+
 
   deleteStokConfirm(event: any) {
-    if (!this.selectedStokObject()) return;
+
     this.confirmationService.confirm({
       message: 'Bu stok kaydını silmek istediğinize emin misiniz?',
       header: 'Silme Onayı',
@@ -205,7 +218,7 @@ export class StokComponent implements OnInit {
 
   deleteStok() {
     const id = this.selectedStokObject()?.id;
-    if (id) {
+
       this.stokService.deleteStok(id).subscribe({
         next: () => {
           this.messageService.add({
@@ -224,5 +237,5 @@ export class StokComponent implements OnInit {
         }
       });
     }
-  }
+
 }

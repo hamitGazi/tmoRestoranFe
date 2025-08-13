@@ -1,22 +1,16 @@
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 
-export class SiparisForm {
-  static siparisSaveForm(): FormGroup {
-    return new FormGroup({
-      masaId: new FormControl(null, [Validators.required]),
-      musteriAd: new FormControl('', [Validators.required]),
-      personelId: new FormControl(null, [Validators.required]),
-      not: new FormControl('')
-    });
-  }
+export class ListSiparisForm {
+
 
   static siparisUpdateForm(): FormGroup {
     return new FormGroup({
-      id: new FormControl({value: null, disabled: true}, [Validators.required]),
+      id: new FormControl( [Validators.required]),
+      masa: new FormControl( [Validators.required]),
       musteriAd: new FormControl('', [Validators.required]),
-      personelId: new FormControl(null, [Validators.required]),
+      personel: new FormControl(null),
       siparisDurumu: new FormControl(null, [Validators.required]),
-      not: new FormControl('')
+      siparisNot: new FormControl('')
     });
   }
 }

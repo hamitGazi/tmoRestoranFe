@@ -1,43 +1,76 @@
+
+
 <p-toolbar class="mt-0">
   <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
-    @if (!selectedStokObject()) {
-      <p-button
-        class="buttonRefresh"
-        icon="pi pi-refresh"
-        (click)="refresh()"
-        [style]="{'background-color': '#4087be'}">
-      </p-button>
-      <p-button
-        class="buttonAdd"
-        icon="pi pi-plus"
-        (click)="showSaveForm()"
-        [style]="{'background-color': '#28a745', 'margin': '2px'}">
-      </p-button>
-    }
+
+    <p-button
+      (click)="refresh()"
+      [style]="{
+        'background-color': '#4087be',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonRefresh"
+      icon="pi pi-refresh"
+      label="Yenile">
+    </p-button>
+
+    <p-button
+      (click)="showSaveForm()"
+      [style]="{
+        'background-color': '#28a745',
+        'margin': '2px',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonAdd"
+      icon="pi pi-plus"
+      label="Ekle">
+    </p-button>
+
     @if (selectedStokObject()) {
       <p-button
+        label="Güncele"
         class="buttonEdit"
         icon="pi pi-pen-to-square"
         (click)="showUpdateForm()"
-        [style]="{'background-color': '#ff9800'}">
+        [style]="{
+          'background-color': '#ff9800',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
       </p-button>
+
       <p-button
+        label="Sil"
         class="buttonDelete"
         icon="pi pi-trash"
         (click)="deleteStokConfirm($event)"
-        [style]="{'background-color': '#dc3545', 'margin': '2px'}">
+        [style]="{
+          'background-color': '#dc3545',
+          'margin': '2px',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
       </p-button>
     }
   </div>
 </p-toolbar>
 
 <p-table
-  [value]="stokDatas()"
   [(selection)]="selectedStokObject"
-  styleClass="p-datatable-striped">
-  <ng-template pTemplate="header">
+  [metaKeySelection]="metaKey"
+  [tableStyle]="{'min-width': '50rem'}"
+  [value]="stokDatas()"
+  dataKey="id"
+  selectionMode="single"
+  stripedRows>
+  <ng-template #header>
     <tr>
-      <th></th>
       <th>#</th>
       <th>Malzeme Adı</th>
       <th>Miktar</th>
@@ -46,116 +79,121 @@
       <th>Oluşturma Tarihi</th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-stok let-i="rowIndex">
-    <tr>
-      <td>
-        <p-tableRadioButton [value]="stok"></p-tableRadioButton>
-      </td>
+  <ng-template #body let-i="rowIndex" let-stok>
+    <tr [pSelectableRow]="stok">
       <td>{{ i + 1 }}</td>
       <td>{{ stok.malzemeAdi }}</td>
       <td>{{ stok.miktar }}</td>
-      <!-- <td>{{ birimOptions().find(birim => birim.name === stok.birim)?.label || stok.birim }}</td>
-       <td>{{ menuItemOptions().find(item => item.id === stok.menuItemId)?.ad || 'Bağımsız' }}</td>
-       <td>{{ stok.olusturmaTarih | date:'dd/MM/yyyy' }}</td>-->
+      <td>{{ stok.birim.name === stok.birim.label || stok.birim }}</td>
+      <td>{{ stok.menuItemId?.ad || 'Bağımsız' }}</td>
+      <td>{{ stok.olusturmaTarih }}</td>
     </tr>
   </ng-template>
 </p-table>
 
 <form [formGroup]="stokSaveForm">
-  <p-dialog header="Stok Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
+  <p-dialog [(visible)]="displaySaveForm" [modal]="true" [style]="{width: '400px'}" header="Stok Ekle">
     <div class="formgrid grid">
       <div class="field col-12">
-        <label for="malzemeAdi" style="font-weight: bold">Malzeme Adı</label>
-        <input id="malzemeAdi" placeholder="Malzeme adı giriniz" pInputText class="w-full" formControlName="malzemeAdi">
+        <label for="malzemeAd" style="font-weight: bold">Malzeme Adı</label>
+        <input class="w-full" formControlName="malzemeAd" id="malzemeAd" pInputText placeholder="Malzeme adı giriniz"
+               upperCase>
       </div>
+
       <div class="field col-12">
-        <label for="miktar" style="font-weight: bold">Miktar</label>
-        <input id="miktar" type="number" placeholder="Miktar giriniz" pInputText class="w-full"
-               formControlName="miktar">
+        <label for="menuItem" style="font-weight: bold">Menü Öğesi (Opsiyonel)</label>
+        <p-select
+          [options]="menuItemOptions()"
+          [showClear]="true"
+          class="w-full"
+          formControlName="menuItem"
+          id="menuItem"
+          optionLabel="ad"
+          appendTo="body"
+          optionValue="id"
+          placeholder="Menü öğesi seçiniz">
+        </p-select>
       </div>
+
       <div class="field col-12">
         <label for="birim" style="font-weight: bold">Birim</label>
         <p-select
-          id="birim"
           [options]="birimOptions()"
+          class="w-full"
+          formControlName="birim"
+          id="birim"
+          appendTo="body"
           optionLabel="label"
           optionValue="name"
-          formControlName="birim"
-          class="w-full"
           placeholder="Birim seçiniz">
         </p-select>
       </div>
       <div class="field col-12">
-        <label for="menuItem" style="font-weight: bold">Menü Öğesi (Opsiyonel)</label>
-        <p-select
-          id="menuItem"
-          [options]="menuItemOptions()"
-          optionLabel="ad"
-          optionValue="id"
-          formControlName="menuItem"
-          class="w-full"
-          placeholder="Menü öğesi seçiniz"
-          [showClear]="true">
-        </p-select>
+        <label for="miktar" style="font-weight: bold">Miktar</label>
+        <input class="w-full" formControlName="miktar"
+               id="miktar" min="0" pInputText
+               placeholder="Miktar giriniz" type="number">
       </div>
     </div>
-    <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal"
-              (click)="closeSaveForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Kaydet" (click)="saveStok()"
-              [disabled]="!stokSaveForm.valid"></button>
-    </p-footer>
+
+    <ng-template #footer>
+    <p-button (click)="closeUpdateForm()"      styleClass="p-button-text"  icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+    <p-button (click)="saveStok()" [disabled]="!stokSaveForm.valid" icon="pi pi-save"  styleClass="p-button-success"
+              label="Kaydet"></p-button>
+    </ng-template>
   </p-dialog>
 </form>
 
 <form [formGroup]="stokUpdateForm">
-  <p-dialog header="Stok Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
+  <p-dialog [(visible)]="displayUpdateForm" [modal]="true" [style]="{width: '400px'}" header="Stok Düzenle">
     <div class="formgrid grid">
       <div class="field col-12">
         <label for="idUp">Stok ID</label>
-        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!"
+        <input class="w-full" formControlName="id" id="idUp" pInputText pTooltip="Bu alan düzenlenemez!" readonly
                tooltipPosition="top">
       </div>
       <div class="field col-12">
         <label for="malzemeAdiUp">Malzeme Adı</label>
-        <input id="malzemeAdiUp" pInputText class="w-full" formControlName="malzemeAdi">
+        <input class="w-full" formControlName="malzemeAd" id="malzemeAdiUp" pInputText upperCase>
       </div>
-      <div class="field col-12">
-        <label for="miktarUp">Miktar</label>
-        <input id="miktarUp" type="number" pInputText class="w-full" formControlName="miktar">
-      </div>
-      <div class="field col-12">
-        <label for="birimUp">Birim</label>
-        <p-select
-          id="birimUp"
-          [options]="birimOptions()"
-          optionLabel="label"
-          optionValue="name"
-          formControlName="birim"
-          class="w-full"
-          placeholder="Birim seçiniz">
-        </p-select>
+
       </div>
       <div class="field col-12">
         <label for="menuItemIdUp">Menü Öğesi (Opsiyonel)</label>
         <p-select
-          id="menuItemIdUp"
           [options]="menuItemOptions()"
-          optionLabel="ad"
-          optionValue="id"
-          formControlName="menuItem"
+          [showClear]="true"
           class="w-full"
-          placeholder="Menü öğesi seçiniz"
-          [showClear]="true">
+          formControlName="menuItem"
+          id="menuItemIdUp"
+          optionLabel="ad"
+          appendTo="bady"
+          optionValue="id"
+          placeholder="Menü öğesi seçiniz">
         </p-select>
       </div>
+    <div class="field col-12">
+      <label for="birimUp">Birim</label>
+      <p-select
+        [options]="birimOptions()"
+        class="w-full"
+        formControlName="birim"
+        id="birimUp"
+        optionLabel="label"
+        appendTo="body"
+        optionValue="name"
+        placeholder="Birim seçiniz">
+      </p-select>
     </div>
-    <p-footer>
-      <button type="button" pButton icon="pi pi-times" severity="secondary" label="İptal"
-              (click)="closeUpdateForm()"></button>
-      <button type="button" pButton icon="pi pi-save" label="Düzenle" (click)="updateStok()"
-              [disabled]="!stokUpdateForm.valid"></button>
-    </p-footer>
+    <div class="field col-12">
+      <label for="miktarUp">Miktar</label>
+      <input class="w-full" formControlName="miktar" id="miktarUp" pInputText type="number" min="0">
+    </div>
+
+    <ng-template #footer>
+      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="updateStok()" [disabled]="!stokUpdateForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
+    </ng-template>
   </p-dialog>
 </form>
 

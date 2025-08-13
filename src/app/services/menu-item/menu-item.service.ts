@@ -21,6 +21,10 @@ export class MenuItemService {
   getMenuItemById(id: any): Observable<GenericBaseModel<MenuItemModel>> {
     return this.http.get<GenericBaseModel<MenuItemModel>>(`${this.apiUrl}/${id}`);
   }
+  getMenuItemByMenuCategoryId(id: any): Observable<GenericBaseModel<MenuItemModel[]>> {
+    return this.http.get<GenericBaseModel<MenuItemModel[]>>(`${this.apiUrl}/by-categoryId/${id}`);
+  }
+
 
   saveMenuItem(data: any): Observable<GenericBaseModel<number>> {
     return this.http.post<GenericBaseModel<number>>(`${this.apiUrl}/save`, data);

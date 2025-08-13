@@ -13,6 +13,7 @@ import {Select} from 'primeng/select';
 import {Toast} from 'primeng/toast';
 import {ConfirmDialog} from 'primeng/confirmdialog';
 import {InputText} from 'primeng/inputtext';
+import {Checkbox} from 'primeng/checkbox';
 
 @Component({
   selector: 'app-personel',
@@ -28,7 +29,8 @@ import {InputText} from 'primeng/inputtext';
     Select,
     Toast,
     ConfirmDialog,
-    InputText
+    InputText,
+    Checkbox
   ],
   styleUrl: './personel.component.css'
 })
@@ -97,7 +99,9 @@ export class PersonelComponent implements OnInit {
   }
 
   showSaveForm() {
-    this.personelSaveForm.reset();
+    this.personelSaveForm.reset({
+      aktif:true
+    });
     this.displaySaveForm.set(true);
   }
 

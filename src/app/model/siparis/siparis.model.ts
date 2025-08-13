@@ -1,27 +1,39 @@
 export interface SiparisModel {
   id: number;
-  masaId: number;
+  masa: MasaOption;
   musteriAd: string;
-  toplamTutar: number;
-  personelId: number;
+  toplamTutar: number | null;
+  personel: PersonelOption;
   olusturmaZamani: string;
-  siparisDurumu: string; // Enum: BEKLIYOR, HAZIRLANIYOR, SERVIS_EDILDI, IPTAL_EDILDI, TAMAMLANDI
-  not: string | null;
+  siparisDurumu: string; // Enum string
+  siprisNot: string | null; // Backend JSON'undaki alan adı
+}
+
+export interface MasaOption {
+  id: number;
+  qrKodUrl : string;
+}
+
+export interface PersonelOption {
+  id: number | null;
+  ad: string | null;
 }
 
 export interface SiparisSaveModel {
-  masaId: number;
   musteriAd: string;
-  personelId: number;
-  not: string | null;
+  masa: number | null;
+  personel: number | null;
+  siparisDurumu: string;
+  siprisNot: string | null;
 }
 
 export interface SiparisUpdateModel {
   id: number;
   musteriAd: string;
-  personelId: number;
+  masa: number | null;
+  personel: number | null;
   siparisDurumu: string;
-  not: string | null;
+  siprisNot: string | null;
 }
 
 export interface GenericBaseModel<T> {
@@ -34,14 +46,4 @@ export interface GenericBaseModel<T> {
 export interface EnumRecord {
   name: string;
   label: string;
-}
-
-export interface MasaOption {
-  id: number;
-  qrKodUrl: string;
-}
-
-export interface PersonelOption {
-  id: number;
-  ad: string;
 }

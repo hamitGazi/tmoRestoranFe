@@ -1,4 +1,4 @@
-import {LOCALE_ID, NgModule, provideBrowserGlobalErrorListeners} from '@angular/core';
+import {NgModule, provideBrowserGlobalErrorListeners} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing-module';
@@ -10,14 +10,14 @@ import Aura from '@primeng/themes/aura';
 import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {ConfirmationService, MessageService} from 'primeng/api';
-import {registerLocaleData} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { Gokhan } from './gokhan/gokhan';
 
-registerLocaleData('tr-TR');
 
 @NgModule({
   declarations: [
     App,
+    Gokhan,
   ],
   imports: [
     BrowserModule,
@@ -26,12 +26,10 @@ registerLocaleData('tr-TR');
     NoopAnimationsModule,
     MenubarComponent,
     FormsModule,
-    ReactiveFormsModule
-
+    ReactiveFormsModule,
   ],
   providers: [
 
-    {provide: LOCALE_ID, useValue: 'tr-TR'},
     provideHttpClient(withInterceptorsFromDi())
     , ConfirmationService,
     MessageService,

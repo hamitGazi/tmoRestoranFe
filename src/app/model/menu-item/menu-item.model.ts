@@ -3,6 +3,7 @@ export interface MenuItemModel {
   ad: string;
   aciklama: string;
   kategori: GenelProsesModel; // MenuCategoryEntity ID
+  birimFiyat?:number;
   aktif: boolean;
   resimYolu: string;
   ekOzellikler: string;

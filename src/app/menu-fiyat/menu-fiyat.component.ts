@@ -104,7 +104,9 @@ export class MenuFiyatComponent implements OnInit {
   }
 
   showSaveForm() {
-    this.menuFiyatSaveForm.reset();
+    this.menuFiyatSaveForm.reset({
+      aktif:true
+    });
     this.displaySaveForm.set(true);
   }
 

@@ -8,7 +8,7 @@ import {OdemeModel, OdemeSaveModel, OdemeUpdateModel} from '../../model/odeme/od
   providedIn: 'root'
 })
 export class OdemeService {
-  private apiUrl = 'http://localhost:808/odeme';
+  private apiUrl = 'http://localhost:8082/odeme';
 
 
   constructor(private http: HttpClient) {
@@ -34,8 +34,11 @@ export class OdemeService {
     return this.http.delete<GenericBaseModel<string>>(`${this.apiUrl}/${id}`);
   }
 
-  getOdemeTurEnum(): Observable<GenericBaseModel<EnumRecord[]>> {
-    return this.http.get<GenericBaseModel<EnumRecord[]>>(`${this.apiUrl}/tur-enum`);
+  getOdemeYonEnum(): Observable<GenericBaseModel<EnumRecord[]>> {
+    return this.http.get<GenericBaseModel<EnumRecord[]>>(`${this.apiUrl}/yontemOdeme-enum`);
+  }
+  getOdemeDurumEnum(): Observable<GenericBaseModel<EnumRecord[]>> {
+    return this.http.get<GenericBaseModel<EnumRecord[]>>(`${this.apiUrl}/durumOdeme-enum`);
   }
 
   /* getAllSiparisler(): Observable<GenericBaseModel<SiparisModel[]>> {

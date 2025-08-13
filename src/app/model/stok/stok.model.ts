@@ -38,3 +38,7 @@ export interface MenuItemOption {
   id: number;
   ad: string;
 }
+export interface MenuCategoryOption {
+  id: number;
+  ad: string;
+}

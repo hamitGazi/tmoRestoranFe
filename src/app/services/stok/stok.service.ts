@@ -9,8 +9,8 @@ import {MenuItemModel} from '../../model/menu-item/menu-item.model';
   providedIn: 'root'
 })
 export class StokService {
-  private apiUrl = 'http://localhost:8080/stok';
-  private menuItemApiUrl = 'http://localhost:8080/menu-item';
+  private apiUrl = 'http://localhost:8082/stok-kalemi';
+
 
   constructor(private http: HttpClient) {
   }
@@ -19,7 +19,7 @@ export class StokService {
     return this.http.get<GenericBaseModel<StokModel[]>>(`${this.apiUrl}/all`);
   }
 
-  getStokById(id: number): Observable<GenericBaseModel<StokModel>> {
+  getStokById(id: any): Observable<GenericBaseModel<StokModel>> {
     return this.http.get<GenericBaseModel<StokModel>>(`${this.apiUrl}/${id}`);
   }
 
@@ -31,7 +31,7 @@ export class StokService {
     return this.http.put<GenericBaseModel<number>>(`${this.apiUrl}/update`, data);
   }
 
-  deleteStok(id: number): Observable<GenericBaseModel<string>> {
+  deleteStok(id: any): Observable<GenericBaseModel<string>> {
     return this.http.delete<GenericBaseModel<string>>(`${this.apiUrl}/${id}`);
   }
 
@@ -39,7 +39,4 @@ export class StokService {
     return this.http.get<GenericBaseModel<EnumRecord[]>>(`${this.apiUrl}/birim-enum`);
   }
 
-  getAllMenuItems(): Observable<GenericBaseModel<MenuItemModel[]>> {
-    return this.http.get<GenericBaseModel<MenuItemModel[]>>(`${this.apiUrl}/all`);
-  }
 }

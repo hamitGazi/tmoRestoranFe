@@ -1,36 +1,3 @@
-<p-toolbar class="mt-0">
-  <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
-    @if (!selectedPersonelObject()) {
-      <p-button
-        class="buttonRefresh"
-        icon="pi pi-refresh"
-        (click)="refresh()"
-        [style]="{'background-color': '#4087be'}">
-      </p-button>
-      <p-button
-        class="buttonAdd"
-        icon="pi pi-plus"
-        (click)="showSaveForm()"
-        [style]="{'background-color': '#28a745', 'margin': '2px'}">
-      </p-button>
-    }
-    @if (selectedPersonelObject()) {
-      <p-button
-        class="buttonEdit"
-        icon="pi pi-pen-to-square"
-        (click)="showUpdateForm()"
-        [style]="{'background-color': '#ff9800'}">
-      </p-button>
-      <p-button
-        class="buttonDelete"
-        icon="pi pi-trash"
-        (click)="deletePersonelConfirm($event)"
-        [style]="{'background-color': '#dc3545', 'margin': '2px'}">
-      </p-button>
-    }
-  </div>
-</p-toolbar>
-
 
 <p-toolbar class="mt-0">
   <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
@@ -155,10 +122,24 @@
           [options]="rolOptions()"
           optionLabel="label"
           optionValue="name"
+          appendTo="body"
           formControlName="rol"
           class="w-full"
           placeholder="Rol seçiniz">
         </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="pas" style="font-weight: bold">Parola</label>
+        <input id="pas"
+               placeholder="Parola giriniz"
+               type="password"
+               pInputText class="w-full p-2"
+               formControlName="sifre"
+               required>
+      </div>
+      <div class="field col-12">
+        <label for="akti" style="font-weight: bold">Aktif</label>
+        <p-checkbox [binary]="true" formControlName="aktif" id="akti"></p-checkbox>
       </div>
     </div>
 
@@ -209,6 +190,10 @@
           class="w-full"
           placeholder="Rol seçiniz">
         </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="aktif" style="font-weight: bold">Aktif</label>
+        <p-checkbox [binary]="true" formControlName="aktif" id="aktif"></p-checkbox>
       </div>
     </div>
 

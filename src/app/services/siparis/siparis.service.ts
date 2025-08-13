@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {EnumRecord, GenericBaseModel, MasaModel} from '../../model/masa/masa.model';
-import {SiparisModel, SiparisSaveModel, SiparisUpdateModel} from '../../model/siparis/siparis.model';
-import {PersonelModel} from '../../model/personel/personel.model';
+import {EnumRecord, GenericBaseModel} from '../../model/masa/masa.model';
+import {SiparisModel, SiparisUpdateModel} from '../../model/siparis/siparis.model';
 
 
 @Injectable({
@@ -11,8 +10,6 @@ import {PersonelModel} from '../../model/personel/personel.model';
 })
 export class SiparisService {
   private apiUrl = 'http://localhost:8082/siparis';
-  private masaApiUrl = 'http://localhost:8080/masalar';
-  private personelApiUrl = 'http://localhost:8080/personel';
 
   constructor(private http: HttpClient) {
   }
@@ -25,9 +22,6 @@ export class SiparisService {
     return this.http.get<GenericBaseModel<SiparisModel>>(`${this.apiUrl}/${id}`);
   }
 
-  saveSiparis(data: SiparisSaveModel): Observable<GenericBaseModel<number>> {
-    return this.http.post<GenericBaseModel<number>>(`${this.apiUrl}/save`, data);
-  }
 
   updateSiparis(data: SiparisUpdateModel): Observable<GenericBaseModel<number>> {
     return this.http.put<GenericBaseModel<number>>(`${this.apiUrl}/update`, data);
@@ -38,14 +32,7 @@ export class SiparisService {
   }
 
   getSiparisDurumEnum(): Observable<GenericBaseModel<EnumRecord[]>> {
-    return this.http.get<GenericBaseModel<EnumRecord[]>>(`${this.apiUrl}/durum-enum`);
+    return this.http.get<GenericBaseModel<EnumRecord[]>>(`${this.apiUrl}/siparisDurum-enum`);
   }
 
-  getAllMasalar(): Observable<GenericBaseModel<MasaModel[]>> {
-    return this.http.get<GenericBaseModel<MasaModel[]>>(`${this.apiUrl}/all`);
-  }
-
-  getAllPersoneller(): Observable<GenericBaseModel<PersonelModel[]>> {
-    return this.http.get<GenericBaseModel<PersonelModel[]>>(`${this.apiUrl}/all`);
-  }
 }

@@ -28,7 +28,7 @@
       label="Ekle">
     </p-button>
 
-    <!--@if (selectedMusteriBildirimObject()) {-->
+    @if (selectedMusteriBildirimObject()) {
     <p-button
       label="Güncele"
       class="buttonEdit"
@@ -55,7 +55,7 @@
           'outline': 'none'
         }">
     </p-button>
-    <!-- }-->
+     }
   </div>
 </p-toolbar>
 
@@ -70,22 +70,21 @@
   <ng-template #header>
 
     <tr>
-      <th></th>
       <th>#</th>
       <th>Müşteri</th>
+      <th>Sipariş</th>
       <th>Bildirim Türü</th>
+      <th>Puan</th>
       <th>Mesaj</th>
-      <th>Bildirim Zamanı</th>
+      <th>Oluşturma</th>
+      <th>Güncelleme</th>
     </tr>
   </ng-template>
   <ng-template #body let-bildirim let-i="rowIndex">
     <tr [pSelectableRow]="bildirim">
-      <td>
-        <p-tableRadioButton [value]="bildirim"></p-tableRadioButton>
-      </td>
       <td>{{ i + 1 }}</td>
       <td>{{ bildirim.musteriAd || 'Bilinmeyen Müşteri' }}</td>
-      <td>{{ bildirim?.siparis?.ad || '-' }}</td>
+      <td>{{ bildirim.siparis || '-' }}</td> <!-- DÜZELTİLDİ -->
       <td>{{ bildirim.geriBildirimTur?.label || bildirim.geriBildirimTur }}</td>
       <td>{{ bildirim.puan }}</td>
       <td>{{ bildirim.yorum }}</td>

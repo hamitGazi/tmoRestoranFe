@@ -39,4 +39,8 @@ export class MasaService {
   getMasaDurumEnum(): Observable<GenericBaseModel<EnumRecord[]>> {
     return this.http.get<GenericBaseModel<EnumRecord[]>>(`${this.apiUrl}/durum-enum`);
   }
+
+  getMasaByQr(qrKod: string): Observable<GenericBaseModel<MasaModel>> {
+    return this.http.get<GenericBaseModel<MasaModel>>(`${this.apiUrl}/qr/${qrKod}`);
+  }
 }

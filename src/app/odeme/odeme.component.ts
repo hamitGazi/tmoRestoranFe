@@ -1,23 +1,26 @@
 import {Component, OnInit, signal} from '@angular/core';
-import {OdemeModel, SiparisOption} from '../model/odeme/odeme.model';
+import {OdemeModel} from '../model/odeme/odeme.model';
 import {EnumRecord, MasaModel} from '../model/masa/masa.model';
-import {FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {OdemeService} from '../services/odeme/odeme.service';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {OdemeForm} from '../model/odeme/odeme.form';
 import {Toolbar} from 'primeng/toolbar';
-import {Button} from 'primeng/button';
+import {Button, ButtonDirective} from 'primeng/button';
 import {TableModule} from 'primeng/table';
 import {Dialog} from 'primeng/dialog';
 import {Select} from 'primeng/select';
-import {Toast} from 'primeng/toast';
-import {ConfirmDialog} from 'primeng/confirmdialog';
 import {SiparisService} from '../services/siparis/siparis.service';
+import {InputText} from 'primeng/inputtext';
+import {Tag} from 'primeng/tag';
+import {IconField} from 'primeng/iconfield';
+import {Tooltip} from 'primeng/tooltip';
+import {InputNumber} from 'primeng/inputnumber';
+import {DatePicker} from 'primeng/datepicker';
+
 
 @Component({
   selector: 'app-odeme',
-
-
   templateUrl: './odeme.component.html',
   imports: [
     Toolbar,
@@ -26,16 +29,24 @@ import {SiparisService} from '../services/siparis/siparis.service';
     ReactiveFormsModule,
     Dialog,
     Select,
-    Toast,
-    ConfirmDialog
+    InputText,
+    FormsModule,
+    Tag,
+    IconField,
+    ButtonDirective,
+    Tooltip,
+    InputNumber,
+    DatePicker
   ],
   styleUrl: './odeme.component.css'
 })
 export class OdemeComponent implements OnInit {
+
   odemeDatas = signal<OdemeModel[]>([]);
   selectedOdemeObject = signal<OdemeModel | null>(null);
-  siparisOptions = signal<SiparisOption[]>([]);
-  odemeTurOptions = signal<EnumRecord[]>([]);
+  siparisDurOptions = signal<EnumRecord[]>([]);
+  odemeYonOptions = signal<EnumRecord[]>([]);
+  odemeDurOptions = signal<EnumRecord[]>([]);
 
   odemeSaveForm!: FormGroup;
   displaySaveForm = signal<boolean>(false);
@@ -58,8 +69,9 @@ export class OdemeComponent implements OnInit {
 
   ngOnInit() {
     this.getAllOdemeler();
-    this.getSiparisOptions();
-    this.getOdemeTurOptions();
+    this.getSiparisDurOptions();
+    this.getOdemeYonOptions();
+    this.getOdemeDurOptions();
   }
 
   getAllOdemeler() {
@@ -77,10 +89,13 @@ export class OdemeComponent implements OnInit {
     });
   }
 
-  getSiparisOptions() {
-    this.siparisService.getAllSiparisler().subscribe({
+  getSiparisDurOptions() {
+    this.siparisService.getSiparisDurumEnum().subscribe({
       next: (res) => {
-        this.siparisOptions.set(res.data);
+
+        this.siparisDurOptions.set(
+          res.data
+        );
       },
       error: (err) => {
         this.messageService.add({
@@ -92,10 +107,26 @@ export class OdemeComponent implements OnInit {
     });
   }
 
-  getOdemeTurOptions() {
-    this.odemeService.getOdemeTurEnum().subscribe({
+  getOdemeYonOptions() {
+    this.odemeService.getOdemeYonEnum().subscribe({
       next: (res) => {
-        this.odemeTurOptions.set(res.data);
+        this.odemeYonOptions.set(res.data);
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Ödeme türleri yüklenemedi.'
+        });
+      }
+    });
+  }
+
+  getOdemeDurOptions() {
+    this.odemeService.getOdemeDurumEnum().subscribe({
+      next: (res) => {
+        this.odemeDurOptions.set(res.data
+        );
       },
       error: (err) => {
         this.messageService.add({
@@ -112,9 +143,17 @@ export class OdemeComponent implements OnInit {
     this.selectedOdemeObject.set(null);
   }
 
-  showSaveForm() {
-    this.odemeSaveForm.reset();
-    this.odemeSaveForm.patchValue({odemeZamani: new Date()});
+  showOdemeForm() {
+    this.displayUpdateForm.set(false)
+    this.odemeSaveForm.reset({})
+    this.odemeService.getOdemeById(this.selectedOdemeObject()?.id).subscribe(res => {
+      this.odemeSaveForm.patchValue({
+        ...res.data,
+        odemeZaman: new Date(),
+        siparis: res.data?.siparis?.id,
+
+      });
+    })
     this.displaySaveForm.set(true);
   }
 
@@ -124,44 +163,38 @@ export class OdemeComponent implements OnInit {
   }
 
   saveOdeme() {
-    if (this.odemeSaveForm.valid) {
-      this.odemeService.saveOdeme(this.odemeSaveForm.value).subscribe({
-        next: (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Başarılı',
-            detail: 'Ödeme kaydedildi.'
-          });
-          this.refresh();
-          this.closeSaveForm();
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Hata',
-            detail: 'Ödeme kaydedilemedi.'
-          });
-        }
-      });
-    }
-  }
+    this.odemeService.saveOdeme(this.odemeSaveForm.value).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Başarılı',
+          detail: 'Ödeme kaydedildi.'
+        });
+        this.refresh();
+        this.closeSaveForm();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Hata',
+          detail: 'Ödeme kaydedilemedi.'
+        });
+      }
+    });
 
+  }
 
   showUpdateForm() {
-    this.odemeUpdateForm.reset({
-      id: this.selectedOdemeObject()?.id
-    });
+    this.odemeUpdateForm.reset({});
     this.odemeService.getOdemeById(this.selectedOdemeObject()?.id).subscribe(res => {
       this.displayUpdateForm.set(true);
-
       this.odemeUpdateForm.patchValue({
         ...res.data,
+        siparis: res.data?.siparis?.id
 
       });
-
     })
   }
-
 
   closeUpdateForm() {
     this.odemeUpdateForm.reset();
@@ -169,7 +202,6 @@ export class OdemeComponent implements OnInit {
   }
 
   updateOdeme() {
-
     this.odemeService.updateOdeme(this.odemeUpdateForm.value).subscribe({
       next: (res) => {
         this.messageService.add({
@@ -191,49 +223,5 @@ export class OdemeComponent implements OnInit {
   }
 
 
-  deleteOdemeConfirm(event: any) {
-
-    this.confirmationService.confirm({
-      message: 'Bu ödemeyi silmek istediğinize emin misiniz?',
-      header: 'Silme Onayı',
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonStyleClass: 'p-button-success p-button-text success-border',
-      rejectButtonStyleClass: 'p-button-danger p-button-text danger-border',
-      acceptLabel: 'Evet',
-      rejectLabel: 'Hayır',
-      accept: () => {
-        this.deleteOdeme();
-      },
-      reject: () => {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'İptal',
-          detail: 'Silme işlemi iptal edildi.'
-        });
-      }
-    });
-  }
-
-  deleteOdeme() {
-    const id = this.selectedOdemeObject()?.id;
-
-    this.odemeService.deleteOdeme(id).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Başarılı',
-          detail: 'Ödeme silindi.'
-        });
-        this.refresh();
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Hata',
-          detail: 'Ödeme silinemedi.'
-        });
-      }
-    });
-  }
 
 }

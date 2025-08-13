@@ -15,8 +15,6 @@ import {MasaModel} from '../model/masa/masa.model';
 
 @Component({
   selector: 'app-musteri',
-
-
   templateUrl: './musteri.component.html',
   imports: [
     Toolbar,

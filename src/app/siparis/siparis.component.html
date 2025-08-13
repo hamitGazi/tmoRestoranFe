@@ -1,3 +1,4 @@
+
 <p-toolbar class="mt-0">
   <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
 
@@ -15,7 +16,7 @@
     </p-button>
 
     <p-button
-      (click)="showSaveForm()"
+      (click)="goToSaveSiparisFrom()"
       [style]="{
         'background-color': '#28a745',
         'margin': '2px',
@@ -68,72 +69,40 @@
   selectionMode="single"
   stripedRows>
   <ng-template #header>
+
     <tr>
       <th>#</th>
       <th>Masa</th>
-      <th>Müşteri Adı</th>
-      <th>Toplam Tutar</th>
+      <th>Müşteri</th>
       <th>Personel</th>
-      <th>Durum</th>
+      <th>Toplam Tutar</th>
       <th>Oluşturma Zamanı</th>
+      <th>Siparis Durumu</th>
+      <th>Siparis Not Ekleme</th>
+      <th>İşlem</th>
     </tr>
   </ng-template>
   <ng-template #body let-siparis let-i="rowIndex">
     <tr [pSelectableRow]="siparis">
       <td>{{ i + 1 }}</td>
-      <td>{{ siparis.masaId?.qrKodUrl || 'Bilinmeyen Masa' }}</td>
+      <td>{{ siparis.masa?.qrKodUrl  || 'Bilinmeyen Masa' }}</td>
       <td>{{ siparis.musteriAd }}</td>
+      <td>{{ siparis.personel?.ad || '—' }}</td>
       <td>{{ siparis.toplamTutar }}</td>
-      <!--  <td>{{ personelOptions().find(personel => personel.id === siparis.personelId)?.ad || 'Bilinmeyen Personel' }}</td>
-        <td>{{ siparisDurumOptions().find(durum => durum.name === siparis.siparisDurumu)?.label || siparis.siparisDurumu }}</td>-->
       <td>{{ siparis.olusturmaZamani }}</td>
+      <td>{{ siparis.siparisDurumu }}</td>
+      <td>{{ siparis.siprisNot }}</td>
+      <td>
+        <p-button
+          icon="pi pi-search"
+          label="Detay"
+          (click)="goToSiparisKalemleri(siparis.id)"
+          styleClass="p-button-sm p-button-secondary">
+        </p-button>
+      </td>
     </tr>
   </ng-template>
 </p-table>
-
-<form [formGroup]="siparisSaveForm">
-  <p-dialog header="Sipariş Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
-    <div class="formgrid grid">
-      <div class="field col-12">
-        <label for="masaId" style="font-weight: bold">Masa</label>
-        <p-select
-          id="masaId"
-          [options]="masaOptions()"
-          optionLabel="qrKodUrl"
-          optionValue="id"
-          formControlName="masaId"
-          class="w-full"
-          placeholder="Masa seçiniz">
-        </p-select>
-      </div>
-      <div class="field col-12">
-        <label for="musteriAd" style="font-weight: bold">Müşteri Adı</label>
-        <input id="musteriAd" placeholder="Müşteri adı giriniz" pInputText class="w-full" formControlName="musteriAd">
-      </div>
-      <div class="field col-12">
-        <label for="personelId" style="font-weight: bold">Personel</label>
-        <p-select
-          id="personelId"
-          [options]="personelOptions()"
-          optionLabel="ad"
-          optionValue="id"
-          formControlName="personelId"
-          class="w-full"
-          placeholder="Personel seçiniz">
-        </p-select>
-      </div>
-      <div class="field col-12">
-        <label for="not" style="font-weight: bold">Not</label>
-        <input id="not" placeholder="Not giriniz" pInputText class="w-full" formControlName="not">
-      </div>
-    </div>
-
-    <ng-template #footer>
-      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
-      <p-button (click)="saveSiparis()" [disabled]="!siparisSaveForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
-    </ng-template>
-  </p-dialog>
-</form>
 
 <form [formGroup]="siparisUpdateForm">
   <p-dialog header="Sipariş Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
@@ -141,7 +110,22 @@
       <div class="field col-12">
         <label for="idUp">Sipariş ID</label>
         <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!"
-               tooltipPosition="top">
+               upperCase>
+      </div>
+
+
+      <div class="field col-12">
+        <label for="masaUp">Masa</label>
+        <p-select
+          id="masaUp"
+          [options]="masaOptions()"
+          optionLabel="qrKodUrl"
+          appendTo="body"
+          optionValue="id"
+          formControlName="masa"
+          class="w-full"
+          placeholder="Masa seçiniz">
+        </p-select>
       </div>
       <div class="field col-12">
         <label for="musteriAdUp">Müşteri Adı</label>
@@ -154,7 +138,8 @@
           [options]="personelOptions()"
           optionLabel="ad"
           optionValue="id"
-          formControlName="personelId"
+          appendTo="body"
+          formControlName="personel"
           class="w-full"
           placeholder="Personel seçiniz">
         </p-select>
@@ -166,19 +151,21 @@
           [options]="siparisDurumOptions()"
           optionLabel="label"
           optionValue="name"
+          appendTo="body"
           formControlName="siparisDurumu"
           class="w-full"
           placeholder="Durum seçiniz">
         </p-select>
       </div>
       <div class="field col-12">
-        <label for="notUp">Not</label>
-        <input id="notUp" pInputText class="w-full" formControlName="not">
+        <label for="siparisNotUp">Sipariş Notu</label>
+        <input id="siparisNotUp" pInputText class="w-full" formControlName="siparisNot">
       </div>
+
     </div>
 
-    <ng-template #footer>
-      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+    <ng-template pTemplate="footer">
+      <p-button (click)="closeUpdateForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
       <p-button (click)="updateSiparis()" [disabled]="!siparisUpdateForm.valid" icon="pi pi-save"
                 label="Kaydet"></p-button>
     </ng-template>

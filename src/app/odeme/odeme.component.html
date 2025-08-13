@@ -1,6 +1,5 @@
 <p-toolbar class="mt-0">
   <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
-
     <p-button
       (click)="refresh()"
       [style]="{
@@ -13,24 +12,24 @@
       icon="pi pi-refresh"
       label="Yenile">
     </p-button>
-
-    <p-button
-      (click)="showSaveForm()"
-      [style]="{
+    @if (selectedOdemeObject()) {
+      <p-button
+        (click)="showOdemeForm()"
+        [style]="{
         'background-color': '#28a745',
         'margin': '2px',
         'border': 'none',
         'box-shadow': 'none',
         'outline': 'none'
       }"
-      class="buttonAdd"
-      icon="pi pi-plus"
-      label="Ekle">
-    </p-button>
+        class="buttonAdd"
+        icon="pi pi-plus"
+        label="Ödeme">
+      </p-button>
 
-    @if (selectedOdemeObject()) {
+
       <p-button
-        label="Güncele"
+        label="Güncelle"
         class="buttonEdit"
         icon="pi pi-pen-to-square"
         (click)="showUpdateForm()"
@@ -42,155 +41,307 @@
         }">
       </p-button>
 
-      <p-button
-        label="Sil"
-        class="buttonDelete"
-        icon="pi pi-trash"
-        (click)="deleteOdemeConfirm($event)"
-        [style]="{
-          'background-color': '#dc3545',
-          'margin': '2px',
-          'border': 'none',
-          'box-shadow': 'none',
-          'outline': 'none'
-        }">
-      </p-button>
     }
   </div>
 </p-toolbar>
 
-<p-table
-  [(selection)]="selectedOdemeObject"
-  [metaKeySelection]="metaKey"
-  [tableStyle]="{'min-width': '50rem'}"
-  [value]="odemeDatas()"
-  dataKey="id"
-  selectionMode="single"
-  stripedRows>
-  <ng-template #header>
+<div class="card">
+  <p-table
+    #dt
+    [(selection)]="selectedOdemeObject"
+    [globalFilterFields]="[
+  'siparis.id',
+  'masa.qrKodUrl',
+  'siparis.siparisDurum',
+  'odemeDurum',
+  'odemeYontem',
+  'toplamTutar',
+  'siparis.olustumaZaman',
+  'odemeZaman'
+]"
+    [paginator]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [rows]="10"
+    [tableStyle]="{ 'min-width': '100rem' }"
+    [value]="odemeDatas()"
+    dataKey="id"
+    selectionMode="single"
+  >
+    <ng-template pTemplate="caption">
 
-    <tr>
-      <th>#</th>
-      <th>Sipariş</th>
-      <th>Ödeme Türü</th>
-      <th>Tutar</th>
-      <th>Ödeme Zamanı</th>
-    </tr>
-  </ng-template>
-  <ng-template #body let-odeme let-i="rowIndex">
-    <tr [pSelectableRow]="odeme">
-      <td>{{ i + 1 }}</td>
-      <td>{{ odeme.siparisId?.musteriAd || 'Bilinmeyen Sipariş' }}</td>
-      <td>{{ odeme.odemeTuru?.label || odeme.odemeTuru }}</td>
-      <td>{{ odeme.tutar }}</td>
-      <td>{{ odeme.odemeZamani }}</td>
-    </tr>
-  </ng-template>
-</p-table>
+      <div class="flex">
+        <p-iconField class="ml-auto" iconPosition="left">
+          <input
+            (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+            pInputText
+            placeholder="Anahtar kelime ara"
+            type="text"
+          />
+        </p-iconField>
+      </div>
 
-<form [formGroup]="odemeSaveForm">
-  <p-dialog header="Ödeme Ekle" [(visible)]="displaySaveForm" [style]="{width: '400px'}" [modal]="true">
-    <div class="formgrid grid">
+    </ng-template>
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Sipariş ID</th>
+        <th>Masa Numarası/Adı</th>
+
+        <th>Sipariş Durumu</th>
+        <th>Ödeme Durumu</th>
+        <th>Ödeme Yöntemi</th>
+        <th>Sipariş Oluşturma Zamanı</th>
+        <th>Ödeme Zamanı</th>
+        <th>Sipariş Toplamı</th>
+        <th>Ödeme Tutarı</th>
+
+      </tr>
+      <tr>
+        <th>
+          <p-columnFilter
+            [showMenu]="false"
+            ariaLabel="Sipariş ID Filtresi"
+            field="siparis.id"
+            matchMode="equals"
+            placeholder="Sipariş ID ile ara"
+            type="text"
+          ></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter
+            [showMenu]="false"
+            ariaLabel="QR URL Filtresi"
+            field="masa.qrKodUrl"
+            matchMode="equals"
+            placeholder="Masa No ile ara"
+            type="text"
+          ></p-columnFilter>
+        </th>
+
+        <th>
+          <p-columnFilter [showMenu]="false" field="siparis.siparisDurumu" matchMode="equals">
+            <ng-template let-filter="filterCallback" let-value pTemplate="filter">
+              <p-select
+
+                (onChange)="filter($event.value)"
+                [options]="siparisDurOptions()"
+                appendTo="body"
+                optionLabel="label"
+                optionValue="name"
+                placeholder="Seçiniz"
+              >
+                <ng-template let-option pTemplate="item">
+                  <p-tag [value]="option.name"/>
+                </ng-template>
+              </p-select>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" field="odemeDurumu" matchMode="equals">
+            <ng-template let-filter="filterCallback" let-value pTemplate="filter">
+              <p-select
+                (onChange)="filter($event.value)"
+                [options]="odemeDurOptions()"
+                appendTo="body"
+                optionLabel="label"
+
+                optionValue="name"
+                placeholder="Seçiniz">
+                >
+                <ng-template let-option pTemplate="item">
+                  <p-tag [value]="option.name"/>
+                </ng-template>
+              </p-select>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMenu]="false" field="yontemi" matchMode="equals">
+            <ng-template let-filter="filterCallback" let-value pTemplate="filter">
+              <p-select
+                (onChange)="filter($event.value)"
+                [options]="odemeYonOptions()"
+                appendTo="body"
+
+                optionLabel="label"
+                optionValue="name"
+                placeholder="Seçiniz"
+              >
+                <ng-template let-option pTemplate="item">
+                  <p-tag [value]="option.name"></p-tag>
+                </ng-template>
+              </p-select>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+
+        <th>
+          <p-columnFilter
+            ariaLabel="Oluşturma Zamanı Filtresi"
+            field="olusturmaZamani"
+            placeholder="Oluşturma zamanı ile ara"
+            type="date"
+
+          ></p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter
+            ariaLabel="Ödeme Zamanı Filtresi"
+            field="odemeZamani"
+            matchMode="equals"
+            placeholder="Ödeme zamanı ile ara"
+            type="date"
+          ></p-columnFilter>
+        </th>
+        <th>
+        </th>
+        <th>
+
+        </th>
+
+        <th class="text-right">
+          <button
+            (click)="dt.clear()"
+            class="p-button-rounded p-button-text p-button-danger ml-2"
+            icon="pi pi-filter-slash"
+            pButton
+            pTooltip="Filtreleri Temizle"
+            type="button"
+          ></button>
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template let-odeme pTemplate="body">
+      <tr [pSelectableRow]="odeme">
+        <td>{{ odeme.siparis.id }}</td>
+        <td>{{ odeme.masa.qrKodUrl }}</td>
+
+        <td>{{ odeme.siparis.siparisDurum }}</td>
+        <td>{{ odeme.odemeDurum }}</td>
+        <td>{{ odeme.odemeYontem }}</td>
+        <td>{{ odeme.siparis.olustumaZaman }}</td>
+        <td>{{ odeme.odemeZaman }}</td>
+        <td>{{ odeme.siparis.toplamTutar }}</td>
+        <td>{{ odeme.toplamTutar }}</td>
+
+        <td></td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="11">Ödeme bulunamadı.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<form (ngSubmit)="saveOdeme()" [formGroup]="odemeSaveForm">
+  <p-dialog
+    [(visible)]="displaySaveForm"
+    [modal]="true"
+    [style]="{ width: '500px' }"
+    header="Siparişi Tamamla"
+  >
+    <div class="formgrid grid ">
       <div class="field col-12">
-        <label for="siparis" style="font-weight: bold">Sipariş</label>
-        <p-select
-          id="siparis"
-          [options]="siparisOptions()"
-          optionLabel="musteriAd"
-          optionValue="id"
-          formControlName="siparis"
-          class="w-full"
-          placeholder="Sipariş seçiniz">
-        </p-select>
+        <label style="font-weight: bold">Odeme Zamanı</label>
+        <p-date-picker
+          [showButtonBar]="true"
+          [style]="{width:'100%'}"
+          appendTo="body"
+          dateFormat="dd.mm.yy"
+          formControlName="odemeZaman"
+        ></p-date-picker>
       </div>
       <div class="field col-12">
-        <label for="odemeTuru" style="font-weight: bold">Ödeme Türü</label>
+        <label for="odemeT" style="font-weight: bold">Ödeme Yöntemi</label>
         <p-select
-          id="odemeTuru"
-          [options]="odemeTurOptions()"
+          [options]="odemeYonOptions()"
+          [style]="{width: '100%'}"
+          appendTo="body"
+          formControlName="odemeYontem"
+          id="odemeT"
           optionLabel="label"
           optionValue="name"
-          formControlName="odemeTuru"
+          placeholder="Ödeme türü seçiniz"
+        ></p-select>
+      </div>
+      <div class="field col-12">
+        <label for="ad" style="font-weight: bold">Ödeme Durumu</label>
+        <p-select
+          [options]="odemeDurOptions()"
+          [style]="{width: '100%'}"
+          appendTo="body"
+          formControlName="odemeDurum"
+          id="ad"
+          optionLabel="label"
+          optionValue="name"
+          placeholder="Ödeme durumu seçiniz"
+        ></p-select>
+      </div>
+      <div class="field col-12">
+        <label for="a" style="font-weight: bold">Ödeneme Tutarı</label>
+        <p-inputNumber
+          [style]="{width: '100%'}"
           class="w-full"
-          placeholder="Ödeme türü seçiniz">
-        </p-select>
+          currency="TRY"
+          formControlName="toplamTutar"
+          id="a"
+          locale="tr-TR"
+          mode="currency"
+        ></p-inputNumber>
       </div>
-      <div class="field col-12">
-        <label for="tutar" style="font-weight: bold">Tutar</label>
-        <input id="tutar" type="number" placeholder="Tutar giriniz" pInputText class="w-full" formControlName="tutar">
-      </div>
-      <div class="field col-12">
-        <label style="font-weight: bold">Ödeme Zamanı</label>
-        <p-calendar
-          id="odemeZamani"
-          formControlName="odemeZamani"
-          dateFormat="dd/mm/yy"
 
-          class="w-full">
-        </p-calendar>
-      </div>
     </div>
 
-    <ng-template #footer>
-      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
-      <p-button (click)="saveOdeme()" [disabled]="!odemeSaveForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
+
+      <ng-template #footer>
+        <p-button (click)="closeUpdateForm()"      styleClass="p-button-text"  icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+        <p-button (click)="saveOdeme()" [disabled]="!odemeSaveForm.valid" icon="pi pi-save"  styleClass="p-button-success"
+                  label="Kaydet"></p-button>
+      </ng-template>
+
+  </p-dialog>
+
+</form>
+<form (ngSubmit)="updateOdeme()" [formGroup]="odemeUpdateForm">
+  <p-dialog
+    [(visible)]="displayUpdateForm"
+    [modal]="true"
+    [style]="{ width: '500px' }"
+    header="Ödeme Güncelle"
+  >
+    <div class="formgrid grid ">
+      <div class="field col-12">
+        <label for="odemeTu" style="font-weight: bold">Ödeme Durumu</label>
+        <p-select
+          [options]="odemeDurOptions()"
+          [style]="{width: '100%'}"
+          appendTo="body"
+          formControlName="odemeDurum"
+          id="odemeTu"
+          optionLabel="label"
+          optionValue="name"
+          placeholder="Ödeme türü seçiniz"
+        ></p-select>
+      </div>
+
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button
+        (click)="closeUpdateForm()"
+        icon="pi pi-times"
+        label="İptal"
+        styleClass="p-button-text"
+      ></p-button>
+      <p-button
+        icon="pi pi-check"
+        label="Güncelle"
+        styleClass="p-button-success"
+        type="submit"
+      ></p-button>
     </ng-template>
   </p-dialog>
 </form>
-
-<form [formGroup]="odemeUpdateForm">
-  <p-dialog header="Ödeme Düzenle" [(visible)]="displayUpdateForm" [style]="{width: '400px'}" [modal]="true">
-    <div class="formgrid grid">
-      <div class="field col-12">
-        <label for="idUp">Ödeme ID</label>
-        <input id="idUp" pInputText class="w-full" formControlName="id" readonly pTooltip="Bu alan düzenlenemez!"
-               tooltipPosition="top">
-      </div>
-      <div class="field col-12">
-        <label for="siparisIdUp">Sipariş</label>
-        <p-select
-          id="siparisIdUp"
-          [options]="siparisOptions()"
-          optionLabel="musteriAd"
-          optionValue="id"
-          formControlName="siparis"
-          class="w-full"
-          placeholder="Sipariş seçiniz">
-        </p-select>
-      </div>
-      <div class="field col-12">
-        <label for="odemeTuruUp">Ödeme Türü</label>
-        <p-select
-          id="odemeTuruUp"
-          [options]="odemeTurOptions()"
-          optionLabel="label"
-          optionValue="name"
-          formControlName="odemeTuru"
-          class="w-full"
-          placeholder="Ödeme türü seçiniz">
-        </p-select>
-      </div>
-      <div class="field col-12">
-        <label for="tutarUp">Tutar</label>
-        <input id="tutarUp" type="number" pInputText class="w-full" formControlName="tutar">
-      </div>
-      <div class="field col-12">
-        <label>Ödeme Zamanı</label>
-        <p-calendar
-          id="odemeZamaniUp"
-          formControlName="odemeZamani"
-          dateFormat="dd/mm/yy"
-
-          class="w-full">
-        </p-calendar>
-      </div>
-    </div>
-    <ng-template #footer>
-      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
-      <p-button (click)="updateOdeme()" [disabled]="!odemeUpdateForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
-    </ng-template>
-  </p-dialog>
-</form>
-
-<p-toast></p-toast>
-<p-confirmDialog></p-confirmDialog>

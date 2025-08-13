@@ -7,7 +7,9 @@ export class PersonelForm {
       soyad: new FormControl('', [Validators.required]),
       telefon: new FormControl('', [Validators.required, Validators.pattern('^[0-9]{10}$')]),
       email: new FormControl('', [Validators.email]),
-      rol: new FormControl(null, [Validators.required])
+      rol: new FormControl(null, [Validators.required]),
+      sifre: new FormControl(null, [Validators.required]),
+      aktif: new FormControl(null, [Validators.required])
     });
   }
 
@@ -18,7 +20,9 @@ export class PersonelForm {
       soyad: new FormControl('', [Validators.required]),
       telefon: new FormControl('', [Validators.required, Validators.pattern('^[0-9]{10}$')]),
       email: new FormControl('', [Validators.email]),
-      rol: new FormControl(null, [Validators.required])
+      rol: new FormControl(null, [Validators.required]),
+      sifre: new FormControl(null, [Validators.required]),
+      aktif: new FormControl(null, [Validators.required])
     });
   }
 }

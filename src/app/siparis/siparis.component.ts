@@ -4,7 +4,7 @@ import {EnumRecord, MasaModel} from '../model/masa/masa.model';
 import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {SiparisService} from '../services/siparis/siparis.service';
 import {ConfirmationService, MessageService} from 'primeng/api';
-import {SiparisForm} from '../model/siparis/siparis.form';
+import {ListSiparisForm} from '../model/siparis/siparis.form';
 import {Toolbar} from 'primeng/toolbar';
 import {Button} from 'primeng/button';
 import {TableModule} from 'primeng/table';
@@ -12,11 +12,14 @@ import {Dialog} from 'primeng/dialog';
 import {Select} from 'primeng/select';
 import {Toast} from 'primeng/toast';
 import {ConfirmDialog} from 'primeng/confirmdialog';
+import {InputText} from 'primeng/inputtext';
+import {Tooltip} from 'primeng/tooltip';
+import {Router} from '@angular/router';
+import {MasaService} from '../services/masa/masa.service';
+import {PersonelService} from '../services/personel/personel.service';
 
 @Component({
   selector: 'app-siparis',
-
-
   templateUrl: './siparis.component.html',
   imports: [
     Toolbar,
@@ -26,7 +29,9 @@ import {ConfirmDialog} from 'primeng/confirmdialog';
     Dialog,
     Select,
     Toast,
-    ConfirmDialog
+    ConfirmDialog,
+    InputText,
+    Tooltip
   ],
   styleUrl: './siparis.component.css'
 })
@@ -38,8 +43,7 @@ export class SiparisComponent implements OnInit {
   personelOptions = signal<PersonelOption[]>([]);
   siparisDurumOptions = signal<EnumRecord[]>([]);
 
-  siparisSaveForm!: FormGroup;
-  displaySaveForm = signal<boolean>(false);
+
 
   siparisUpdateForm!: FormGroup;
   displayUpdateForm = signal<boolean>(false);
@@ -50,11 +54,14 @@ export class SiparisComponent implements OnInit {
 
   constructor(
     private siparisService: SiparisService,
+    private masaService: MasaService,
+    private personelService: PersonelService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router,
   ) {
-    this.siparisSaveForm = SiparisForm.siparisSaveForm();
-    this.siparisUpdateForm = SiparisForm.siparisUpdateForm();
+
+    this.siparisUpdateForm = ListSiparisForm.siparisUpdateForm();
   }
 
   ngOnInit() {
@@ -68,6 +75,7 @@ export class SiparisComponent implements OnInit {
     this.siparisService.getAllSiparisler().subscribe({
       next: (res) => {
         this.siparisDatas.set(res.data);
+
       },
       error: (err) => {
         this.messageService.add({
@@ -80,7 +88,7 @@ export class SiparisComponent implements OnInit {
   }
 
   getMasaOptions() {
-    this.siparisService.getAllMasalar().subscribe({
+    this.masaService.getAllMasalar().subscribe({
       next: (res) => {
         this.masaOptions.set(res.data);
       },
@@ -95,9 +103,9 @@ export class SiparisComponent implements OnInit {
   }
 
   getPersonelOptions() {
-    this.siparisService.getAllPersoneller().subscribe({
+    this.personelService.getAllPersoneller().subscribe({
       next: (res) => {
-        this.personelOptions.set(res.data.map(personel => ({id: personel.id, ad: personel.ad})));
+        this.personelOptions.set(res.data);
       },
       error: (err) => {
         this.messageService.add({
@@ -129,36 +137,9 @@ export class SiparisComponent implements OnInit {
     this.selectedSiparisObject.set(null);
   }
 
-  showSaveForm() {
-    this.siparisSaveForm.reset();
-    this.displaySaveForm.set(true);
-  }
+  goToSaveSiparisFrom():void{
+    this.router.navigate(['/siparis/yeni'])
 
-  closeSaveForm() {
-    this.siparisSaveForm.reset();
-    this.displaySaveForm.set(false);
-  }
-
-  saveSiparis() {
-
-    this.siparisService.saveSiparis(this.siparisSaveForm.value).subscribe({
-      next: (res) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Başarılı',
-          detail: 'Sipariş kaydedildi.'
-        });
-        this.refresh();
-        this.closeSaveForm();
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Hata',
-          detail: 'Sipariş kaydedilemedi.'
-        });
-      }
-    });
   }
 
 
@@ -168,13 +149,10 @@ export class SiparisComponent implements OnInit {
     });
     this.siparisService.getSiparisById(this.selectedSiparisObject()?.id).subscribe(res => {
       this.displayUpdateForm.set(true);
-
-
       this.siparisUpdateForm.patchValue({
         ...res.data,
-        /*  menuItem: res.data.id*/
-
-
+        masa: res.data.masa.id,
+        personel: res.data.personel.id,
       });
 
     })
@@ -186,7 +164,6 @@ export class SiparisComponent implements OnInit {
   }
 
   updateSiparis() {
-
     this.siparisService.updateSiparis(this.siparisUpdateForm.value).subscribe({
       next: (res) => {
         this.messageService.add({
@@ -209,7 +186,6 @@ export class SiparisComponent implements OnInit {
 
 
   deleteSiparisConfirm(event: any) {
-
     this.confirmationService.confirm({
       message: 'Bu siparişi silmek istediğinize emin misiniz?',
       header: 'Silme Onayı',
@@ -253,4 +229,11 @@ export class SiparisComponent implements OnInit {
     });
   }
 
+  goToSiparisKalemleri(id: number) {
+    this.router.navigate(['/siparis-kalemi'], { queryParams: { siparisId: id } });
+  }
+
 }
+
+
+

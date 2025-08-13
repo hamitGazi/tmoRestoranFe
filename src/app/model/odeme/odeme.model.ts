@@ -1,24 +1,31 @@
 export interface OdemeModel {
-  id: number;
-  siparis: number;
-  odemeTuru: string; // Enum: NAKIT, KREDI_KARTI, HAVALE
-  tutar: number;
-  odemeZamani: string;
+  id?:number;
+  siparis?: SiparisOdemeModel;
+  masa?:MasaModel;
+  toplamTutar?:number;
+  odemeYontem?: EnumRecord;
+  odemeZaman?:Date;
+  odemeDurum?:EnumRecord;
+
 }
 
 export interface OdemeSaveModel {
-  siparis: number;
-  odemeTuru: string;
-  tutar: number;
-  odemeZamani: string;
+  id?:number;
+  siparis?: number;
+  toplamTutar?:number;
+  odemeYontem?: EnumRecord;
+  odemeZaman?:Date;
+  odemeDurum?:EnumRecord;
+
 }
 
 export interface OdemeUpdateModel {
-  id: number;
-  siparis: number;
-  odemeTuru: string;
-  tutar: number;
-  odemeZamani: string;
+  id?:number;
+  siparis?: number;
+  toplamTutar?:number;
+  odemeYontem?: EnumRecord;
+  odemeZaman?:Date;
+  odemeDurum?:EnumRecord;
 }
 
 export interface GenericBaseModel<T> {
@@ -27,7 +34,12 @@ export interface GenericBaseModel<T> {
   status: string;
   data: T;
 }
-
+export interface SiparisOdemeModel{
+  id: number;
+  toplamTutar: number;
+  olusturmaZaman: Date,
+  siparisDurum:EnumRecord
+}
 export interface EnumRecord {
   name: string;
   label: string;
@@ -36,4 +48,9 @@ export interface EnumRecord {
 export interface SiparisOption {
   id: number;
   musteriAd: string;
+}
+
+export interface MasaModel {
+  id: number;
+  qrKodUrl:string;
 }
