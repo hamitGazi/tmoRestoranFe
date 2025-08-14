@@ -133,7 +133,7 @@ export class MenuItemComponent implements OnInit {
   }
 
   showUpdateForm() {
-    console.log("deeeeeeeeeeeeee", this.selectedMenuItemObject()?.kategori);
+
     this.menuItemUpdateForm.reset({
       id: this.selectedMenuItemObject()?.id,
     });

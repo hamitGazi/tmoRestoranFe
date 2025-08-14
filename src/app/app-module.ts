@@ -11,13 +11,15 @@ import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-b
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { Gokhan } from './gokhan/gokhan';
+
+
+
 
 
 @NgModule({
   declarations: [
     App,
-    Gokhan,
+
   ],
   imports: [
     BrowserModule,

@@ -17,8 +17,10 @@ import {RezervasyonComponent} from './rezervasyon/rezervasyon.component';
 import {KullaniciComponent} from './kullanici/kullanici.component';
 import {SiparisKalemiComponent} from './siparis-kalem/siparis-kalem.component';
 import {SiparisYeniComponent} from './siparis-yeni/siparis-yeni-compnent';
-import {HammaddeStoklarComponent} from './hammade-stoklar/hammade-stoklar';
-import {MenuItemReceteComponent} from './menu-item-recete/menu-item-recete';
+
+import {HammaddeStoklarComponent} from './hammadde-stoklar/hammadde-stoklar.component';
+import {MenuItemReceteComponent} from './menu-item-recete/menu-item-recete.component';
+
 
 
 const routes: Routes = [
@@ -29,17 +31,11 @@ const routes: Routes = [
   {path: 'menu-category', component: MenuCategoryComponent},
   {path: 'menu-item', component: MenuItemComponent},
   {path: 'menu-fiyat', component: MenuFiyatComponent},
-
   {path: 'siparis-list', component: SiparisComponent},
   {path: 'siparis/yeni', component: SiparisYeniComponent},
-  /*  { path: 'siparis/:id', component: SiparisDetayComponent }, // ✅ EKLENDİ*/
-
   {path: 'siparis-kalemi', component: SiparisKalemiComponent},
-
   {path: 'musteri', component: MusteriComponent},
-  /*  { path: 'musteri/:id', component: MusteriDetayComponent }, // ✅ EKLENDİ*/
   {path: 'musteri-bildirim', component: MusteriBildirimComponent},
-
   {path: 'odeme', component: OdemeComponent},
   {path: 'personel', component: PersonelComponent},
   {path: 'stok', component: StokComponent},
@@ -47,8 +43,7 @@ const routes: Routes = [
   {path: 'rezervasyon', component: RezervasyonComponent},
   {path: 'kullanici', component: KullaniciComponent},
   {path: 'stok/hammadde', component: HammaddeStoklarComponent},
-  {path: 'stok/recete', component: MenuItemReceteComponent },
-
+ {path: 'stok/recete', component:MenuItemReceteComponent},
   {path: '**', redirectTo: 'dashboard', pathMatch: 'full'},
 ];
 

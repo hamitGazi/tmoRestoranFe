@@ -1,6 +1,6 @@
 export interface StokModel {
   id: number;
-  malzemeAdi: string;
+  malzemeAd: string;
   miktar: number;
   birim: string; // Enum: KG, LT, ADET
   menuItem: number | null;

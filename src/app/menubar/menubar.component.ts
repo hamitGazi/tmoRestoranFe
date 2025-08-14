@@ -283,7 +283,10 @@ export class MenubarComponent implements OnInit {
       {
         label: 'Raporlar',
         icon: 'pi pi-chart-bar',
-        routerLink: '/rapor'
+        items: [
+          { label: 'Satış Raporları', routerLink: '/rapor/satis' },
+          { label: 'Stok Raporları', routerLink: '/rapor/stok' }
+        ]
       },
       {
         label: 'Rezervasyonlar',

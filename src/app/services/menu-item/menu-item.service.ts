@@ -30,7 +30,7 @@ export class MenuItemService {
     return this.http.post<GenericBaseModel<number>>(`${this.apiUrl}/save`, data);
   }
 
-  updateMenuItem(data: MenuItemUpdateModel): Observable<GenericBaseModel<number>> {
+  updateMenuItem(data: any): Observable<GenericBaseModel<number>> {
     return this.http.put<GenericBaseModel<number>>(`${this.apiUrl}/update`, data);
   }
 
