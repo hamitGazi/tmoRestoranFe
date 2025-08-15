@@ -67,8 +67,8 @@
     <tr>
       <th>#</th>
       <th>Ad</th>
-      <th>Açıklama</th>
       <th>Sıra</th>
+      <th>Açıklama</th>
       <th>Aktif</th>
     </tr>
   </ng-template>
@@ -131,14 +131,7 @@
 <form [formGroup]="menuCategoryUpdateForm">
   <p-dialog [(visible)]="displayUpdateForm" [modal]="true" [style]="{width: '400px'}" header="Menü Kategorisi Düzenle">
     <div class="formgrid grid">
-      <div class="field col-12">
-        <label for="idUp">Kategori ID</label>
-        <input class="w-full"
-               formControlName="id" id="idUp"
-               pInputText
-               pTooltip="Bu alan düzenlenemez!" readonly
-               tooltipPosition="top">
-      </div>
+
       <div class="field col-12">
         <label for="adUp">Kategori Adı</label>
         <input class="w-full"

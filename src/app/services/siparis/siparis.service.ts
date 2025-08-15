@@ -28,7 +28,7 @@ export class SiparisService {
   }
 
   deleteSiparis(id: any): Observable<GenericBaseModel<string>> {
-    return this.http.delete<GenericBaseModel<string>>(`${this.apiUrl}/${id}`);
+    return this.http.delete<GenericBaseModel<string>>(`${this.apiUrl}/delete/${id}`);
   }
 
   getSiparisDurumEnum(): Observable<GenericBaseModel<EnumRecord[]>> {

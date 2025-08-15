@@ -128,12 +128,13 @@
           placeholder="Birim seçiniz">
         </p-select>
       </div>
-      <div class="field col-12">
+      <div class="field col-6">
         <label for="miktar" style="font-weight: bold">Miktar</label>
         <input class="w-full" formControlName="miktar"
                id="miktar" min="0" pInputText
                placeholder="Miktar giriniz" type="number">
       </div>
+
     </div>
 
     <ng-template #footer>
@@ -189,6 +190,7 @@
       <label for="miktarUp">Miktar</label>
       <input class="w-full" formControlName="miktar" id="miktarUp" pInputText type="number" min="0">
     </div>
+
 
     <ng-template #footer>
       <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>

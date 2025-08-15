@@ -42,5 +42,8 @@ export class SiparisKalemiService {
     return this.http.delete<GenericBaseModel<string>>(`${this.apiUrl}/delete/${id}`);
   }
 
+  getKalemByMasaId(id: any): Observable<GenericBaseModel<SiparisKalemiModel[]>> {
+    return this.http.get<GenericBaseModel<SiparisKalemiModel[]>>(`${this.apiUrl}/masa/${id}`);
+  }
 
 }

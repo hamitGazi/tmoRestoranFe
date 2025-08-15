@@ -32,7 +32,7 @@ export class StokService {
   }
 
   deleteStok(id: any): Observable<GenericBaseModel<string>> {
-    return this.http.delete<GenericBaseModel<string>>(`${this.apiUrl}/${id}`);
+    return this.http.delete<GenericBaseModel<string>>(`${this.apiUrl}/delete/${id}`);
   }
 
   getBirimEnum(): Observable<GenericBaseModel<EnumRecord[]>> {

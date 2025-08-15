@@ -118,10 +118,6 @@ export class MenuCategoryComponent implements OnInit {
         ...res.data
       })
     })
-    if (this.selectedMenuCategoryObject()) {
-      this.menuCategoryUpdateForm.patchValue(this.selectedMenuCategoryObject()!);
-      this.displayUpdateForm.set(true);
-    }
   }
 
   closeUpdateForm() {
@@ -130,7 +126,7 @@ export class MenuCategoryComponent implements OnInit {
   }
 
   updateMenuCategory() {
-    this.menuCategoryService.updateMenuCategory(this.selectedMenuCategoryObject()).subscribe({
+    this.menuCategoryService.updateMenuCategory(this.menuCategoryUpdateForm.value).subscribe({
       next: (res) => {
         this.messageService.add({
           severity: 'success',

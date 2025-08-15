@@ -41,7 +41,10 @@ export interface GenericBaseModel<T> {
   status: string;
   data: T;
 }
-
+export interface MasaOption {
+  id: number;
+  qrKodUrl : string;
+}
 export interface MenuCategoryOption {
   id: number;
   ad: string;

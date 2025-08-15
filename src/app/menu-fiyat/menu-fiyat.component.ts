@@ -105,8 +105,10 @@ export class MenuFiyatComponent implements OnInit {
 
   showSaveForm() {
     this.menuFiyatSaveForm.reset({
+      gecerlilikBaslangic: new Date(),
       aktif:true
     });
+
     this.displaySaveForm.set(true);
   }
 
