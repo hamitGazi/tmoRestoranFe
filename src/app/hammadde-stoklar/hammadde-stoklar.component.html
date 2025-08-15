@@ -1,0 +1,199 @@
+<p-toolbar class="mt-0">
+  <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
+
+    <p-button
+      (click)="refresh()"
+      [style]="{
+        'background-color': '#4087be',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonRefresh"
+      icon="pi pi-refresh"
+      label="Yenile">
+    </p-button>
+
+    <p-button
+      (click)="showSaveForm()"
+      [style]="{
+        'background-color': '#28a745',
+        'margin': '2px',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonAdd"
+      icon="pi pi-plus"
+      label="Ekle">
+    </p-button>
+
+    @if (selectedStokObject()) {
+      <p-button
+        label="Güncele"
+        class="buttonEdit"
+        icon="pi pi-pen-to-square"
+        (click)="showUpdateForm()"
+        [style]="{
+          'background-color': '#ff9800',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
+      </p-button>
+
+      <p-button
+        label="Sil"
+        class="buttonDelete"
+        icon="pi pi-trash"
+        (click)="deleteStokConfirm($event)"
+        [style]="{
+          'background-color': '#dc3545',
+          'margin': '2px',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }">
+      </p-button>
+    }
+  </div>
+</p-toolbar>
+
+<p-table
+  [(selection)]="selectedStokObject"
+  [metaKeySelection]="metaKey"
+  [tableStyle]="{'min-width': '50rem'}"
+  [value]="stokDatas()"
+  dataKey="id"
+  selectionMode="single"
+  stripedRows>
+  <ng-template #header>
+    <tr>
+      <th>#</th>
+      <th>Malzeme Adı</th>
+      <th>Miktar</th>
+      <th>Kritik Stok</th>
+      <th>Birim</th>
+      <th>Açıklama</th>
+      <th>Oluşturma Tarihi</th>
+      <th>Aktif Stok</th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-i="rowIndex" let-stok>
+    <tr [pSelectableRow]="stok">
+      <td>{{ i + 1 }}</td>
+      <td>{{ stok.ad }}</td>
+      <td>{{ stok.miktar }}</td>
+      <td>{{ stok.kritikMiktar }}</td>
+      <td>{{ stok.birim }}</td>
+      <td>{{ stok.aciklama }}</td>
+      <td>{{ stok.olusturmaTarih }}</td>
+      <td>{{ stok.aktif }}</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<form [formGroup]="stokSaveForm">
+  <p-dialog [(visible)]="displaySaveForm" [modal]="true" [style]="{width: '400px'}" header="Stok Ekle">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="ads" style="font-weight: bold">Malzeme Adı</label>
+        <input class="w-full" formControlName="ad" id="ads" pInputText placeholder="Malzeme adı giriniz"
+               upperCase>
+      </div>
+
+      <div class="field col-12">
+        <label for="birim" style="font-weight: bold">Birim</label>
+        <p-select
+          [options]="birimOptions()"
+          appendTo="body"
+          class="w-full"
+          formControlName="birim"
+          id="birim"
+          optionLabel="label"
+          optionValue="name"
+          placeholder="Birim seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-12">
+        <label for="miktar" style="font-weight: bold">Miktar</label>
+        <input class="w-full" formControlName="miktar"
+               id="miktar" min="0" pInputText
+               placeholder="Miktar giriniz" type="number">
+      </div>
+      <div class="field col-12">
+        <label for="kritikt">Kritik Miktar</label>
+        <input class="w-full" formControlName="kritikMiktar" id="kritikt" min="0"
+               pInputText placeholder=" Kritik stok miktarı giriniz" type="number">
+      </div>
+      <div class="field col-12">
+        <label for="acık" style="font-weight: bold">Stok Açıklaması </label>
+        <input class="w-full" formControlName="aciklama" id="acık" pInputText placeholder="Açıklama giriniz"
+               upperCase>
+      </div>
+
+      <div class="field col-12">
+        <label for="aktif">Aktif</label>
+        <p-checkbox [binary]="true" formControlName="aktif" id="aktif"></p-checkbox>
+      </div>
+    </div>
+
+    <ng-template #footer>
+      <p-button (click)="closeUpdateForm()" icon="pi pi-times" label="İptal" severity="secondary"
+                styleClass="p-button-text"></p-button>
+      <p-button (click)="saveStok()" [disabled]="!stokSaveForm.valid" icon="pi pi-save" label="Kaydet"
+                styleClass="p-button-success"></p-button>
+    </ng-template>
+  </p-dialog>
+
+</form>
+<form [formGroup]="stokUpdateForm">
+  <p-dialog [(visible)]="displayUpdateForm" [modal]="true" [style]="{width: '400px'}" header="Stok Düzenle">
+    <div class="formgrid grid">
+      <div class="field col-12">
+        <label for="malzemeAdiUp">Malzeme Adı</label>
+        <input class="w-full" formControlName="ad" id="malzemeAdiUp" pInputText upperCase>
+      </div>
+
+
+    <div class="field col-12">
+      <label for="birimUp">Birim</label>
+      <p-select
+        [options]="birimOptions()"
+        appendTo="body"
+        class="w-full"
+        formControlName="birim"
+        id="birimUp"
+        optionLabel="label"
+        optionValue="name"
+        placeholder="Birim seçiniz">
+      </p-select>
+    </div>
+    <div class="field col-12">
+      <label for="miktarUp">Miktar</label>
+      <input class="w-full" formControlName="miktar" id="miktarUp" min="0" pInputText type="number">
+    </div>
+    <div class="field col-12">
+      <label for="kritik">Kritik Miktar</label>
+      <input class="w-full" formControlName="kritikMiktar" id="kritik" min="0"
+             pInputText placeholder=" Kritik stok miktar giriniz" type="number">
+    </div>
+      <div class="field col-12">
+      <label for="acıklama" style="font-weight: bold">Stok Açıklaması </label>
+      <input class="w-full" formControlName="aciklama" id="acıklama" pInputText placeholder="Açıklama giriniz"
+             upperCase>
+    </div>
+    <div class="field col-12">
+      <label for="aktifUp">Aktif</label>
+      <p-checkbox [binary]="true" formControlName="aktif" id="aktifUp"></p-checkbox>
+    </div>
+    </div>
+    <ng-template #footer>
+      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="updateStok()" [disabled]="!stokUpdateForm.valid" icon="pi pi-save" label="Kaydet"></p-button>
+    </ng-template>
+  </p-dialog>
+</form>
+
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

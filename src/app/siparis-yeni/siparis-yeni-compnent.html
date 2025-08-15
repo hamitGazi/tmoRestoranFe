@@ -1,0 +1,151 @@
+<!-- ✅ Toolbar -->
+<p-toolbar class="mb-3">
+  <div class="p-toolbar-group-left">
+    <p-button
+      (click)="refresh()"
+      label="Yenile"
+      icon="pi pi-refresh"
+      styleClass="p-button-info"
+      [style]="{ 'margin-right': '5px' }">
+    </p-button>
+
+    <p-button
+      (click)="showSaveForm()"
+      label="Ekle"
+      icon="pi pi-plus"
+      styleClass="p-button-success">
+    </p-button>
+  </div>
+</p-toolbar>
+<form [formGroup]="siparisSaveForm">
+  <p-dialog
+    [(visible)]="displaySaveForm"
+    [modal]="true" [style]="{widt:'%100'}"
+    header="Yeni Sipariş Ekle">
+
+    <!-- Sipariş Üst Bilgisi -->
+    <div class="formgrid grid">
+      <div class="field col-6">
+        <label>Masa</label>
+        <p-select
+          [options]="masaOptions()"
+          appendTo="body"
+          class="w-full"
+          formControlName="masa"
+          optionLabel="qrKodUrl"
+          optionValue="id"
+          placeholder="Ürün seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-6">
+        <label>Müşteri Adı</label>
+        <input class="w-full" formControlName="musteriAd" pInputText placeholder="Müşteri adı giriniz"/>
+      </div>
+    </div>
+   <div class="formgrid grid">
+     <div class="field col-6">
+       <label for="siprisNotUp">Sipariş Notu</label>
+       <input id="siprisNotUp" pInputText class="w-full" formControlName="siparisNot" placeholder="Sipariş notu giriniz">
+     </div>
+     @if (personelListAktif()) {
+       <div class="field col-6">
+         <label>Personel</label>
+         <p-select
+           [options]="personelOptions()"
+           appendTo="body"
+           class="w-full"
+           formControlName="personel"
+           optionLabel="ad"
+           optionValue="id"
+           placeholder="Personel seçiniz">
+         </p-select>
+       </div>
+     }
+   </div>
+
+
+    <hr/>
+
+    <!-- Menü Ürünü Ekleme -->
+    <div [formGroup]="tempMenuItemForm" class="formgrid grid">
+      <div class="field col-4">
+        <label>Menü Ürün</label>
+        <p-select
+          [options]="menuItemOptions()"
+          appendTo="body"
+          class="w-full"
+          formControlName="menuItem"
+          optionLabel="ad"
+          optionValue="id"
+          placeholder="Ürün seçiniz">
+        </p-select>
+      </div>
+
+      <div class="field col-3">
+        <label>Adet</label>
+        <p-inputNumber
+          [min]="1"
+          class="w-full"
+          formControlName="adet"
+          placeholder="Adet">
+        </p-inputNumber>
+      </div>
+
+      <div class="field col-3 ">
+        <label> Siparis Kalem Not</label>
+        <input class="w-full" formControlName="kalemNot" pInputText placeholder="Siparis kalem notu giriniz"/>
+      </div>
+      <!-- Öğün Ekle Butonu -->
+      <div class="field col-2 mt-4 ">
+        <p-button
+          (click)="addMenuItem()"
+          icon="pi pi-plus"
+          label="Öğun Ekle"
+          styleClass="p-button-success">
+        </p-button>
+      </div>
+    </div>
+
+
+
+    <!-- Eklenen Ürünler Listesi -->
+    @if (siparisKalemleri().length > 0) {
+      <div class="field col-12">
+        <label>Eklenen Ürünler</label>
+        <div class="list-header grid">
+          <div class="col-4 header-text">Ürün Adı</div>
+          <div class="col-1 header-text">Adet</div>
+          <div class="col-3 header-text">Not</div>
+          <div class="col-1">Silme</div> <!-- Silme butonu için -->
+
+        </div>
+        <hr>
+        <ul style="list-style-type: none; padding-left: 0;">
+          @for (item of siparisKalemleri(); track $index) {
+            <li class="list-item grid">
+              <div class="col-4 item-text">{{ getMenuItemAdById(item.menuItem) }}</div>
+
+              <div class="col-1 item-text">x{{ item.adet }}</div>
+
+              <div class="col-3 item-text">{{ item.kalemNot ? '(' + item.kalemNot + ')' : '' }}</div>
+
+              <div class="col-1" style="text-align: center;">
+                <p-button
+                  (click)="removeMenuItem($index)"
+                  icon="pi pi-trash"
+                  styleClass="p-button-danger p-button-sm"
+                ></p-button>
+              </div>
+            </li>
+            <hr>
+          }
+        </ul>
+      </div>
+    }
+    <!-- Footer Butonları -->
+    <ng-template #footer>
+      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="saveSiparis()" icon="pi pi-save" label="Kaydet" severity="primary"></p-button>
+    </ng-template>
+  </p-dialog>
+</form>

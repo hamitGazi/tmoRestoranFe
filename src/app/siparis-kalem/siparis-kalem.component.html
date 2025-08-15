@@ -1,0 +1,235 @@
+<!-- ✅ Toolbar -->
+<p-toolbar class="mt-0">
+  <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
+    <p-select
+      (onChange)="onChangeMasa($event)"
+      [options]="masaOptions()"
+      appendTo="body"
+      class="mr-1"
+      id="masaUp"
+      optionLabel="qrKodUrl"
+      optionValue="id"
+      placeholder="Masa seçiniz"
+      style="width:230px;background-color:#f9f9f9;color:#fff;border-radius:10px;font-weight: bold">
+    </p-select>
+
+    <p-button
+      (click)="refresh()"
+      [style]="{ 'background-color': '#4087be', 'border': 'none', 'box-shadow': 'none', 'outline': 'none' }"
+      class="buttonRefresh"
+      icon="pi pi-refresh"
+      label="Yenile">
+    </p-button>
+    <p-button
+      (click)="showSaveForm()"
+      [style]="{ 'background-color': '#28a745', 'margin': '2px', 'border': 'none', 'box-shadow': 'none', 'outline': 'none' }"
+      class="buttonAdd"
+      icon="pi pi-plus"
+      label="Ekle">
+    </p-button>
+
+  </div>
+</p-toolbar>
+
+<!-- ✅ Sipariş Kalemleri Tablosu -->
+<p-table
+  (rowsChange)="rowSelect($event)"
+  [(selection)]="selectedSiparisKalemiObject"
+  [metaKeySelection]="metaKey"
+
+  [tableStyle]="{'min-width': '80rem'}"
+  [value]="siparisKalemiData()"
+  dataKey="id"
+  editMode="row"
+  stripedRows>
+
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Kalem ID</th>
+      <th>Masa</th>
+      <th>Ürün</th>
+      <th>Miktar</th>
+      <th>Birim Fiyat(TL)</th>
+      <th>Toplam Fiyat(TL)</th>
+      <th>Ek Özellikler</th>
+      <th>Sipariş No</th>
+      <th>Kalem Not</th>
+      <th>Durum</th>
+      <th style="width:120px;">İşlem</th>
+    </tr>
+  </ng-template>
+
+  <ng-template let-editing="editing" let-kalem let-ri="rowIndex" pTemplate="body">
+    <tr (click)="rowSelect(kalem)" [pEditableRow]="kalem"
+        [style]="selectedKalem === kalem ? 'background-color:#d3d9ee;color:green;font-weight: bold;' : ''">
+
+      <td>{{ kalem.id }}</td>
+      <td>{{ kalem?.masa?.qrKodUrl || '—' }}</td>
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <p-select
+              [(ngModel)]="kalem.menuItem.id"
+              [options]="menuItemSelectList()"
+              appendTo="body"
+              optionLabel="label"
+              optionValue="value"
+              style="width: 100%">
+            </p-select>
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{ kalem?.menuItem?.ad || 'Bilinmeyen Ürün' }}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input [(ngModel)]="kalem.adet" min="1" pInputText type="number"/>
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{ kalem.adet }}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+
+      <td>{{ kalem.birimFiyat }}</td>
+      <td>{{ kalem.toplamFiyat }}</td>
+
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input [(ngModel)]="kalem.ekOzellikler" pInputText type="text"/>
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{ kalem.ekOzellikler || '—' }}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+
+      <td>{{ 'S-' + kalem.siparis }}</td>
+
+      <td>
+        <p-cellEditor>
+          <ng-template pTemplate="input">
+            <input [(ngModel)]="kalem.kalemNot" pInputText type="text"/>
+          </ng-template>
+          <ng-template pTemplate="output">
+            {{ kalem.kalemNot || '—' }}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+
+      <td>{{ kalem.siparisDurumu }}</td>
+
+      <td>
+        <div class="flex gap-2 justify-center">
+          <button
+            (click)="onRowEditInit(kalem)"
+            *ngIf="!editing"
+            icon="pi pi-pencil"
+            pButton
+            pInitEditableRow
+            rounded
+            severity="success"
+            text>
+          </button>
+
+          <button
+            (click)="onRowEditSave(kalem)"
+            *ngIf="editing"
+            icon="pi pi-check"
+            pButton
+            pSaveEditableRow
+            rounded
+            severity="success"
+            text>
+          </button>
+
+          <button
+            (click)="onRowEditCancel(kalem, ri)"
+            *ngIf="editing"
+            icon="pi pi-times"
+            pButton
+            pCancelEditableRow
+            rounded
+            severity="danger"
+            text>
+          </button>
+
+          <button
+            (click)="deleteSiparisKalemiConfirm(kalem.id)"
+            class="mt-2"
+            icon="pi pi-trash"
+            pButton
+            pStyleClass="p-button-rounded p-button-sm"
+            severity="contrast"
+            style="width: 1.5rem; height: 1.5rem;"
+          >
+          </button>
+        </div>
+      </td>
+
+    </tr>
+
+  </ng-template>
+
+</p-table>
+
+
+<!--✅ Sipariş Kalemi Ekleme Formu -->
+<form [formGroup]="siparisKalemiSaveForm">
+  <p-dialog [(visible)]="displaySaveForm" [modal]="true" [style]="{ width: '600px' }" header="Sipariş Kalemi Ekle">
+    <div class="formgrid grid">
+      <div class="field col-6">
+        <label>Menü Kategori</label>
+        <p-select
+          (onChange)="onMenuCategoryChange($event)"
+          [options]="menuCategoryOptions()"
+          appendTo="body"
+          class="w-full"
+          formControlName="menuItem"
+          optionLabel="ad"
+          optionValue="id"
+          placeholder="Ürün seçiniz">
+        </p-select>
+      </div>
+      <div class="field col-6">
+        <label>Menü Ürünü</label>
+        <p-select
+          [options]="menuItemByCategoryOption()"
+          appendTo="body"
+          class="w-full"
+          formControlName="menuItem"
+          optionLabel="ad"
+          optionValue="id"
+          placeholder="Ürün seçiniz">
+        </p-select>
+
+      </div>
+
+      <div class="field col-12">
+        <label>Adet</label>
+        <input class="w-full" formControlName="adet" min="1" pInputText placeholder="Adet giriniz" type="number"/>
+      </div>
+
+      <div class="field col-12">
+        <label>Not</label>
+        <input class="w-full" formControlName="kalemNot" pInputText placeholder="Not giriniz"/>
+      </div>
+      <div class="field col-12">
+        <label>Ek Özellikler</label>
+        <input class="w-full" formControlName="ekOzellikler" pInputText placeholder="Ek Özellikler giriniz"/>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <p-button (click)="closeSaveForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="saveSiparisKalemi()" [disabled]="!siparisKalemiSaveForm.valid" icon="pi pi-save"
+                label="Kaydet"></p-button>
+    </ng-template>
+  </p-dialog>
+</form>
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>

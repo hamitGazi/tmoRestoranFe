@@ -1,0 +1,276 @@
+<p-toolbar class="mt-0">
+  <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
+    <p-button
+      (click)="refresh()"
+      [style]="{
+        'background-color': '#4087be',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonRefresh"
+      icon="pi pi-refresh"
+      label="Yenile">
+    </p-button>
+    <p-button
+      (click)="showAddMalzemeForm()"
+      [style]="{
+        'background-color': '#28a745',
+        'margin': '2px',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonAdd"
+      icon="pi pi-plus"
+      label="Malzeme Ekle">
+    </p-button>
+    @if (selectedMalzeme()) {
+      <p-button
+        (click)="showUpdateMalzemeForm()"
+        [style]="{
+          'background-color': '#ff9800',
+          'margin': '2px',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }"
+        class="buttonEdit"
+        icon="pi pi-pen-to-square"
+        label="Güncelle">
+      </p-button>
+
+    }
+  </div>
+
+
+</p-toolbar><div class="card">
+  <p-table
+    #dt
+    [(selection)]="selectedMalzeme"
+    [globalFilterFields]="['stokKalem.ad', 'stokKalem.miktar', 'miktar', 'birim']"
+    [paginator]="true"
+    [rowsPerPageOptions]="[10, 20, 50]"
+    [rows]="5"
+    [tableStyle]="{'min-width': '40rem'}"
+    [value]="menuItemReceteDatas()"
+    dataKey="id"
+    selectionMode="single"
+  >
+    <!-- Üstte global filtre -->
+    <ng-template pTemplate="caption">
+      <div class="flex">
+        <div class="field " style="width: 230px;min-width: 230px;" >
+
+          <p-select
+            id="menuUrund"
+            [options]="menuUrunleri()"
+            optionLabel="ad"
+            optionValue="id"
+            style="width: 100% ;background-color:#f9f9f9;color:#fff;border-radius:10px;font-weight: bold"
+            class="border-gray-600"
+            (onChange)="onChangeMenuUrun($event)"
+            appendTo="body"
+            placeholder="Menü öğesi seçiniz"
+               ></p-select>
+        </div>
+        <p-iconField class="ml-auto" iconPosition="left">
+          <input
+            (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+            pInputText
+            placeholder="Anahtar kelime ara"
+            type="text"
+          />
+        </p-iconField>
+      </div>
+    </ng-template>
+
+    <!-- Kolon başlıkları -->
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Malzeme</th>
+        <th>Mevcut Stok</th>
+        <th>Miktar</th>
+        <th>Birim</th>
+        <th>İşlem</th>
+      </tr>
+    </ng-template>
+
+    <!-- Satırlar -->
+    <ng-template let-malzeme let-i="rowIndex" pTemplate="body">
+      <tr [pSelectableRow]="malzeme">
+        <td>{{ malzeme.stokKalemId?.ad }}</td>
+        <td>{{ malzeme.stokKalemId?.miktar || '—' }}</td>
+        <td>{{ malzeme.miktar }}</td>
+        <td>{{ malzeme.birim }}</td>
+        <td>
+          <p-button
+            icon="pi pi-trash"
+            (click)="removeMalzeme(i)"
+            [style]="{
+              'background-color': '#dc3545',
+              'border': 'none',
+              'box-shadow': 'none',
+              'outline': 'none'
+            }"
+            pTooltip="Malzemeyi Sil"
+          ></p-button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <!-- Boş veri mesajı -->
+    <ng-template pTemplate="emptymessage">
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="11">Ödeme bulunamadı.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+</div>
+
+<form (ngSubmit)="saveRecete()" [formGroup]="receteSaveForm">
+    <p-dialog [(visible)]="displaySaveForm" [modal]="true" [style]="{ width: '600px' }" header="Reçete Ekle">
+
+      <!-- Menü Öğesi: Tek satırda -->
+      <div class="field col-12">
+        <label for="menuUrunId" style="font-weight: bold; display: block;">Menü Öğesi *</label>
+        <p-select
+          id="menuUrunId"
+          [options]="menuUrunleri()"
+          optionLabel="ad"
+          optionValue="id"
+          formControlName="menuUrunId"
+          [style]="{ width: '100%' }"
+          appendTo="body"
+          placeholder="Menü öğesi seçiniz"
+        ></p-select>
+      </div>
+
+        <div class="field col-12">
+          <label for="stokKalemiId" style="font-weight: bold;">Malzeme</label>
+          <p-select
+            id="stokKalemiId"
+            [options]="stokKalemleri()"
+            optionLabel="ad"
+            optionValue="id"
+            formControlName="stokKalemiId"
+            [style]="{ width: '100%' }"
+            appendTo="body"
+            placeholder="Malzeme seçiniz"
+          ></p-select>
+        </div>
+      <div class="formgrid grid align-items-end">
+        <div class="field col-5">
+          <label for="birim" style="font-weight: bold;">Birim</label>
+          <p-select
+            id="birim"
+            [options]="birimOptions()"
+            optionLabel="label"
+            optionValue="name"
+            formControlName="birim"
+            [style]="{ width: '100%' }"
+            appendTo="body"
+            placeholder="Birim seçiniz"
+          ></p-select>
+        </div>
+        <div class="field col-5">
+          <label for="miktar" style="font-weight: bold;">Miktar</label>
+          <p-inputNumber
+            id="miktar"
+            formControlName="miktar"
+            [min]="0"
+            [step]="0.01"
+            placeholder="Miktar"
+            [style]="{ width: '100%' }"
+          ></p-inputNumber>
+        </div>
+
+        <div class="field col2">
+          <label style="visibility: hidden;">Ekle</label>
+          <p-button
+            icon="pi pi-plus"
+            (click)="addMalzeme()"
+            pTooltip="Malzeme Ekle"
+          ></p-button>
+        </div>
+      </div>
+      <ng-template #footer>
+      <p-button (click)="closeUpdateForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="saveRecete()" [disabled]="!receteSaveForm.valid" icon="pi pi-save"
+                label="Kaydet"></p-button>
+
+      </ng-template>
+    </p-dialog>
+  </form>
+
+<form (ngSubmit)="updateRecete()" [formGroup]="receteUpdateForm">
+  <p-dialog [(visible)]="displayUpdateForm" [modal]="true" [style]="{ width: '600px' }" header="Reçete Güncelle">
+
+    <!-- Menü Öğesi: Tek satırda -->
+    <div class="field col-12">
+      <label for="menuUrun" style="font-weight: bold; display: block;">Menü Öğesi *</label>
+      <p-select
+        id="menuUrun"
+        [options]="menuUrunleri()"
+        optionLabel="ad"
+        optionValue="id"
+        formControlName="menuUrunId"
+        [style]="{ width: '100%' }"
+        appendTo="body"
+        placeholder="Menü öğesi seçiniz"
+      ></p-select>
+    </div>
+
+    <div class="field col-12">
+      <label for="stokKalemi" style="font-weight: bold;">Malzeme</label>
+      <p-select
+        id="stokKalemi"
+        [options]="stokKalemleri()"
+        optionLabel="ad"
+        optionValue="id"
+        formControlName="stokKalemiId"
+        [style]="{ width: '100%' }"
+        appendTo="body"
+        placeholder="Malzeme seçiniz"
+      ></p-select>
+    </div>
+    <div class="formgrid grid align-items-end">
+      <div class="field col-5">
+        <label for="biri" style="font-weight: bold;">Birim</label>
+        <p-select
+          id="biri"
+          [options]="birimOptions()"
+          optionLabel="label"
+          optionValue="name"
+          formControlName="birim"
+          [style]="{ width: '100%' }"
+          appendTo="body"
+          placeholder="Birim seçiniz"
+        ></p-select>
+      </div>
+      <div class="field col-5">
+        <label for="mikt" style="font-weight: bold;">Miktar</label>
+        <p-inputNumber
+          id="mikt"
+          formControlName="miktar"
+          [min]="0"
+          [step]="0.01"
+          placeholder="Miktar"
+          [style]="{ width: '100%' }"
+        ></p-inputNumber>
+      </div>
+    </div>
+
+    <ng-template #footer>
+      <p-button (click)="closeUpdateForm()" icon="pi pi-times" label="İptal" severity="secondary"></p-button>
+      <p-button (click)="updateRecete()" [disabled]="!receteUpdateForm.valid" icon="pi pi-save"
+                label="Kaydet"></p-button>
+    </ng-template>
+  </p-dialog>
+</form>
+
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
