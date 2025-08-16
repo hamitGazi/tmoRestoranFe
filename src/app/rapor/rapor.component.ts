@@ -1,3 +1,4 @@
+/*
 import {Component, OnInit, signal} from '@angular/core';
 import {SatisRaporModel} from '../model/rapor/rapor.model';
 import {FormGroup, ReactiveFormsModule} from '@angular/forms';
@@ -135,3 +136,22 @@ export class RaporComponent implements OnInit {
     });
   }
 }
+*/
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {AppModule} from '../app-module';
+
+
+
+
+@Component({
+  selector: 'app-rapor',
+  imports: [
+    CommonModule,
+    AppModule,
+
+  ],
+  templateUrl: './rapor.component.html',
+  styleUrl: './rapor.component.css'
+})
+export class RaporComponent {}

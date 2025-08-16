@@ -1,0 +1,117 @@
+<p-toolbar class="mt-0">
+  <div class="border-round font-bold flex align-items-center justify-content-center">
+    <p-button
+      (click)="refresh()"
+      [style]="{
+        'background-color': '#4087be',
+        'border': 'none',
+        'box-shadow': 'none',
+        'outline': 'none'
+      }"
+      class="buttonRefresh"
+      icon="pi pi-refresh"
+      label="Yenile">
+    </p-button>
+  </div>
+</p-toolbar>
+
+<form [formGroup]="raporFilterForm">
+  <div class="formgrid grid mb-3">
+    <div class="field col-12 md:col-4">
+      <label >Başlangıç Tarihi</label>
+      <p-datepicker
+        formControlName="gecerlilikBaslangic"
+        [showButtonBar]="true"
+        dateFormat="dd.mm.yy"
+        styleClass="w-full"
+        id="gecerlilikBaslangic"
+        placeholder="Başlangıç tarihi seçiniz">
+      </p-datepicker>
+    </div>
+    <div class="field col-12 md:col-4">
+      <label >Bitiş Tarihi</label>
+      <p-datepicker
+        formControlName="gecerlilikBitis"
+        [showButtonBar]="true"
+        dateFormat="dd.mm.yy"
+        styleClass="w-full"
+        id="gecerlilikBitis"
+        placeholder="Bitiş tarihi seçiniz">
+      </p-datepicker>
+    </div>
+    <div class="field col-12 md:col-4">
+      <label for="geriBildirimTuru">Geri Bildirim Türü</label>
+      <p-select
+        formControlName="geriBildirimTuru"
+        [options]="geriBildirimTurEnumList()"
+        optionLabel="label"
+        optionValue="name"
+        placeholder="Geri bildirim türü seçiniz"
+        styleClass="w-full"
+        appendTo="body"
+        id="geriBildirimTuru">
+      </p-select>
+    </div>
+    <div class="field col-12">
+      <p-button
+        (click)="filterRapor()"
+        [style]="{
+          'background-color': '#28a745',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }"
+        icon="pi pi-filter"
+        label="Filtrele">
+      </p-button>
+    </div>
+  </div>
+</form>
+
+<p-table
+  [value]="raporDatas()"
+  [tableStyle]="{'min-width': '50rem'}"
+  dataKey="id"
+  styleClass="p-datatable-striped"
+  [exportFilename]="'geri-bildirim-raporu'">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>#</th>
+      <th>Tarih</th>
+      <th>Geri Bildirim Türü</th>
+      <th>Puan</th>
+      <th>Yorum</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rapor let-i="rowIndex">
+    <tr>
+      <td>{{ i + 1 }}</td>
+      <td>{{ rapor.tarih | date:'dd.MM.yyyy' }}</td>
+      <td>{{ rapor.geriBildirimTuru.label }}</td>
+      <td>{{ rapor.puan }}</td>
+      <td>{{ rapor.yorum }}</td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="summary">
+    <div class="flex justify-content-end">
+      <p-button
+        (click)="exportCSV()"
+        [style]="{
+          'background-color': '#ff9800',
+          'border': 'none',
+          'box-shadow': 'none',
+          'outline': 'none'
+        }"
+        icon="pi pi-download"
+        label="CSV Dışa Aktar">
+      </p-button>
+    </div>
+  </ng-template>
+</p-table>
+
+<div class="card mt-3">
+  <h3>Geri Bildirim Puan Grafiği</h3>
+  <p-chart type="bar" [data]="chartData()" [options]="chartOptions()"></p-chart>
+</div>
+
+<p-toast></p-toast>

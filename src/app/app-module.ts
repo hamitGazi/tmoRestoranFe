@@ -11,6 +11,21 @@ import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-b
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {SatisRaporComponent} from './satis-rapor/satis-rapor-component';
+import {StokRaporComponent} from './stok-rapor/stok-rapor-component';
+import {GeriBildirimRaporComponent} from './geri-bildirim-rapor/geri-bildirim-rapor-component';
+import {PersonelRaporComponent} from './personel-rapor/personel-rapor-component';
+import {MasaKullanimRaporComponent} from './masa-kullanim-rapor/masa-kullanim-rapor-component';
+import {Button} from 'primeng/button';
+import {UIChart} from 'primeng/chart';
+import {Toast} from 'primeng/toast';
+import {TableModule} from 'primeng/table';
+import {Toolbar} from 'primeng/toolbar';
+import {DatePicker} from 'primeng/datepicker';
+import {Select} from 'primeng/select';
+
+
+
 
 
 
@@ -19,6 +34,11 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 @NgModule({
   declarations: [
     App,
+    SatisRaporComponent,
+    StokRaporComponent,
+    GeriBildirimRaporComponent,
+    PersonelRaporComponent,
+    MasaKullanimRaporComponent,
 
   ],
   imports: [
@@ -29,6 +49,13 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     MenubarComponent,
     FormsModule,
     ReactiveFormsModule,
+    Button,
+    UIChart,
+    Toast,
+    TableModule,
+    Toolbar,
+    DatePicker,
+    Select,
   ],
   providers: [
 
@@ -41,6 +68,13 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
         preset: Aura
       }
     })
+  ],
+  exports: [
+    SatisRaporComponent,
+    StokRaporComponent,
+    GeriBildirimRaporComponent,
+    PersonelRaporComponent,
+    MasaKullanimRaporComponent
   ],
 
   bootstrap: [App]

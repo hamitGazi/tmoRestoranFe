@@ -1,3 +1,4 @@
+<!--
 <p-toolbar class="mt-0">
   <div class="border-round font-bold flex align-items-center justify-content-center" style="margin-right: 5px;">
 
@@ -20,7 +21,7 @@
   <div class="formgrid grid mb-3">
     <div class="field col-12 md:col-4">
       <label>Başlangıç Tarihi</label>
-      <p-date-picker
+      <p-date-picker&lt;!&ndash;&ndash;&gt;
         [showButtonBar]="true"
         [style]="{width:'100%'}"
         appendTo="body"
@@ -74,12 +75,12 @@
   <ng-template #header>
     <tr>
       <th>#</th>
-      <!--<p-table
+      &lt;!&ndash;<p-table
         [value]="raporDatas()"
         styleClass="p-datatable-striped">
         <ng-template pTemplate="header">
           <tr>
-            <th>#</th>-->
+            <th>#</th>&ndash;&gt;
       <th>Tarih</th>
       <th>Ödeme Türü</th>
       <th>Toplam Tutar</th>
@@ -91,7 +92,7 @@
       <td>{{ i + 1 }}</td>
       <td>{{ rapor.tarih }}</td>
       <td>{{ rapor.odemeTuru?.label || rapor.odemeTuru }}</td>
-      -->
+      &ndash;&gt;
       <td>{{ rapor.toplamTutar }}</td>
       <td>{{ rapor.siparisSayisi }}</td>
     </tr>
@@ -104,3 +105,24 @@
 </div>
 
 <p-toast></p-toast>
+-->
+<div class="card">
+  <h1>Raporlar</h1>
+  <p-tabView>
+    <p-tabPanel header="Satış Raporları">
+      <app-satis-rapor></app-satis-rapor>
+    </p-tabPanel>
+    <p-tabPanel header="Stok Raporları">
+      <app-stok-rapor></app-stok-rapor>
+    </p-tabPanel>
+    <p-tabPanel header="Geri Bildirim Raporları">
+      <app-geri-bildirim-rapor></app-geri-bildirim-rapor>
+    </p-tabPanel>
+    <p-tabPanel header="Personel Performans">
+      <app-personel-rapor></app-personel-rapor>
+    </p-tabPanel>
+    <p-tabPanel header="Masa Kullanım">
+      <app-masa-kullanim-rapor></app-masa-kullanim-rapor>
+    </p-tabPanel>
+  </p-tabView>
+</div>

@@ -20,6 +20,11 @@ import {SiparisYeniComponent} from './siparis-yeni/siparis-yeni-compnent';
 
 import {HammaddeStoklarComponent} from './hammadde-stoklar/hammadde-stoklar.component';
 import {MenuItemReceteComponent} from './menu-item-recete/menu-item-recete.component';
+import {SatisRaporComponent} from './satis-rapor/satis-rapor-component';
+import {StokRaporComponent} from './stok-rapor/stok-rapor-component';
+import {GeriBildirimRaporComponent} from './geri-bildirim-rapor/geri-bildirim-rapor-component';
+import {PersonelRaporComponent} from './personel-rapor/personel-rapor-component';
+import {MasaKullanimRaporComponent} from './masa-kullanim-rapor/masa-kullanim-rapor-component';
 
 
 
@@ -39,11 +44,23 @@ const routes: Routes = [
   {path: 'odeme', component: OdemeComponent},
   {path: 'personel', component: PersonelComponent},
   {path: 'stok', component: StokComponent},
-  {path: 'rapor', component: RaporComponent},
+  {path: 'rapor/stok', component: RaporComponent},
   {path: 'rezervasyon', component: RezervasyonComponent},
   {path: 'kullanici', component: KullaniciComponent},
   {path: 'stok/hammadde', component: HammaddeStoklarComponent},
  {path: 'stok/recete', component:MenuItemReceteComponent},
+  {
+    path: 'rapor',
+    component: RaporComponent,
+    children: [
+      { path: '', redirectTo: 'satis', pathMatch: 'full' },
+      { path: 'satis', component: SatisRaporComponent },
+      { path: 'stok', component: StokRaporComponent },
+      { path: 'geri-bildirim', component: GeriBildirimRaporComponent },
+      { path: 'personel', component: PersonelRaporComponent },
+      { path: 'masa', component: MasaKullanimRaporComponent }
+    ]
+  },
   {path: '**', redirectTo: 'dashboard', pathMatch: 'full'},
 ];
 

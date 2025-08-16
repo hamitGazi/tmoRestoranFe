@@ -1,13 +1,14 @@
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {EnumRecord, GenericBaseModel} from '../../model/masa/masa.model';
-import {SatisRaporModel} from '../../model/rapor/rapor.model';
+
 import {Injectable} from '@angular/core';
+import {SatisRaporModel} from '../../model/raporlar/rapor.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RaporService {
+export class RaporFilterService {
   private apiUrl = 'http://localhost:8080/rapor';
   private odemeApiUrl = 'http://localhost:8080/odeme';
 
